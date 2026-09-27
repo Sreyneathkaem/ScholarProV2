@@ -94,9 +94,14 @@ export const AdminColumns: ColumnDef<Admin>[] = [
       isSticky: true,
     },
     cell: ({ row }) => {
+      const userId =
+        (row.original as Admin & { user?: { id?: string | number } }).user?.id ??
+        row.original.user_id ??
+        row.original.id;
+
       return (
         <TableMenu
-          id={row.original.id}
+          id={String(userId)}
           invalidateKey={QUERY_KEY_ENUM.ADMINS}
           deleteEndpoint="/users"
         />

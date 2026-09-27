@@ -14,17 +14,17 @@ const MAX_ATTEMPTS = 5;
 const BLOCK_DURATION_MINUTES = 15;
 
 export default async (inputEmail: string, password: string, ip: string) => {
-  const email = inputEmail.toLocaleLowerCase();
+  const email = inputEmail.trim().toLowerCase();
   //  Log login attempt (not log password)
   securityLogger.info({
     event: "LOGIN_ATTEMPT",
     email,
-    ip
+    ip,
   });
 
   const now = new Date();
   const blockCheckTime = new Date(
-    now.getTime() - BLOCK_DURATION_MINUTES * 60 * 1000
+    now.getTime() - BLOCK_DURATION_MINUTES * 60 * 1000,
   );
 
   const recentAttempts = await db
@@ -34,8 +34,8 @@ export default async (inputEmail: string, password: string, ip: string) => {
       and(
         eq(loginAttempts.ip, ip),
         gte(loginAttempts.attemptedAt, blockCheckTime),
-        eq(loginAttempts.success, false)
-      )
+        eq(loginAttempts.success, false),
+      ),
     )
     .orderBy(desc(loginAttempts.attemptedAt));
 
@@ -44,7 +44,7 @@ export default async (inputEmail: string, password: string, ip: string) => {
     const oldestFailedAttempt = recentAttempts[recentAttempts.length - 1];
     const blockUntil = new Date(
       oldestFailedAttempt.attemptedAt.getTime() +
-      BLOCK_DURATION_MINUTES * 60 * 1000
+        BLOCK_DURATION_MINUTES * 60 * 1000,
     );
 
     if (now < blockUntil) {
@@ -52,14 +52,14 @@ export default async (inputEmail: string, password: string, ip: string) => {
         event: "LOGIN_BLOCKED",
         ip,
         remainingTime: Math.ceil(
-          (blockUntil.getTime() - now.getTime()) / 60000
+          (blockUntil.getTime() - now.getTime()) / 60000,
         ),
       });
 
       return {
         success: false,
         msg: `Account temporarily locked. Try again in ${Math.ceil(
-          (blockUntil.getTime() - now.getTime()) / 60000
+          (blockUntil.getTime() - now.getTime()) / 60000,
         )} minutes.`,
       };
     }
@@ -96,11 +96,16 @@ export default async (inputEmail: string, password: string, ip: string) => {
     });
     await db
       .insert(loginAttempts)
-      .values({ ip: ip, email: email, userId: user.id, attemptedAt: now, success: false });
+      .values({
+        ip: ip,
+        email: email,
+        userId: user.id,
+        attemptedAt: now,
+        success: false,
+      });
 
     return { success: false, msg: "Invalid email or password" };
   }
-
 
   // Login successful
   await db.insert(loginAttempts).values({

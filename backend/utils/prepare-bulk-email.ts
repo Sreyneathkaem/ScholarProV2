@@ -2,41 +2,74 @@ import { db } from "@db";
 import { applications } from "@db/schema/application";
 import { emailTemplates } from "@db/schema/email-template";
 import fetchGlobalVariable from "./fetch-global-variable";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 export default async function prepareBulkEmail(
   templateName: string,
   filter: any,
-  tx: any = db
+  tx: any = db,
 ) {
   const [template] = await tx
     .select()
     .from(emailTemplates)
     .where(eq(emailTemplates.name, templateName));
 
-  const recipients = await fetchGlobalVariable({
-    ...filter,
-    limit: 10000, // limit to 10000 recipients
-    offset: 0,
-    fullEnrichment: true,
-  });
+  let recipients: any[] = [];
+
+  if (filter?.applicationIds?.length) {
+    recipients = await fetchGlobalVariable({
+      applicationIds: filter.applicationIds,
+      limit: 10000,
+      offset: 0,
+      fullEnrichment: true,
+    });
+  } else if (filter?.emails?.length) {
+    recipients = filter.emails.map((email: string) => ({
+      applicationId: 0,
+      applicantName: email.split("@")[0],
+      email,
+      status: "manual",
+      scholarshipPercentage: null,
+      major: null,
+    }));
+  } else {
+    recipients = await fetchGlobalVariable({
+      ...filter,
+      limit: 10000,
+      offset: 0,
+      fullEnrichment: true,
+    });
+  }
 
   if (!recipients.length) return [];
 
-  const applicationIds = recipients.map((r) => r.applicationId);
+  const applicationIds = recipients
+    .map((r) => r.applicationId)
+    .filter((id) => Number.isFinite(id) && id > 0);
+
   if (applicationIds.length > 0) {
     switch (filter.status) {
       case "shortlisted":
         await tx
           .update(applications)
           .set({ status: "shortlisted_email_sent" })
-          .where(inArray(applications.id, applicationIds));
+          .where(
+            and(
+              inArray(applications.id, applicationIds),
+              eq(applications.status, "shortlisted"),
+            ),
+          );
         break;
       case "accepted":
         await tx
           .update(applications)
           .set({ status: "accepted_email_sent" })
-          .where(inArray(applications.id, applicationIds));
+          .where(
+            and(
+              inArray(applications.id, applicationIds),
+              eq(applications.status, "accepted"),
+            ),
+          );
         break;
     }
   }
@@ -47,8 +80,9 @@ export default async function prepareBulkEmail(
       const templateData: Record<string, any> = {};
       for (const v of template?.variable ?? []) {
         templateData[v] = r[v as keyof typeof r];
-        
       }
+      templateData.applicantName = r.applicantName || r.email;
+      templateData.email = r.email;
       return {
         Destination: { ToAddresses: [r.email] },
         ReplacementEmailContent: {

@@ -49,10 +49,18 @@ export const authService = {
   async login(
     credentials: LoginCredentials,
   ): Promise<ApiResponse<LoginResponse>> {
-    const res = await apiClient.post<BackendLoginResponse>(
-      API_ENDPOINTS.LOGIN,
-      credentials,
-    );
+    let res;
+    try {
+      res = await apiClient.post<BackendLoginResponse>(
+        API_ENDPOINTS.LOGIN,
+        credentials,
+      );
+    } catch (error) {
+      const err = toAxiosError(error);
+      throw new Error(
+        err.response?.data?.message ?? err.message ?? "Login failed",
+      );
+    }
 
     const { token, user, message } = extractTokens(res.data);
 
@@ -184,7 +192,10 @@ export const authService = {
       return {
         success: false,
         error: {
-          message: err.message,
+          message:
+            err.response?.data?.message ??
+            err.response?.data?.errors?.join(", ") ??
+            err.message,
           status: err.response?.status,
           data: err.response?.data,
         },

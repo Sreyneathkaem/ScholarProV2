@@ -159,6 +159,7 @@ export interface ResetForgotPasswordResponse {
 
 export interface BackendErrorData {
   message?: string;
+  errors?: string[];
 }
 
 /** Typed subset of an Axios error used in catch blocks. */

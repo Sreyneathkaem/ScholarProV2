@@ -42,7 +42,7 @@ export function StudentTable({
   showImportFile = true,
 }: StudentTableProps) {
   const [activeTab, setActiveTab] = React.useState<StudentStatus | "all">(
-    defaultTab || (showTabs ? "submitted" : type),
+    defaultTab || (showTabs ? "all" : type),
   );
   const [, setSelectedStudents] = React.useState<Student[]>([]);
   const [fetchedStudents, setFetchedStudents] = React.useState<

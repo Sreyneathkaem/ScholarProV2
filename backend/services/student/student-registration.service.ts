@@ -26,9 +26,20 @@ export class StudentRegistrationService {
       .where(eq(batches.status, "active"))
       .orderBy(desc(batches.id))
       .limit(1);
+
+    const targetBatch =
+      activeBatch ||
+      (
+        await db
+          .select({ id: batches.id })
+          .from(batches)
+          .orderBy(desc(batches.id))
+          .limit(1)
+      )[0];
+
     const availableMajors = await db.select({ id: majors.id, name: majors.majorName }).from(majors);
     const selectedMajor = String(payload?.appliedProgram?.interestedMajor || "").trim().toLowerCase();
-    const matchingMajor = availableMajors.find((major) => {
+    let matchingMajor = availableMajors.find((major) => {
       const name = major.name.toLowerCase();
       if (name === selectedMajor) return true;
       if (selectedMajor.includes("engineering") || selectedMajor.includes("cyber")) return name.includes("engineering");
@@ -39,7 +50,11 @@ export class StudentRegistrationService {
       return false;
     });
 
-    if (!activeBatch || !matchingMajor) {
+    if (!matchingMajor && availableMajors.length > 0) {
+      matchingMajor = availableMajors[0];
+    }
+
+    if (!targetBatch || !matchingMajor) {
       throw new ValidationError("No active application batch or matching major was found");
     }
 
@@ -48,11 +63,11 @@ export class StudentRegistrationService {
       appliedProgram: {
         ...payload.appliedProgram,
         interestMajorId: matchingMajor.id,
-        requestedTerm: payload.appliedProgram.requestedAcademicTerm,
+        requestedTerm: payload.appliedProgram?.requestedAcademicTerm || payload.appliedProgram?.requestedTerm,
       },
       application: {
-        batchId: activeBatch.id,
-        isApplyForScholarShip: payload.appliedProgram.isApplyingScholarship,
+        batchId: targetBatch.id,
+        isApplyForScholarShip: payload.appliedProgram?.isApplyingScholarship ?? payload.appliedProgram?.isApplyForScholarShip ?? false,
       },
     };
 

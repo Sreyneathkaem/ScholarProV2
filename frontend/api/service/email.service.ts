@@ -34,6 +34,7 @@ interface TemplateOperationResponse {
 interface BulkSendApiResponse {
   success: boolean;
   message: string;
+  jobId?: number;
 }
 
 // ============================================
@@ -60,6 +61,15 @@ export interface UpdateTemplateRequest {
 export interface BulkSendResponse {
   success: boolean;
   message: string;
+  jobId?: number;
+}
+
+export interface EmailJobStatus {
+  jobId: number;
+  totalCount: number;
+  sentCount: number;
+  failedCount: number;
+  status: "queued" | "processing" | "completed";
 }
 
 export interface Batch {
@@ -222,6 +232,17 @@ export const emailService = {
     };
   },
 
+  async getJobStatus(jobId: number): Promise<EmailJobStatus> {
+    const response = await apiClient.get<EmailJobStatus>(
+      API_ENDPOINTS.EMAIL.GET_JOB(jobId),
+      {
+        params: { statusCheck: Date.now() },
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      },
+    );
+    return response.data;
+  },
+
   /**
    * Send bulk email
    * POST /api/email/bulk-send/{name}
@@ -230,21 +251,29 @@ export const emailService = {
    */
   async bulkSend(
     templateName: string,
-    batchId: number,
+    batchId?: number,
     status?: string,
     scholarshipPercentage?: string,
     major?: string,
+    applicationIds?: number[],
+    emails?: string[],
   ): Promise<BulkSendResponse> {
     // Build params object - only include truthy values
-    const params: Record<string, string> = {
-      batchId: batchId.toString(),
-    };
+    const params: Record<string, string> = {};
+
+    if (batchId !== undefined) params.batchId = batchId.toString();
 
     if (status && status.trim() !== "") params.status = status;
     if (scholarshipPercentage && scholarshipPercentage.trim() !== "") {
       params.scholarshipPercentage = scholarshipPercentage;
     }
     if (major && major.trim() !== "") params.major = major;
+    if (applicationIds && applicationIds.length > 0) {
+      params.applicationIds = applicationIds.join(",");
+    }
+    if (emails && emails.length > 0) {
+      params.emails = emails.join(",");
+    }
 
     const response = await apiClient.post<BulkSendApiResponse>(
       API_ENDPOINTS.EMAIL.BULK_SEND(templateName),
@@ -255,6 +284,7 @@ export const emailService = {
     return {
       success: response.data.success,
       message: response.data.message,
+      jobId: response.data.jobId,
     };
   },
 
@@ -277,16 +307,18 @@ export const emailService = {
    * Returns: { success: boolean, count: number, data: EmailRecipient[] }
    */
   async listRecipients(
-    batchId: number,
+    batchId?: number,
     status?: string,
     scholarshipPercentage?: string,
     major?: string,
+    search?: string,
   ): Promise<{ success: boolean; count: number; data: EmailRecipient[] }> {
     // Build params object - only include non-empty values
     const params: Record<string, string> = {
-      batchId: batchId.toString(),
-      limit: "1000",
+      limit: "10000",
     };
+
+    if (batchId !== undefined) params.batchId = batchId.toString();
 
     // Only add optional params if they have actual values (not empty strings)
     if (status && status.trim() !== "") {
@@ -298,6 +330,7 @@ export const emailService = {
     if (major && major.trim() !== "" && major !== "All Majors") {
       params.major = major;
     }
+    if (search?.trim()) params.search = search.trim();
 
     console.log("[listRecipients] Calling API with params:", params);
     console.log(

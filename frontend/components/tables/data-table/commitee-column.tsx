@@ -97,9 +97,14 @@ export const CommitteeColumns: ColumnDef<Commitee>[] = [
       isSticky: true,
     },
     cell: ({ row }) => {
+      const userId =
+        row.original.user?.id ??
+        (row.original as Commitee & { user_id?: string | number }).user_id ??
+        row.original.id;
+
       return (
         <TableMenu
-          id={row.original.id}
+          id={String(userId)}
           invalidateKey={QUERY_KEY_ENUM.COMMITTEES}
           deleteEndpoint="/users"
         />

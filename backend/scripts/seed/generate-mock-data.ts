@@ -26,310 +26,403 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 
 async function seed() {
-    console.log("🌱 Starting seed...");
+  console.log("🌱 Starting seed...");
 
-    const hashedPassword = await bcrypt.hash("Password123!", 10);
+  const hashedPassword = await bcrypt.hash("Password123!", 10);
 
-    // 1. Base Infrastructure
-    console.log("Step 1: Faculties, Departments, Batches, Subjects, Criteria...");
+  // 1. Base Infrastructure
+  console.log("Step 1: Faculties, Departments, Batches, Subjects, Criteria...");
 
-    // Check & Insert Faculties
-    let insertedFaculties = await db.select().from(faculties);
-    if (insertedFaculties.length === 0) {
-        insertedFaculties = await db.insert(faculties).values([
-            { facultyName: "Engineering" },
-            { facultyName: "Business" },
-            { facultyName: "Art & Humanities" },
-            { facultyName: "Applied Science" },
-            { facultyName: "Built Environment" }
-        ]).returning();
+  // Check & Insert Faculties
+  let insertedFaculties = await db.select().from(faculties);
+  if (insertedFaculties.length === 0) {
+    insertedFaculties = await db
+      .insert(faculties)
+      .values([
+        { facultyName: "Engineering" },
+        { facultyName: "Business" },
+        { facultyName: "Art & Humanities" },
+        { facultyName: "Applied Science" },
+        { facultyName: "Built Environment" },
+      ])
+      .returning();
+  }
+
+  // Check & Insert Departments
+  let insertedDepts = await db.select().from(departments);
+  if (insertedDepts.length === 0) {
+    insertedDepts = await db
+      .insert(departments)
+      .values([
+        { departmentName: "Software Engineering" },
+        { departmentName: "Cyber Security" },
+        { departmentName: "Management" },
+        { departmentName: "Architecture" },
+      ])
+      .returning();
+  }
+
+  // Check & Insert Batches
+  let insertedBatches = await db.select().from(batches);
+  if (insertedBatches.length === 0) {
+    insertedBatches = await db
+      .insert(batches)
+      .values([
+        {
+          batchName: "Fall 2026 Batch",
+          startDate: new Date("2026-09-01"),
+          endDate: new Date("2026-12-31"),
+          status: "active",
+        },
+        {
+          batchName: "Spring 2026 Batch",
+          startDate: new Date("2026-01-01"),
+          endDate: new Date("2026-05-31"),
+          status: "closed",
+        },
+      ])
+      .returning();
+  }
+
+  // Check & Insert Subjects
+  let insertedSubjects = await db.select().from(subjects);
+  if (insertedSubjects.length === 0) {
+    insertedSubjects = await db
+      .insert(subjects)
+      .values([
+        { subjectName: "Mathematics", weight: 1 },
+        { subjectName: "English", weight: 1 },
+        { subjectName: "Interview", weight: 1.5 },
+      ])
+      .returning();
+  }
+
+  // Check & Insert Interviews Logic
+  let insertedCriteria = await db.select().from(interviewCriterias);
+  if (insertedCriteria.length === 0) {
+    insertedCriteria = await db
+      .insert(interviewCriterias)
+      .values([
+        { name: "Communication Skills", weight: 30 },
+        { name: "Technical Knowledge", weight: 40 },
+        { name: "Problem Solving", weight: 30 },
+      ])
+      .returning();
+  }
+
+  // Email Templates (upsert or skip)
+  const existingTemplates = await db.select().from(emailTemplates);
+  if (existingTemplates.length === 0) {
+    await db
+      .insert(emailTemplates)
+      .values([
+        {
+          name: "Shortlist Announcement",
+          variable: [
+            "applicantName",
+            "interviewExamDate",
+            "interviewStartTime",
+            "interviewRoom",
+          ],
+        },
+        {
+          name: "Acceptance Letter",
+          variable: ["applicantName", "major", "scholarshipPercentage"],
+        },
+      ])
+      .returning();
+  }
+
+  // 2. Users (Admin, Committee)
+  console.log("Step 2: Admin and Committee users...");
+
+  let [adminUser] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, "admin@scholarpro.site"))
+    .limit(1);
+
+  if (!adminUser) {
+    [adminUser] = await db
+      .insert(users)
+      .values({
+        email: "admin@scholarpro.site",
+        password: hashedPassword,
+        role: "admin",
+        provider: "local",
+      })
+      .returning();
+
+    await db.insert(admins).values({
+      userId: adminUser.id,
+      name: "System Administrator",
+    });
+  }
+
+  const committeeUsers: any[] = [];
+  for (let i = 0; i < 3; i++) {
+    const email = `committee${i + 1}@scholarpro.site`;
+
+    let [u] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (!u) {
+      [u] = await db
+        .insert(users)
+        .values({
+          email,
+          password: hashedPassword,
+          role: "committee",
+          provider: "local",
+        })
+        .returning();
+
+      await db
+        .insert(committees)
+        .values({
+          userId: u.id,
+          name: faker.person.fullName(),
+          departmentId: insertedDepts[i % insertedDepts.length].id,
+        })
+        .returning();
     }
 
-    // Check & Insert Departments
-    let insertedDepts = await db.select().from(departments);
-    if (insertedDepts.length === 0) {
-        insertedDepts = await db.insert(departments).values([
-            { departmentName: "Software Engineering" },
-            { departmentName: "Cyber Security" },
-            { departmentName: "Management" },
-            { departmentName: "Architecture" }
-        ]).returning();
+    // Need to fetch the committee record if it existed or was created
+    const [c] = await db
+      .select()
+      .from(committees)
+      .where(eq(committees.userId, u.id))
+      .limit(1);
+    if (c) committeeUsers.push(c);
+  }
+
+  // 3. Academic Framework (Majors, Exam Sessions)
+  console.log("Step 3: Majors and Exam Sessions...");
+
+  let insertedMajors = await db.select().from(majors);
+  if (insertedMajors.length === 0) {
+    insertedMajors = await db
+      .insert(majors)
+      .values(
+        insertedFaculties.flatMap((f) => [
+          {
+            majorName: `${f.facultyName} Major A`,
+            facultyId: f.id,
+            tuitionFee: "5000",
+          },
+          {
+            majorName: `${f.facultyName} Major B`,
+            facultyId: f.id,
+            tuitionFee: "4500",
+          },
+        ]),
+      )
+      .returning();
+  }
+
+  let insertedSessions = await db.select().from(examSessions);
+  if (insertedSessions.length === 0) {
+    insertedSessions = await db
+      .insert(examSessions)
+      .values(
+        insertedBatches.flatMap((b) =>
+          insertedSubjects.map((s) => ({
+            batchId: b.id,
+            subjectId: s.id,
+            facultyId: insertedFaculties[0].id,
+            sessionName: `${s.subjectName} Session - ${b.batchName}`,
+            examDate: faker.date.future(),
+            startTime: faker.date.future(),
+            endTime: faker.date.future(),
+            location: `Hall ${faker.number.int({ min: 1, max: 10 })}`,
+            capacity: 50,
+            status: "scheduled" as const,
+          })),
+        ),
+      )
+      .returning();
+
+    // Link committees to interview sessions (subjectId 3)
+    const interviewSessions = insertedSessions.filter((s) => s.subjectId === 3);
+    await db.insert(examSessionCommittees).values(
+      interviewSessions.flatMap((s) =>
+        committeeUsers.map((c) => ({
+          examSessionId: s.id,
+          committeeId: c.id,
+        })),
+      ),
+    );
+  }
+
+  // 4. Students Lifecycle & Applications (Stress test: 500 students)
+  console.log("Step 4: Generating 500 Students, Profiles, and Applications...");
+
+  for (let i = 0; i < 500; i++) {
+    const email = faker.internet.email().toLocaleLowerCase();
+    const [existingUser] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (existingUser) {
+      console.log(`Skipping existing seeded user: ${email}`);
+      continue;
     }
 
-    // Check & Insert Batches
-    let insertedBatches = await db.select().from(batches);
-    if (insertedBatches.length === 0) {
-        insertedBatches = await db.insert(batches).values([
-            {
-                batchName: "Fall 2026 Batch",
-                startDate: new Date("2026-09-01"),
-                endDate: new Date("2026-12-31"),
-                status: "active"
-            },
-            {
-                batchName: "Spring 2026 Batch",
-                startDate: new Date("2026-01-01"),
-                endDate: new Date("2026-05-31"),
-                status: "closed"
-            }
-        ]).returning();
-    }
+    const [u] = await db
+      .insert(users)
+      .values({
+        email,
+        password: hashedPassword,
+        role: "student",
+        provider: "local",
+      })
+      .returning();
 
-    // Check & Insert Subjects
-    let insertedSubjects = await db.select().from(subjects);
-    if (insertedSubjects.length === 0) {
-        insertedSubjects = await db.insert(subjects).values([
-            { subjectName: "Mathematics", weight: 1 },
-            { subjectName: "English", weight: 1 },
-            { subjectName: "Interview", weight: 1.5 }
-        ]).returning();
-    }
+    const [student] = await db
+      .insert(students)
+      .values({
+        userId: u.id,
+        nameEn: faker.person.fullName(),
+        nameKh: "ឈ្មោះ និស្សិត",
+        email: u.email,
+        phoneNumber: faker.helpers.fromRegExp(/0[1-9][0-9]{7,8}/),
+        dateOfBirth: faker.date.birthdate(),
+        status: "active",
+      })
+      .returning();
 
-    // Check & Insert Interviews Logic
-    let insertedCriteria = await db.select().from(interviewCriterias);
-    if (insertedCriteria.length === 0) {
-        insertedCriteria = await db.insert(interviewCriterias).values([
-            { name: "Communication Skills", weight: 30 },
-            { name: "Technical Knowledge", weight: 40 },
-            { name: "Problem Solving", weight: 30 }
-        ]).returning();
-    }
+    const [attachment] = await db
+      .insert(attachments)
+      .values({
+        type: "personalInfo",
+        fileUrl: faker.image.url(),
+      })
+      .returning();
 
-    // Email Templates (upsert or skip)
-    const existingTemplates = await db.select().from(emailTemplates);
-    if (existingTemplates.length === 0) {
-        await db.insert(emailTemplates).values([
-            {
-                name: "Shortlist Announcement",
-                variable: ["applicantName", "interviewExamDate", "interviewStartTime", "interviewRoom"]
-            },
-            {
-                name: "Acceptance Letter",
-                variable: ["applicantName", "major", "scholarshipPercentage"]
-            }
-        ]).returning();
-    }
+    await db.insert(personalInfo).values({
+      studentId: student.id,
+      nationality: "Cambodian",
+      gender: faker.helpers.arrayElement(["male", "female"]),
+      dob: student.dateOfBirth!,
+      placeOfBirth: faker.location.city(),
+      address: faker.location.streetAddress(),
+      attachmentId: attachment.id,
+    });
 
-    // 2. Users (Admin, Committee)
-    console.log("Step 2: Admin and Committee users...");
+    await db.insert(parentGuardianInfos).values({
+      studentId: student.id,
+      name: faker.person.fullName(),
+      relationship: "Father",
+      nationality: "Cambodian",
+      address: faker.location.streetAddress(),
+      job: faker.person.jobTitle(),
+      phoneNumber: faker.helpers.fromRegExp(/0[1-9][0-9]{7,8}/),
+    });
 
-    let [adminUser] = await db.select().from(users).where(eq(users.email, "admin@scholarpro.site")).limit(1);
+    // Create Application
+    const targetBatch =
+      insertedBatches.find((b) => b.batchName === "Fall 2026 Batch") ||
+      insertedBatches[0];
 
-    if (!adminUser) {
-        [adminUser] = await db.insert(users).values({
-            email: "admin@scholarpro.site",
-            password: hashedPassword,
-            role: "admin",
-            provider: "local"
-        }).returning();
+    const [app] = await db
+      .insert(applications)
+      .values({
+        studentId: student.id,
+        batchId: targetBatch.id,
+        status: faker.helpers.arrayElement([
+          "submitted",
+          "shortlisted",
+          "accepted",
+          "graded",
+        ]),
+        attachmentId: attachment.id,
+        isApplyForScholarShip: true,
+        scholarshipPercentage: faker.number.int({ min: 10, max: 100 }),
+      })
+      .returning();
 
-        await db.insert(admins).values({
-            userId: adminUser.id,
-            name: "System Administrator"
-        });
-    }
+    const major = faker.helpers.arrayElement(insertedMajors);
+    await db.insert(appliedPrograms).values({
+      appId: app.id,
+      interestMajorId: major.id,
+      isApplyingScholarship: true,
+      considerNextIntake: true,
+    });
 
-    const committeeUsers: any[] = [];
-    for (let i = 0; i < 3; i++) {
-        const email = `committee${i + 1}@scholarpro.site`;
+    await db.insert(educationBackground).values({
+      appId: app.id,
+      educationLevel: "high_school",
+      institutionName: faker.company.name(),
+      academicYear: "2024-2025",
+      highSchoolName: faker.company.name(),
+      schoolLocation: faker.location.city(),
+      overallGrade: faker.helpers.arrayElement(["A", "B", "C"]),
+      mathGrade: faker.helpers.arrayElement(["A", "B", "C"]),
+      englishGrade: faker.helpers.arrayElement(["A", "B", "C"]),
+      grade12CertificateId: attachment.id,
+      hasEnglishCertificate: "no",
+      englishCertificateId: attachment.id,
+    });
 
-        let [u] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
-        if (!u) {
-            [u] = await db.insert(users).values({
-                email,
-                password: hashedPassword,
-                role: "committee",
-                provider: "local"
-            }).returning();
-
-            await db.insert(committees).values({
-                userId: u.id,
-                name: faker.person.fullName(),
-                departmentId: insertedDepts[i % insertedDepts.length].id
-            }).returning();
-        }
-
-        // Need to fetch the committee record if it existed or was created
-        const [c] = await db.select().from(committees).where(eq(committees.userId, u.id)).limit(1);
-        if (c) committeeUsers.push(c);
-    }
-
-    // 3. Academic Framework (Majors, Exam Sessions)
-    console.log("Step 3: Majors and Exam Sessions...");
-
-    let insertedMajors = await db.select().from(majors);
-    if (insertedMajors.length === 0) {
-        insertedMajors = await db.insert(majors).values(
-            insertedFaculties.flatMap(f => [
-                { majorName: `${f.facultyName} Major A`, facultyId: f.id, tuitionFee: "5000" },
-                { majorName: `${f.facultyName} Major B`, facultyId: f.id, tuitionFee: "4500" }
-            ])
-        ).returning();
-    }
-
-    let insertedSessions = await db.select().from(examSessions);
-    if (insertedSessions.length === 0) {
-        insertedSessions = await db.insert(examSessions).values(
-            insertedBatches.flatMap(b =>
-                insertedSubjects.map(s => ({
-                    batchId: b.id,
-                    subjectId: s.id,
-                    facultyId: insertedFaculties[0].id,
-                    sessionName: `${s.subjectName} Session - ${b.batchName}`,
-                    examDate: faker.date.future(),
-                    startTime: faker.date.future(),
-                    endTime: faker.date.future(),
-                    location: `Hall ${faker.number.int({ min: 1, max: 10 })}`,
-                    capacity: 50,
-                    status: "scheduled" as const
-                }))
-            )
-        ).returning();
-
-        // Link committees to interview sessions (subjectId 3)
-        const interviewSessions = insertedSessions.filter(s => s.subjectId === 3);
-        await db.insert(examSessionCommittees).values(
-            interviewSessions.flatMap(s =>
-                committeeUsers.map(c => ({
-                    examSessionId: s.id,
-                    committeeId: c.id
-                }))
-            )
-        );
-    }
-
-    // 4. Students Lifecycle & Applications (Stress test: 500 students)
-    console.log("Step 4: Generating 500 Students, Profiles, and Applications...");
-
-    for (let i = 0; i < 500; i++) {
-        const email = faker.internet.email().toLocaleLowerCase();
-        const [u] = await db.insert(users).values({
-            email,
-            password: hashedPassword,
-            role: "student",
-            provider: "local"
-        }).returning();
-
-        const [student] = await db.insert(students).values({
-            userId: u.id,
-            nameEn: faker.person.fullName(),
-            nameKh: "ឈ្មោះ និស្សិត",
-            email: u.email,
-            phoneNumber: faker.helpers.fromRegExp(/0[1-9][0-9]{7,8}/),
-            dateOfBirth: faker.date.birthdate(),
-            status: "active"
-        }).returning();
-
-        const [attachment] = await db.insert(attachments).values({
-            type: "personalInfo",
-            fileUrl: faker.image.url()
-        }).returning();
-
-        await db.insert(personalInfo).values({
-            studentId: student.id,
-            nationality: "Cambodian",
-            gender: faker.helpers.arrayElement(["male", "female"]),
-            dob: student.dateOfBirth!,
-            placeOfBirth: faker.location.city(),
-            address: faker.location.streetAddress(),
-            attachmentId: attachment.id
-        });
-
-        await db.insert(parentGuardianInfos).values({
-            studentId: student.id,
-            name: faker.person.fullName(),
-            relationship: "Father",
-            nationality: "Cambodian",
-            address: faker.location.streetAddress(),
-            job: faker.person.jobTitle(),
-            phoneNumber: faker.helpers.fromRegExp(/0[1-9][0-9]{7,8}/)
-        });
-
-        // Create Application
-        const targetBatch = insertedBatches.find(b => b.batchName === "Fall 2026 Batch") || insertedBatches[0];
-
-        const [app] = await db.insert(applications).values({
-            studentId: student.id,
-            batchId: targetBatch.id,
-            status: faker.helpers.arrayElement(["submitted", "shortlisted", "accepted", "graded"]),
-            attachmentId: attachment.id,
-            isApplyForScholarShip: true,
-            scholarshipPercentage: faker.number.int({ min: 10, max: 100 })
-        }).returning();
-
-        const major = faker.helpers.arrayElement(insertedMajors);
-        await db.insert(appliedPrograms).values({
+    // 5. Evaluation Flow (Exams)
+    // Create exams for the application in the active batch
+    const batchSessions = insertedSessions.filter(
+      (s) => s.batchId === targetBatch.id,
+    );
+    const appExams = await Promise.all(
+      batchSessions.map(async (s) => {
+        const [exam] = await db
+          .insert(exams)
+          .values({
             appId: app.id,
-            interestMajorId: major.id,
-            isApplyingScholarship: true,
-            considerNextIntake: true
-        });
+            examSessionId: s.id,
+            status: "scheduled",
+            totalScore: faker.number.int({ min: 50, max: 100 }).toString(),
+          })
+          .returning();
+        return { exam, session: s };
+      }),
+    );
 
-        await db.insert(educationBackground).values({
-            appId: app.id,
-            educationLevel: "high_school",
-            institutionName: faker.company.name(),
-            academicYear: "2024-2025",
-            highSchoolName: faker.company.name(),
-            schoolLocation: faker.location.city(),
-            overallGrade: faker.helpers.arrayElement(["A", "B", "C"]),
-            mathGrade: faker.helpers.arrayElement(["A", "B", "C"]),
-            englishGrade: faker.helpers.arrayElement(["A", "B", "C"]),
-            grade12CertificateId: attachment.id,
-            hasEnglishCertificate: "no",
-            englishCertificateId: attachment.id
-        });
+    // If it's an interview exam, add score
+    const interviewExam = appExams.find((e) => e.session.subjectId === 3);
+    if (interviewExam) {
+      await db.insert(interviewSelection).values({
+        examId: interviewExam.exam.id,
+        slotStart: new Date(new Date().setHours(9, 0, 0, 0)),
+        slotEnd: new Date(new Date().setHours(9, 30, 0, 0)),
+      });
 
-        // 5. Evaluation Flow (Exams)
-        // Create exams for the application in the active batch
-        const batchSessions = insertedSessions.filter(s => s.batchId === targetBatch.id);
-        const appExams = await Promise.all(
-            batchSessions.map(async (s) => {
-                const [exam] = await db.insert(exams).values({
-                    appId: app.id,
-                    examSessionId: s.id,
-                    status: "scheduled",
-                    totalScore: faker.number.int({ min: 50, max: 100 }).toString()
-                }).returning();
-                return { exam, session: s };
-            })
-        );
-
-        // If it's an interview exam, add score
-        const interviewExam = appExams.find(e => e.session.subjectId === 3);
-        if (interviewExam) {
-            await db.insert(interviewSelection).values({
-                examId: interviewExam.exam.id,
-                slotStart: new Date(new Date().setHours(9, 0, 0, 0)),
-                slotEnd: new Date(new Date().setHours(9, 30, 0, 0))
-            });
-
-            await db.insert(interviewScores).values(
-                insertedCriteria.map(c => ({
-                    examId: interviewExam.exam.id,
-                    criteriaId: c.id,
-                    committeeId: committeeUsers[0].id,
-                    score: faker.number.int({ min: 1, max: 10 })
-                }))
-            );
-        }
+      await db.insert(interviewScores).values(
+        insertedCriteria.map((c) => ({
+          examId: interviewExam.exam.id,
+          criteriaId: c.id,
+          committeeId: committeeUsers[0].id,
+          score: faker.number.int({ min: 1, max: 10 }),
+        })),
+      );
     }
+  }
 
-    console.log("✅ Seeding complete!");
-    console.log("---------------------------------------------------------");
-    console.log("🔑 Admin Login:");
-    console.log("   Email: admin@scholarpro.site");
-    console.log("   Password: Password123!");
-    console.log("---------------------------------------------------------");
-    console.log("🎓 Student Login (Example):");
-    console.log("   Email: <check users table or use created student email>");
-    console.log("   Password: Password123!");
-    console.log("---------------------------------------------------------");
-    process.exit(0);
+  console.log("✅ Seeding complete!");
+  console.log("---------------------------------------------------------");
+  console.log("🔑 Admin Login:");
+  console.log("   Email: admin@scholarpro.site");
+  console.log("   Password: Password123!");
+  console.log("---------------------------------------------------------");
+  console.log("🎓 Student Login (Example):");
+  console.log("   Email: <check users table or use created student email>");
+  console.log("   Password: Password123!");
+  console.log("---------------------------------------------------------");
+  process.exit(0);
 }
 
 seed().catch((err) => {
-    console.error("❌ Seeding failed:", err);
-    process.exit(1);
+  console.error("❌ Seeding failed:", err);
+  process.exit(1);
 });

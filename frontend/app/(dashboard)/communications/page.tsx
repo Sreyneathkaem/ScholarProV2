@@ -35,6 +35,11 @@ function CommunicationsPageContent() {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedRecipientIds, setSelectedRecipientIds] = useState<number[]>(
+    [],
+  );
+  const [recipientSearchTerm, setRecipientSearchTerm] = useState("");
+  const [manualEmails, setManualEmails] = useState("");
 
   // Recipient group mapping removed; using explicit filters only
 
@@ -49,6 +54,7 @@ function CommunicationsPageContent() {
     overrideStatus?: string,
     overrideScholarship?: string | null,
     overrideMajor?: string,
+    overrideSearchTerm?: string,
   ) => {
     const batchIdToUse =
       overrideBatchId !== undefined ? overrideBatchId : selectedBatchId;
@@ -60,13 +66,17 @@ function CommunicationsPageContent() {
         : selectedScholarshipPercentage;
     const majorToUse =
       overrideMajor !== undefined ? overrideMajor : selectedMajor;
+    const searchTermToUse =
+      overrideSearchTerm !== undefined
+        ? overrideSearchTerm
+        : recipientSearchTerm;
 
-    if (!batchIdToUse) {
-      toast.error("Please select a batch first");
+    if (!batchIdToUse && !searchTermToUse.trim()) {
+      toast.error("Select a batch or search for a registered applicant");
       return;
     }
-    const batchNum = parseInt(batchIdToUse, 10);
-    if (Number.isNaN(batchNum) || batchNum <= 0) {
+    const batchNum = batchIdToUse ? parseInt(batchIdToUse, 10) : undefined;
+    if (batchNum !== undefined && (Number.isNaN(batchNum) || batchNum <= 0)) {
       toast.error("Invalid batch selected");
       return;
     }
@@ -87,6 +97,7 @@ function CommunicationsPageContent() {
         status || undefined,
         scholarshipPercentage || undefined,
         majorToUse || undefined,
+        searchTermToUse,
       );
 
       if (recipientsResponse.success && recipientsResponse.data) {
@@ -130,6 +141,7 @@ function CommunicationsPageContent() {
           .filter((applicant) => !!applicant.email);
 
         setApplicants(mappedApplicants);
+        setSelectedRecipientIds([]);
         setHasSearched(true);
 
         if (mappedApplicants.length === 0) {
@@ -205,6 +217,33 @@ function CommunicationsPageContent() {
 
   // The applicants list is the current search result
   const filteredApplicants = applicants;
+  const selectedApplicants = filteredApplicants.filter((applicant) =>
+    selectedRecipientIds.includes(Number(applicant.id)),
+  );
+  const hasApplicantSearchResults =
+    hasSearched &&
+    Boolean(recipientSearchTerm.trim()) &&
+    filteredApplicants.length > 0;
+  const useApplicantRecipients =
+    selectedRecipientIds.length > 0 || hasApplicantSearchResults;
+  const previewRecipients = useApplicantRecipients
+    ? selectedRecipientIds.length > 0
+      ? selectedApplicants
+      : filteredApplicants
+    : manualEmails.trim()
+      ? manualEmails
+          .split(",")
+          .map((email) => email.trim())
+          .filter(Boolean)
+          .map((email, index) => ({
+            id: -(index + 1),
+            nameEn: email.split("@")[0],
+            email,
+            status: "manual",
+          }))
+      : selectedRecipientIds.length > 0
+        ? selectedApplicants
+        : filteredApplicants;
 
   // Validate template variables
   const validateTemplateVariables = (htmlContent: string) => {
@@ -260,13 +299,36 @@ function CommunicationsPageContent() {
       return;
     }
 
-    if (!selectedBatchId) {
+    if (
+      !selectedBatchId &&
+      !recipientSearchTerm.trim() &&
+      !manualEmails.trim()
+    ) {
       toast.error("Please select a batch");
       return;
     }
 
-    if (filteredApplicants.length === 0) {
+    const finalRecipients = useApplicantRecipients
+      ? selectedRecipientIds.length > 0
+        ? selectedApplicants
+        : filteredApplicants
+      : [];
+
+    if (finalRecipients.length === 0 && !manualEmails.trim()) {
       toast.error("No recipients match the selected filters");
+      return;
+    }
+
+    const manualEmailList = manualEmails
+      .split(",")
+      .map((email) => email.trim())
+      .filter(Boolean);
+
+    if (
+      !useApplicantRecipients &&
+      manualEmailList.some((email) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    ) {
+      toast.error("Please enter valid email addresses separated by commas");
       return;
     }
 
@@ -291,16 +353,67 @@ function CommunicationsPageContent() {
           ? selectedMajor.trim()
           : undefined;
 
+      const chosenIds = useApplicantRecipients
+        ? selectedRecipientIds.length > 0
+          ? selectedRecipientIds
+          : filteredApplicants.map((applicant) => Number(applicant.id))
+        : undefined;
+      const chosenEmails = useApplicantRecipients
+        ? []
+        : manualEmails
+            .split(",")
+            .map((email) => email.trim())
+            .filter(Boolean);
+
       const result = await emailService.bulkSend(
         selectedTemplateId,
-        parseInt(selectedBatchId),
+        selectedBatchId ? parseInt(selectedBatchId, 10) : undefined,
         statusToSend,
         scholarshipToSend,
         majorToSend,
+        chosenIds,
+        chosenEmails.length > 0 ? chosenEmails : undefined,
       );
 
-      toast.success(result.message || `Emails queued successfully!`);
       setShowPreview(false);
+      if (!result.jobId) {
+        toast.info(result.message || "Email job queued.");
+        return;
+      }
+
+      toast.info("Email queued. Checking the sending result...");
+      for (let attempt = 0; attempt < 24; attempt += 1) {
+        try {
+          const job = await emailService.getJobStatus(result.jobId);
+          if (job.status === "completed") {
+            if (job.failedCount > 0) {
+              toast.error(
+                `SES failed to accept ${job.failedCount} of ${job.totalCount} email(s). Check the backend SES error log.`,
+              );
+            } else {
+              toast.success(
+                `SES accepted ${job.sentCount} email(s). Check the recipient inbox and spam folder for delivery.`,
+              );
+            }
+            return;
+          }
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response?.status === 304) {
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            continue;
+          }
+          toast.warning(
+            "The email is queued, but its sending status could not be checked.",
+          );
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+
+      toast.warning(
+        "The email is still queued or processing. No delivery confirmation is available yet.",
+      );
     } catch (error: unknown) {
       console.error("Error sending email:", error);
       let errorMessage = "Failed to send email";
@@ -322,6 +435,8 @@ function CommunicationsPageContent() {
   const handleBatchChange = (batchName: string, batchId: string) => {
     setSelectedBatch(batchName);
     setSelectedBatchId(batchId);
+    setSelectedRecipientIds([]);
+    setManualEmails("");
     setSearchError("");
     if (batchId) {
       handleSearchRecipients(
@@ -380,6 +495,7 @@ function CommunicationsPageContent() {
         selectedMajor={selectedMajor}
         selectedStatus={selectedStatus}
         selectedScholarshipPercentage={selectedScholarshipPercentage}
+        hasSearchTerm={Boolean(recipientSearchTerm.trim())}
         batches={batches}
         isBatchesLoading={isBatchesLoading}
         isSearching={isLoadingApplicants}
@@ -398,6 +514,23 @@ function CommunicationsPageContent() {
             selectedBatch={selectedBatch}
             hasSearched={hasSearched}
             searchError={searchError}
+            selectedRecipientIds={selectedRecipientIds}
+            onToggleRecipient={(id) => {
+              setSelectedRecipientIds((current) =>
+                current.includes(id)
+                  ? current.filter((item) => item !== id)
+                  : [...current, id],
+              );
+            }}
+            searchTerm={recipientSearchTerm}
+            onSearchTermChange={(value) => {
+              setRecipientSearchTerm(value);
+              setApplicants([]);
+              setSelectedRecipientIds([]);
+              setHasSearched(false);
+            }}
+            manualEmails={manualEmails}
+            onManualEmailsChange={setManualEmails}
           />
         </div>
 
@@ -412,9 +545,11 @@ function CommunicationsPageContent() {
             isSending={isSending}
             recipientCount={filteredApplicants.length}
             canSend={
-              filteredApplicants.length > 0 &&
+              (filteredApplicants.length > 0 || Boolean(manualEmails.trim())) &&
               !!selectedTemplateId &&
-              !!selectedBatchId
+              (!!selectedBatchId ||
+                !!recipientSearchTerm.trim() ||
+                !!manualEmails.trim())
             }
             onTemplateChange={handleTemplateChange}
             onSendEmail={handleSendEmailClick}
@@ -427,8 +562,8 @@ function CommunicationsPageContent() {
         onOpenChange={setShowPreview}
         templateName={selectedTemplateId}
         subject={subject}
-        recipients={filteredApplicants}
-        totalCount={filteredApplicants.length}
+        recipients={previewRecipients}
+        totalCount={previewRecipients.length}
         onConfirm={handleConfirmSend}
         isSending={isSending}
       />

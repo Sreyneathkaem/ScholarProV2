@@ -22,6 +22,7 @@ export default function AdminPage() {
       <div className="flex flex-row gap-2 items-center mb-4 mt-4">
         <InviteDialog
           title="Invite Admin"
+          defaultRole="admin"
           emailLabel="Admin Email"
           emailPlaceholder="Enter admin email"
           nameLabel="Admin Name"
@@ -32,7 +33,7 @@ export default function AdminPage() {
             </>
           }
           confirmText="Send Invite"
-          onSubmit={(data) => console.log("Inviting committee (server):", data)}
+          onSubmit={(data) => console.log("Inviting admin (server):", data)}
         />
 
         <div>

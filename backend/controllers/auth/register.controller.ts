@@ -10,10 +10,10 @@ const registerController = async (req: Request, res: Response) => {
 
     const result = await registerService(id,token, validatedData.email, validatedData.password);
 
-    if (!result?.success || !result) {
-        return res.status(404).json({
+    if (!result?.success) {
+        return res.status(400).json({
             success: false,
-            message: result.msg,
+            message: result?.msg || "Registration failed",
         })
     }
 

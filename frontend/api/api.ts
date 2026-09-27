@@ -25,9 +25,20 @@ export const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     let token = useAuthStore.getState().accessToken;
+    const requestUrl = config.url || "";
+    const isPublicAuthRequest =
+      requestUrl.includes("/auth/login") ||
+      requestUrl.includes("/auth/refresh") ||
+      requestUrl.includes("/auth/register/") ||
+      requestUrl.includes("/auth/forgot-password");
 
     // If no access token but we have a refresh cookie, try to refresh first
-    if (!token && !isRefreshing && typeof window !== "undefined") {
+    if (
+      !token &&
+      !isPublicAuthRequest &&
+      !isRefreshing &&
+      typeof window !== "undefined"
+    ) {
       try {
         isRefreshing = true;
         console.log("🔄 No access token in memory, attempting auto-refresh...");

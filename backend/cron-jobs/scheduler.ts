@@ -9,5 +9,13 @@ cron.schedule("*/10 * * * *", async () => {
 
 // Every minute
 cron.schedule("* * * * *", async () => {
-  await processEmailQueue();
+  try {
+    await processEmailQueue();
+  } catch (error) {
+    console.error("[EmailQueue] Scheduler run failed:", error);
+  }
+});
+
+void processEmailQueue().catch((error) => {
+  console.error("[EmailQueue] Startup run failed:", error);
 });

@@ -34,6 +34,7 @@ export default function Applicant() {
         <StudentTable
           key={refreshKey}
           title="Students"
+          defaultTab="all"
           showTabs={true}
           onRowSelect={handleRowSelection}
           onExport={handleExport}
