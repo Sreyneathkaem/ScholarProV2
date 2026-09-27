@@ -193,6 +193,21 @@ export function CreateInterviewForm({
       const [endHour, endMin] = endTime.split(":").map(Number);
       endDateTime.setHours(endHour, endMin, 0, 0);
 
+      let breakStartISO: string | null = null;
+      let breakEndISO: string | null = null;
+      if (breakStartTime && breakEndTime) {
+        const breakStartDateTime = new Date(selectedDate);
+        const [bStartHour, bStartMin] = breakStartTime.split(":").map(Number);
+        breakStartDateTime.setHours(bStartHour, bStartMin, 0, 0);
+
+        const breakEndDateTime = new Date(selectedDate);
+        const [bEndHour, bEndMin] = breakEndTime.split(":").map(Number);
+        breakEndDateTime.setHours(bEndHour, bEndMin, 0, 0);
+
+        breakStartISO = breakStartDateTime.toISOString();
+        breakEndISO = breakEndDateTime.toISOString();
+      }
+
       const apiPayload: CreateInterviewSessionPayload = {
         batchId: Number.parseInt(selectedBatch, 10),
         sessionName: roomName,
@@ -204,16 +219,8 @@ export function CreateInterviewForm({
         examDate: selectedDate.toISOString(),
         startTime: startDateTime.toISOString(),
         endTime: endDateTime.toISOString(),
-        breakStart: breakStartTime
-          ? new Date(
-              `${selectedDate.toDateString()} ${breakStartTime}`,
-            ).toISOString()
-          : null,
-        breakEnd: breakEndTime
-          ? new Date(
-              `${selectedDate.toDateString()} ${breakEndTime}`,
-            ).toISOString()
-          : null,
+        breakStart: breakStartISO,
+        breakEnd: breakEndISO,
         committeeIds: committeeIds,
       };
 

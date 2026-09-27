@@ -18,6 +18,7 @@ import paymentRoute from "@routes/payment.routes";
 import studentRoute from "@routes/student.routes";
 import studentRoutes from "@routes/student.routes";
 import paymentRoutes from "@routes/payment.routes";
+import provinceRoutes from "@routes/province.routes";
 
 router.use("/score", scoreRoute);
 router.use("/batches", batchRoute);
@@ -36,5 +37,6 @@ router.use("/subjects", subjectRoutes);
 router.use("/committees", committeeRoutes);
 router.use("/users", userRoutes);
 router.use("/students", studentRoutes);
+router.use("/provinces", provinceRoutes);
 
 export default router;

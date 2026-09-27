@@ -24,6 +24,7 @@ import { emailTemplates } from "../../db/schema/email-template";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import { CAMBODIA_PROVINCES } from "../../utils/cambodia-provinces";
 
 async function seed() {
   console.log("🌱 Starting seed...");
@@ -272,7 +273,6 @@ async function seed() {
       console.log(`Skipping existing seeded user: ${email}`);
       continue;
     }
-
     const [u] = await db
       .insert(users)
       .values({

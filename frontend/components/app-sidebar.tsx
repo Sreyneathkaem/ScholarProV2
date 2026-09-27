@@ -162,6 +162,8 @@ export function AppSidebar({
                 alt="ScholarPro Logo"
                 width={120}
                 height={120}
+                priority
+                loading="eager"
                 className="w-full h-full object-contain"
               />
             </SidebarMenuButton>

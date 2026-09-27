@@ -22,11 +22,11 @@ import type {
 } from "@/types/schedule";
 import type { Batch } from "@/types/batch";
 
-// Type guard to check for Axios errors with a specific response structure
 interface AxiosErrorResponse {
-  response: {
-    data: {
-      message: string;
+  response?: {
+    data?: {
+      message?: string;
+      errors?: string[];
     };
   };
 }
@@ -36,7 +36,8 @@ function isAxiosErrorWithResponse(error: unknown): error is AxiosErrorResponse {
     typeof error === "object" &&
     error !== null &&
     "response" in error &&
-    typeof (error as AxiosErrorResponse).response?.data?.message === "string"
+    typeof (error as AxiosErrorResponse).response?.data === "object" &&
+    (error as AxiosErrorResponse).response?.data !== null
   );
 }
 
@@ -234,7 +235,12 @@ export function InterviewSchedule({
 
       let description = "An unknown error occurred";
       if (isAxiosErrorWithResponse(error)) {
-        description = error.response.data.message;
+        const data = error.response?.data;
+        if (data?.message) {
+          description = data.message;
+        } else if (Array.isArray(data?.errors) && data.errors.length > 0) {
+          description = data.errors.join("\n");
+        }
       } else if (error instanceof z.ZodError) {
         description = error.issues.map((e) => e.message).join("\n");
       } else if (error instanceof Error) {

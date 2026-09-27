@@ -149,10 +149,23 @@ export default async (
   return { success: true, msg: "Student assigned successfully", assignedCount:applicants.length };
 };
 
-export function buildSlots(start: Date, end: Date, breakStart: Date, breakEnd: Date) {
+export function buildSlots(
+  start: Date,
+  end: Date,
+  breakStart?: Date | null,
+  breakEnd?: Date | null
+) {
   const slots = [];
   let time = new Date(start);
   let count = 0;
+
+  const hasBreak =
+    Boolean(
+      breakStart &&
+      breakEnd &&
+      breakStart.getTime() > 0 &&
+      breakEnd.getTime() > breakStart.getTime()
+    );
 
   while (time < end) {
     if (count === 6) {
@@ -165,10 +178,13 @@ export function buildSlots(start: Date, end: Date, breakStart: Date, breakEnd: D
     if (nextTime > end) break;
 
     const inBreak =
-      (time >= breakStart && time < breakEnd) ||
-      (nextTime > breakStart && nextTime <= breakEnd);
+      hasBreak &&
+      breakStart &&
+      breakEnd &&
+      ((time >= breakStart && time < breakEnd) ||
+        (nextTime > breakStart && nextTime <= breakEnd));
 
-    if (inBreak) {
+    if (inBreak && breakEnd) {
       time = new Date(breakEnd);
       continue;
     }

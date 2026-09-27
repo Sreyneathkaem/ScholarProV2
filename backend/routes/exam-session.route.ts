@@ -8,6 +8,7 @@ import { examController } from "@controllers/exam/index";
 const router = express.Router();
 
 router.get("/committee", authenticateUser, authorizeRole("committee"), asyncHandler(examController.getExamByCommitteeController));
+router.get("/student/schedule", authenticateUser, authorizeRole("student"), asyncHandler(examSessionController.getScheduleByStudentController));
 router.get("/batchId", authenticateUser, authorizeRole("admin"), asyncHandler(examSessionController.getExamSessionByBatchController));
 
 //add committee into exam session

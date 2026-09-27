@@ -12,9 +12,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useProvinces } from "@/hooks/useProvinces";
 import {
   parentsSchema,
   type ParentsValues,
@@ -51,6 +58,7 @@ export default function ParentsGuardiansStep({
   onBack,
   onDraftChange,
 }: ParentsGuardiansStepProps) {
+  const { provinces } = useProvinces();
   const form = useForm<ParentsValues>({
     resolver: zodResolver(parentsSchema),
     defaultValues: {
@@ -177,9 +185,30 @@ export default function ParentsGuardiansStep({
                 <FormLabel>
                   Parent/Guardian Current Address <RequiredMark />
                 </FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Your answer" rows={3} {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose your current address" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {provinces.map((prov) => (
+                      <SelectItem key={prov.id || prov.code || prov.name} value={prov.name}>
+                        <span className="flex items-center justify-between gap-3 w-full">
+                          <span>{prov.name}</span>
+                          {prov.khmer && (
+                            <span className="text-xs text-muted-foreground font-normal">
+                              {prov.khmer}
+                            </span>
+                          )}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

@@ -4,6 +4,7 @@ import updateExamSessionController from "@controllers/exam-session/update-exam-s
 import getExamSessionDetailController from "./get-exam-session-detail.controller";
 import getExamSessionByBatchController from "./get-exam-session-by-batch.controller";
 import getApplicantByExamSessionController from "./get-applicant-by-exam-session.controller";
+import getScheduleByStudentController from "@controllers/exam-session/get-schedule-by-student.controller";
 export const examSessionController = {
   createExamSessionController,
   addComitteeToExamSessionController,
@@ -11,4 +12,5 @@ export const examSessionController = {
   getExamSessionDetailController,
   getApplicantByExamSessionController,
   getExamSessionByBatchController,
+  getScheduleByStudentController,
 };

@@ -13,30 +13,8 @@ export const dashboardStats = {
   ],
 };
 
-export const dashboardProvinceData = [
-  { province: "Phnom Penh" },
-  { province: "Siem Reap" },
-  { province: "Battambang" },
-  { province: "Kampot" },
-  { province: "Kandal" },
-  { province: "Takeo" },
-  { province: "Prey Veng" },
-  { province: "Svay Rieng" },
-  { province: "Banteay Meanchey" },
-  { province: "Pursat" },
-  { province: "Kep" },
-  { province: "Koh Kong" },
-  { province: "Mondulkiri" },
-  { province: "Ratanakiri" },
-  { province: "Stung Treng" },
-  { province: "Preah Vihear" },
-  { province: "Tboung Khmum" },
-  { province: "Sihanoukville" },
-  { province: "Kampong Cham" },
-  { province: "Kratie" },
-  { province: "Oddar Meanchey" },
-  { province: "Kampong Speu" },
-  { province: "Kampong Thom" },
-  { province: "Battambang" },
-  { province: "Chamkar Mon" },
-];
+import { CAMBODIA_PROVINCES } from "./provinces";
+
+export const dashboardProvinceData = CAMBODIA_PROVINCES.map((province) => ({
+  province,
+}));

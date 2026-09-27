@@ -347,7 +347,11 @@ export default function ApplicationForm() {
           <div className="my-8 border-t border-white/10" />
 
           {/* Step Indicator */}
-          <FormStepper currentStep={currentStep} completedSteps={completedSteps} />
+          <FormStepper
+            currentStep={currentStep}
+            completedSteps={completedSteps}
+            onStepClick={(step) => goToStep(step)}
+          />
         </div>
       </div>
 
@@ -401,16 +405,16 @@ export default function ApplicationForm() {
         )}
 
         {currentStep === 2 && (
-          <EducationStep
+          <ParentsGuardiansStep
             key={`${userKey}-step-2`}
-            defaultValues={formData.education}
-            onDraftChange={(education) => {
-              const next = { ...formData, education };
+            defaultValues={formData.parents}
+            onDraftChange={(parents) => {
+              const next = { ...formData, parents };
               setFormData(next);
               persistForm(next, 2, completedSteps);
             }}
             onNext={(data) => {
-              const next = { ...formData, education: data };
+              const next = { ...formData, parents: data };
               goToStep(3, next);
             }}
             onBack={goBack}
@@ -418,16 +422,16 @@ export default function ApplicationForm() {
         )}
 
         {currentStep === 3 && (
-          <ParentsGuardiansStep
+          <EducationStep
             key={`${userKey}-step-3`}
-            defaultValues={formData.parents}
-            onDraftChange={(parents) => {
-              const next = { ...formData, parents };
+            defaultValues={formData.education}
+            onDraftChange={(education) => {
+              const next = { ...formData, education };
               setFormData(next);
               persistForm(next, 3, completedSteps);
             }}
             onNext={(data) => {
-              const next = { ...formData, parents: data };
+              const next = { ...formData, education: data };
               goToStep(4, next);
             }}
             onBack={goBack}

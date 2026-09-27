@@ -55,6 +55,12 @@ export function StudentTable({
   const [totalPages, setTotalPages] = React.useState(0);
   const [totalCount, setTotalCount] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  const handleSearchChange = React.useCallback((query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  }, []);
 
   // Update active tab when defaultTab changes (e.g., after import)
   React.useEffect(() => {
@@ -201,6 +207,11 @@ export function StudentTable({
           params.append("batchId", selectedBatch);
         }
 
+        // Add search query if provided
+        if (searchQuery.trim()) {
+          params.append("search", searchQuery.trim());
+        }
+
         const fullUrl = `${API_ENDPOINTS.APPLICANT}?${params.toString()}`;
 
         const res = await apiClient.get(fullUrl);
@@ -321,7 +332,7 @@ export function StudentTable({
     return () => {
       cancelled = true;
     };
-  }, [initialData, currentPage, pageSize, activeTab, selectedBatch]);
+  }, [initialData, currentPage, pageSize, activeTab, selectedBatch, searchQuery]);
 
   const columns = React.useMemo(
     () => getColumnsForTableType(activeTab),
@@ -482,6 +493,8 @@ export function StudentTable({
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           isLoading={isLoading}
+          onSearchChange={handleSearchChange}
+          searchValue={searchQuery}
         />
       </div>
 

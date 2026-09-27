@@ -15,6 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useProvinces } from "@/hooks/useProvinces";
+import {
   educationSchema,
   type EducationValues,
 } from "@/lib/schema/application-schema";
@@ -41,6 +49,7 @@ export default function EducationStep({
   onBack,
   onDraftChange,
 }: EducationStepProps) {
+  const { provinces } = useProvinces();
   const [hsCertificate, setHsCertificate] = useState<File[]>(
     defaultValues.hsCertificate,
   );
@@ -290,13 +299,31 @@ export default function EducationStep({
                 name="highSchoolCity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>City and Country of School</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. Phnom Penh, Cambodia"
-                        {...field}
-                      />
-                    </FormControl>
+                    <FormLabel>Province / City of School</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select province / city" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {provinces.map((prov) => (
+                          <SelectItem key={prov.id || prov.code || prov.name} value={prov.name}>
+                            <span className="flex items-center justify-between gap-3 w-full">
+                              <span>{prov.name}</span>
+                              {prov.khmer && (
+                                <span className="text-xs text-muted-foreground font-normal">
+                                  {prov.khmer}
+                                </span>
+                              )}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -353,13 +380,31 @@ export default function EducationStep({
                 name="highSchoolCity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Province and Country</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. Phnom Penh, Cambodia"
-                        {...field}
-                      />
-                    </FormControl>
+                    <FormLabel>Province / City</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select province / city" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {provinces.map((prov) => (
+                          <SelectItem key={prov.id || prov.code || prov.name} value={prov.name}>
+                            <span className="flex items-center justify-between gap-3 w-full">
+                              <span>{prov.name}</span>
+                              {prov.khmer && (
+                                <span className="text-xs text-muted-foreground font-normal">
+                                  {prov.khmer}
+                                </span>
+                              )}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

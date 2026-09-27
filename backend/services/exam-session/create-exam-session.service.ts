@@ -72,25 +72,28 @@ export default async (batchId: number, payload: ExamSessionPayload) => {
 
         let calculatedCapacity = payload.capacity || 0;
 
-        if (
-          payload.subjectId === 3 &&
-          payload.breakStart &&
-          payload.breakEnd &&
-          payload.startTime &&
-          payload.endTime
-        ) {
-          const totalWorkMinutes =
+        if (payload.subjectId === 3 && payload.startTime && payload.endTime) {
+          const breakMinutes =
+            payload.breakStart && payload.breakEnd
+              ? Math.max(
+                  0,
+                  (payload.breakEnd.getTime() - payload.breakStart.getTime()) / 60000
+                )
+              : 0;
+
+          const totalWorkMinutes = Math.max(
+            0,
             (payload.endTime.getTime() - payload.startTime.getTime()) / 60000 -
-            (payload.breakEnd.getTime() - payload.breakStart.getTime()) / 60000;
+              breakMinutes
+          );
 
-            calculatedCapacity = totalWorkMinutes/15;
-            
-            const breakCount = Math.floor(calculatedCapacity / 6);
-            const extraBreakMinutes = breakCount * 10;
+          const slotsCount = Math.floor(totalWorkMinutes / 15);
+          const breakCount = Math.floor(slotsCount / 6);
+          const extraBreakMinutes = breakCount * 10;
 
-            const freeMinutes = totalWorkMinutes - extraBreakMinutes;
+          const freeMinutes = totalWorkMinutes - extraBreakMinutes;
 
-            calculatedCapacity = Math.floor(freeMinutes / 15);    
+          calculatedCapacity = Math.max(0, Math.floor(freeMinutes / 15));
         }
 
       

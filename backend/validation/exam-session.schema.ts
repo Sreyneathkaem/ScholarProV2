@@ -1,16 +1,27 @@
 import { z } from "zod";
 
+const getStartOfToday = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  // Subtract 1 day to allow any timezone differences between client and server
+  d.setDate(d.getDate() - 1);
+  return d;
+};
+
 //bulk create exam session
 export const createExamSessionSchema = z
   .object({
     sessionName: z
       .string()
       .min(2, { message: "Session name must be at least 2 characters" }),
-    capacity: z.coerce
-      .number()
-      .int({ message: "Capacity must be an integer" })
-      .positive({ message: "Capacity must be greater than 0" })
-      .optional(),
+    capacity: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce
+        .number()
+        .int({ message: "Capacity must be an integer" })
+        .positive({ message: "Capacity must be greater than 0" })
+        .optional()
+    ),
     location: z
       .string()
       .min(2, { message: "Location must be at least 2 characters" }),
@@ -18,39 +29,35 @@ export const createExamSessionSchema = z
       .number()
       .int({ message: "Subject ID must be an integer" })
       .positive({ message: "Subject ID must be positive" }),
-    facultyId: z.coerce
-      .number()
-      .int({ message: "faculty ID must be an integer" })
-      .positive({ message: "faculty ID must be positive" })
-      .optional(),
+    facultyId: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce
+        .number()
+        .int({ message: "faculty ID must be an integer" })
+        .positive({ message: "faculty ID must be positive" })
+        .optional()
+    ),
     examDate: z.coerce
       .date({ message: "Valid exam date is required" })
-      .refine((d) => d >= new Date(), {
+      .refine((d) => d >= getStartOfToday(), {
         message: "Exam Date cannot be in the past",
       }),
 
     startTime: z.coerce
       .date({ message: "Valid start time is required" })
-      .refine((d) => d >= new Date(), {
+      .refine((d) => d >= getStartOfToday(), {
         message: "Start Time cannot be in the past",
       }),
     endTime: z.coerce
-      .date({ message: "Valid end time is required" })
-      .refine((d) => d >= new Date(), {
-        message: "End time cannot be in the past",
-      }),
-    breakStart: z.coerce
-      .date({ message: "Valid break time start is required" })
-      .refine((d) => d >= new Date(), {
-        message: "Break time cannot be in the past",
-      })
-      .optional(),
-    breakEnd: z.coerce
-      .date({ message: "Valid break time end is required" })
-      .refine((d) => d >= new Date(), {
-        message: "Break time Date cannot be in the past",
-      })
-      .optional(),
+      .date({ message: "Valid end time is required" }),
+    breakStart: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce.date({ message: "Valid break time start is required" }).optional()
+    ),
+    breakEnd: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce.date({ message: "Valid break time end is required" }).optional()
+    ),
     committeeIds: z
       .array(z.string().uuid({ message: "Committee ID must be a valid UUID" }))
       .min(1, "At least one committee is required"),
@@ -59,15 +66,6 @@ export const createExamSessionSchema = z
     message: "Capacity is required unless subject is interview",
     path: ["capacity"],
   })
-  .refine(
-    (data) =>
-      data.subjectId != 3 ||
-      (data.breakStart != undefined && data.breakEnd != undefined),
-    {
-      message: "Break time is required for interview",
-      path: ["breakStart", "breakEnd"],
-    }
-  )
   .refine((data) => data.endTime > data.startTime, {
     message: "End time must be after start time",
     path: ["endTime"],
@@ -90,28 +88,6 @@ export const createExamSessionSchema = z
         "Break times must be both defined, breakStart must be after startTime, breakEnd must be after breakStart and before endTime",
       path: ["breakStart", "breakEnd"],
     }
-  )
-  .refine(
-    (data) => {
-      const { breakStart, breakEnd, startTime, endTime, subjectId } = data;
-
-      if (subjectId !== 3) return true;
-
-      if (!breakStart && !breakEnd) return true;
-
-      if (!breakStart || !breakEnd) return false;
-
-      if (!startTime || !endTime) return false;
-
-      return (
-        breakStart > startTime && breakEnd > breakStart && breakEnd < endTime
-      );
-    },
-    {
-      message:
-        "Break times must be both defined, breakStart must be after startTime, breakEnd must be after breakStart and before endTime (required for subjectId 3)",
-      path: ["breakStart", "breakEnd"],
-    }
   );
 //update exam session
 export const examSessionIdSchema = z.object({
@@ -127,11 +103,14 @@ export const updateExamSessionSchema = z
       .string()
       .min(2, { message: "Session name must be at least 2 characters" })
       .optional(),
-    capacity: z.coerce
-      .number()
-      .int({ message: "Capacity must be an integer" })
-      .positive({ message: "Capacity must be greater than 0" })
-      .optional(),
+    capacity: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce
+        .number()
+        .int({ message: "Capacity must be an integer" })
+        .positive({ message: "Capacity must be greater than 0" })
+        .optional()
+    ),
     location: z
       .string()
       .min(2, { message: "Location must be at least 2 characters" })
@@ -141,11 +120,14 @@ export const updateExamSessionSchema = z
       .int({ message: "Subject ID must be an integer" })
       .positive({ message: "Subject ID must be positive" })
       .optional(),
-    facultyId: z.coerce
-      .number()
-      .int({ message: "Faculty ID must be an integer" })
-      .positive({ message: "Faculty ID must be positive" })
-      .optional(),
+    facultyId: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce
+        .number()
+        .int({ message: "Faculty ID must be an integer" })
+        .positive({ message: "Faculty ID must be positive" })
+        .optional()
+    ),
     examDate: z.coerce
       .date({ message: "Valid exam date is required" })
       .optional(),
@@ -155,12 +137,14 @@ export const updateExamSessionSchema = z
     endTime: z.coerce
       .date({ message: "Valid end time is required" })
       .optional(),
-    breakStart: z.coerce
-      .date({ message: "Valid break time start is required" })
-      .optional(),
-    breakEnd: z.coerce
-      .date({ message: "Valid break time end is required" })
-      .optional(),
+    breakStart: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce.date({ message: "Valid break time start is required" }).optional()
+    ),
+    breakEnd: z.preprocess(
+      (val) => (val === null || val === "" || val === undefined ? undefined : val),
+      z.coerce.date({ message: "Valid break time end is required" }).optional()
+    ),
   })
   .refine(
     (data) => {
@@ -190,28 +174,6 @@ export const updateExamSessionSchema = z
     {
       message:
         "Break times must be both defined, breakStart must be after startTime, breakEnd must be after breakStart and before endTime",
-      path: ["breakStart", "breakEnd"],
-    }
-  )
-  .refine(
-    (data) => {
-      const { breakStart, breakEnd, startTime, endTime, subjectId } = data;
-
-      if (subjectId !== 3) return true;
-
-      if (!breakStart && !breakEnd) return true;
-
-      if (!breakStart || !breakEnd) return false;
-
-      if (!startTime || !endTime) return false;
-
-      return (
-        breakStart > startTime && breakEnd > breakStart && breakEnd < endTime
-      );
-    },
-    {
-      message:
-        "Break times must be both defined, breakStart must be after startTime, breakEnd must be after breakStart and before endTime (required for subjectId 3)",
       path: ["breakStart", "breakEnd"],
     }
   );

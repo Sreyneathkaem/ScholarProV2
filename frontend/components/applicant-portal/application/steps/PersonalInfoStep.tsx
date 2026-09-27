@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -29,6 +28,7 @@ import {
   type PersonalInfoValues,
 } from "@/lib/schema/application-schema";
 import type { PersonalInfoData } from "@/types/application";
+import { useProvinces } from "@/hooks/useProvinces";
 
 const COUNTRIES = [
   "Cambodia",
@@ -58,6 +58,7 @@ export default function PersonalInfoStep({
   onNext,
   onDraftChange,
 }: PersonalInfoStepProps) {
+  const { provinces } = useProvinces();
   const [identityDocument, setIdentityDocument] = useState<File[]>(
     defaultValues.identityDocument,
   );
@@ -183,7 +184,7 @@ export default function PersonalInfoStep({
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
                     </FormControl>
@@ -227,9 +228,30 @@ export default function PersonalInfoStep({
                   <FormLabel>
                     Place of birth <RequiredMark />
                   </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your answer" {...field} />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose your place of birth" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {provinces.map((prov) => (
+                        <SelectItem key={prov.id || prov.code || prov.name} value={prov.name}>
+                          <span className="flex items-center justify-between gap-3 w-full">
+                            <span>{prov.name}</span>
+                            {prov.khmer && (
+                              <span className="text-xs text-muted-foreground font-normal">
+                                {prov.khmer}
+                              </span>
+                            )}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -245,9 +267,30 @@ export default function PersonalInfoStep({
                 <FormLabel>
                   Current address <RequiredMark />
                 </FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Your answer" rows={3} {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose your current address" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {provinces.map((prov) => (
+                      <SelectItem key={prov.id || prov.code || prov.name} value={prov.name}>
+                        <span className="flex items-center justify-between gap-3 w-full">
+                          <span>{prov.name}</span>
+                          {prov.khmer && (
+                            <span className="text-xs text-muted-foreground font-normal">
+                              {prov.khmer}
+                            </span>
+                          )}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

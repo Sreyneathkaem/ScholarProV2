@@ -4,7 +4,7 @@ import { students } from '../../db/schema/student';
 import { appliedPrograms } from '../../db/schema/applied-program';
 import { personalInfo } from '../../db/schema/personal-info';
 import { majors } from '../../db/schema/major';
-import { eq, and, count, desc, gte } from 'drizzle-orm';
+import { eq, and, count, desc, gte, sql } from 'drizzle-orm';
 
 export const getDashboardStatistics = async (batchId?: number) => {
     // Helper to build where clause
@@ -86,7 +86,7 @@ export const getDashboardStatistics = async (batchId?: number) => {
         .from(applications)
         .innerJoin(students, eq(applications.studentId, students.id))
         .innerJoin(personalInfo, eq(students.id, personalInfo.studentId))
-        .where(buildWhereClause())
+        .where(buildWhereClause(sql`${personalInfo.placeOfBirth} IS NOT NULL AND ${personalInfo.placeOfBirth} != ''`))
         .groupBy(personalInfo.placeOfBirth)
         .orderBy(desc(count()));
 

@@ -78,6 +78,8 @@ interface DataTableProps<TData, TValue> {
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
   isLoading?: boolean;
+  onSearchChange?: (search: string) => void;
+  searchValue?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -114,6 +116,8 @@ export function DataTable<TData, TValue>({
   isLoading = false,
 
   onImportFile,
+  onSearchChange,
+  searchValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -123,6 +127,22 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const [searchTerm, setSearchTerm] = React.useState(searchValue || "");
+
+  React.useEffect(() => {
+    if (searchValue !== undefined) {
+      setSearchTerm(searchValue);
+    }
+  }, [searchValue]);
+
+  React.useEffect(() => {
+    if (!onSearchChange) return;
+    const timer = setTimeout(() => {
+      onSearchChange(searchTerm);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchTerm, onSearchChange]);
+
   // const [showCreateBatchModal, setShowCreateBatchModal] = React.useState(false);
   const [showImportFileModal, setShowImportFileModal] = React.useState(false);
   const [selectedBatch, setSelectedBatch] = React.useState<string>("all");
@@ -213,6 +233,7 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
+    manualFiltering: Boolean(onSearchChange || serverSidePagination),
     globalFilterFn: "includesString",
     state: {
       sorting,
@@ -281,8 +302,15 @@ export function DataTable<TData, TValue>({
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={searchPlaceholder}
-                value={globalFilter}
-                onChange={(event) => setGlobalFilter(event.target.value)}
+                value={onSearchChange ? searchTerm : globalFilter}
+                onChange={(event) => {
+                  const val = event.target.value;
+                  if (onSearchChange) {
+                    setSearchTerm(val);
+                  } else {
+                    setGlobalFilter(val);
+                  }
+                }}
                 className="pl-8 w-full"
               />
             </div>
