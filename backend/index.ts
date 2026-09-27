@@ -56,7 +56,7 @@ const limiter = rateLimit({
 // account lockout already implemented in the login service.
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: process.env.NODE_ENV === "production" ? 20 : 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: "Too many auth requests, please try again later",
@@ -68,7 +68,7 @@ app.use(
     // API only serves JSON/files, not HTML pages that need a CSP tuned
     // to inline scripts/styles, so keep Helmet's secure defaults.
     crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
+  }),
 );
 app.use(requestLogger);
 app.use(express.json());

@@ -23,6 +23,8 @@ import { ApiEndpointProps } from "@/api/endpoint";
 import { useState } from "react";
 import Link from "next/link";
 
+import { useAuthStore } from "@/lib/stores/auth-store";
+
 type TableMenuProps = {
   id: string;
   deleteEndpoint: ApiEndpointProps;
@@ -34,6 +36,7 @@ type BatchMenuProps = {
   id: string;
   editPath?: string;
 };
+
 export function TableMenu({
   id,
   deleteEndpoint,
@@ -41,19 +44,28 @@ export function TableMenu({
   editPath,
 }: TableMenuProps) {
   const queryClient = useQueryClient();
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const isSelf = Boolean(currentUserId && String(currentUserId) === String(id));
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["delete-item", deleteEndpoint],
+    mutationKey: ["delete-item", deleteEndpoint, id],
     mutationFn: () => apiClient.delete(`${deleteEndpoint}/${id}`),
-    onSuccess: () => {
-      toast.success("Deleted successfully");
+    onSuccess: (res) => {
+      toast.success(res.data?.message || "Deleted successfully");
       queryClient.invalidateQueries({ queryKey: [invalidateKey] });
       setIsDeleteDialogOpen(false);
     },
-    onError: () => {
-      toast.error("Delete failed");
+    onError: (err: unknown) => {
+      const apiError = err as {
+        response?: { data?: { message?: string; error?: string } };
+      };
+      const message =
+        apiError.response?.data?.message ||
+        apiError.response?.data?.error ||
+        "Delete failed";
+      toast.error(message);
     },
   });
 
@@ -110,13 +122,15 @@ export function TableMenu({
             </DropdownMenuItem>
           )}
 
-          <DropdownMenuItem
-            className="text-red-600"
-            onClick={() => setIsDeleteDialogOpen(true)}
-          >
-            {"Delete"}
-            <Trash2 className="ml-2 h-4 w-4" />
-          </DropdownMenuItem>
+          {!isSelf && (
+            <DropdownMenuItem
+              className="text-red-600"
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
+              {"Delete"}
+              <Trash2 className="ml-2 h-4 w-4" />
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

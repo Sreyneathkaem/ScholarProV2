@@ -6,25 +6,28 @@ import { examSessions } from "@db/schema/exam-session";
 import { majors } from "@db/schema/major";
 import { interviewSelection } from "@db/schema/interview-selection";
 import { exams } from "@db/schema/exam";
-import { eq, and, SQL, desc, inArray } from "drizzle-orm";
+import { eq, and, SQL, desc, inArray, ilike, or } from "drizzle-orm";
 import { personalInfo } from "@db/schema/personal-info";
 import { formatDate, formatTime } from "@utils/formate-data-time";
 
 interface BulkEmailFilters {
   batchId?: number;
+  search?: string;
   scholarshipPercentage?: number;
   major?: string;
   isApplyForScholarShip?: boolean;
+  applicationIds?: number[];
+  emails?: string[];
   status?:
-  | "submitted"
-  | "shortlisted"
-  | "shortlisted_email_sent"
-  | "assessment_scheduled"
-  | "graded"
-  | "accepted"
-  | "accepted_email_sent"
-  | "rejected"
-  | "incomplete";
+    | "submitted"
+    | "shortlisted"
+    | "shortlisted_email_sent"
+    | "assessment_scheduled"
+    | "graded"
+    | "accepted"
+    | "accepted_email_sent"
+    | "rejected"
+    | "incomplete";
   limit?: number;
   offset?: number;
   fullEnrichment?: boolean;
@@ -33,8 +36,22 @@ interface BulkEmailFilters {
 export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
   const whereConditions: SQL[] = [];
 
-  if (filters?.batchId !== undefined && !isNaN(Number(filters.batchId))) {
+  if (
+    !filters?.search?.trim() &&
+    filters?.batchId !== undefined &&
+    !isNaN(Number(filters.batchId))
+  ) {
     whereConditions.push(eq(applications.batchId, Number(filters.batchId)));
+  }
+
+  if (filters?.search?.trim()) {
+    const searchPattern = `%${filters.search.trim()}%`;
+    whereConditions.push(
+      or(
+        ilike(students.nameEn, searchPattern),
+        ilike(students.email, searchPattern),
+      )!,
+    );
   }
 
   if (
@@ -47,7 +64,7 @@ export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
 
   if (filters?.isApplyForScholarShip !== undefined) {
     whereConditions.push(
-      eq(applications.isApplyForScholarShip, filters.isApplyForScholarShip)
+      eq(applications.isApplyForScholarShip, filters.isApplyForScholarShip),
     );
   }
 
@@ -56,7 +73,10 @@ export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
     !isNaN(Number(filters.scholarshipPercentage))
   ) {
     whereConditions.push(
-      eq(applications.scholarshipPercentage, Number(filters.scholarshipPercentage))
+      eq(
+        applications.scholarshipPercentage,
+        Number(filters.scholarshipPercentage),
+      ),
     );
   }
 
@@ -66,6 +86,10 @@ export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
     String(filters.major).trim() !== ""
   ) {
     whereConditions.push(eq(majors.majorName, filters.major));
+  }
+
+  if (filters?.applicationIds && filters.applicationIds.length > 0) {
+    whereConditions.push(inArray(applications.id, filters.applicationIds));
   }
 
   let baseQuery = db
@@ -131,7 +155,9 @@ export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
     })
     .from(exams)
     .innerJoin(examSessions, eq(exams.examSessionId, examSessions.id))
-    .where(and(inArray(exams.appId, applicationIds), eq(examSessions.subjectId, 1)));
+    .where(
+      and(inArray(exams.appId, applicationIds), eq(examSessions.subjectId, 1)),
+    );
 
   // Batch fetch english exams (subjectId 2)
   const englishExams = await db
@@ -144,7 +170,9 @@ export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
     })
     .from(exams)
     .innerJoin(examSessions, eq(exams.examSessionId, examSessions.id))
-    .where(and(inArray(exams.appId, applicationIds), eq(examSessions.subjectId, 2)));
+    .where(
+      and(inArray(exams.appId, applicationIds), eq(examSessions.subjectId, 2)),
+    );
 
   // Batch fetch interviews (subjectId 3)
   const interviews = await db
@@ -160,7 +188,9 @@ export default async function fetchGlobalVariable(filters?: BulkEmailFilters) {
     .from(exams)
     .innerJoin(interviewSelection, eq(exams.id, interviewSelection.examId))
     .innerJoin(examSessions, eq(exams.examSessionId, examSessions.id))
-    .where(and(inArray(exams.appId, applicationIds), eq(examSessions.subjectId, 3)));
+    .where(
+      and(inArray(exams.appId, applicationIds), eq(examSessions.subjectId, 3)),
+    );
 
   // Create lookup maps
   const mathMap = new Map(mathExams.map((e) => [e.appId, e]));

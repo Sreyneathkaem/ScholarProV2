@@ -15,10 +15,10 @@ export default async (req: Request, res: Response) => {
       invitedBy
     );
 
-    if (!result?.success || !result) {
-      return res.status(404).json({
+    if (!result?.success) {
+      return res.status(400).json({
         success: false,
-        message: result.msg,
+        message: result?.msg || "Invite failed",
       });
     }
     const logData = {
@@ -35,8 +35,8 @@ export default async (req: Request, res: Response) => {
 
     userLogger.info(logData);
     auditLogger.info(logData);
-    if (!result?.success || !result) {
-      return res.status(404).json({
+    if (!result?.success) {
+      return res.status(400).json({
         success: false,
         message: result?.msg || "Invite failed",
       });

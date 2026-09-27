@@ -1,45 +1,25 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { DataTable } from "@/components/tables/data-table/data-table";
 import { CommitteeColumns } from "@/components/tables/data-table/commitee-column";
 import { apiClient } from "@/api/api";
 import { API_ENDPOINTS } from "@/api/endpoint";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEY_ENUM } from "@/constants/query-key-enum";
 
 export default function CommitteeListClient() {
-  // Make sure to import the Commitee type from the correct location
+  const { data: items = [], isLoading, error } = useQuery<Commitee[]>({
+    queryKey: [QUERY_KEY_ENUM.COMMITTEES],
+    queryFn: async () => {
+      const res = await apiClient.get(`${API_ENDPOINTS.COMMITEE}`);
+      const data = res.data?.data ?? res.data ?? [];
+      return Array.isArray(data) ? data : [];
+    },
+  });
 
-  const [items, setItems] = useState<Commitee[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    async function fetchUsers() {
-      try {
-        // Fetch users filtered by committee role
-        const res = await apiClient.get(`${API_ENDPOINTS.COMMITEE}`);
-        // backend may return { success, data } or raw array
-        const data = res.data?.data ?? res.data ?? [];
-        if (mounted) {
-          setItems(Array.isArray(data) ? data : (data as undefined[]));
-        }
-      } catch (err: unknown) {
-        console.error("Failed to fetch users (client):", err);
-        if (mounted)
-          setError(err instanceof Error ? err.message : "Failed to fetch");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
-    fetchUsers();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     const cols = CommitteeColumns.length || 6;
     const rows = 6;
     return (
@@ -58,7 +38,14 @@ export default function CommitteeListClient() {
       </div>
     );
   }
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+
+  if (error) {
+    return (
+      <div className="text-red-500">
+        Error: {error instanceof Error ? error.message : "Failed to fetch"}
+      </div>
+    );
+  }
 
   return <DataTable columns={CommitteeColumns} data={items} />;
 }

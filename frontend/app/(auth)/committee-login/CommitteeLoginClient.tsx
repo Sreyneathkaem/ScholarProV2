@@ -13,14 +13,17 @@ import { z } from "zod";
 import Image from "next/image";
 import { committeeAcceptSchema } from "@/lib/schema/comittee-login-schema";
 import { authService } from "@/api/service/auth.service";
+import { useAuth } from "@/lib/context/auth-context";
 import { toast } from "sonner";
 
 type CommitteeAcceptSchemaProps = z.infer<typeof committeeAcceptSchema>;
 
 export default function CommitteeLoginClient() {
   const searchParams = useSearchParams();
+  const { login } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
   const [validating, setValidating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValidInvite, setIsValidInvite] = useState<boolean | null>(null);
 
   const acceptForm = useForm<CommitteeAcceptSchemaProps>({
@@ -42,20 +45,29 @@ export default function CommitteeLoginClient() {
       return;
     }
 
-    const res = await authService.registerWithInvite(
-      id,
-      token,
-      values.email,
-      values.password,
-    );
+    setIsSubmitting(true);
+    try {
+      const res = await authService.registerWithInvite(
+        id,
+        token,
+        values.email,
+        values.password,
+      );
 
-    if (!res.success) {
-      toast.error("Registration failed");
-      return;
+      if (!res.success) {
+        toast.error(res.error?.message || "Registration failed");
+        return;
+      }
+
+      await login(values.email, values.password);
+      toast.success("Account created successfully");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Registration failed",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast.success("Account created! Please login.");
-    window.location.href = "/login";
   };
 
   useEffect(() => {
@@ -88,68 +100,96 @@ export default function CommitteeLoginClient() {
   }, [searchParams, acceptForm]);
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
-      {/* Left Image Section - Hidden on mobile */}
-      <div className="hidden md:flex md:col-span-1 items-center justify-center">
-        <Image src="/login.png" alt="Login visual" width={466} height={464} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <div className="w-full max-w-4xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-0">
+        <div className="flex-1 flex justify-center lg:justify-end lg:pr-10">
+          <div className="relative w-64 h-64 md:w-80 md:h-80">
+            <Image
+              src="/login.png"
+              alt="University Logo"
+              fill
+              sizes="(max-width: 768px) 256px, 320px"
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
 
-      <div className="flex items-center justify-center p-4 sm:p-8">
-        <div className="w-full max-w-[400px] mx-auto">
-          <p className="text-2xl font-bold mt-4">Welcome To ScholarPro!</p>
-          <p className="text-base font-light mb-10">
-            Set up your password to accept the invitation
-          </p>
+        <div className="hidden lg:flex flex-col items-center">
+          <div className="h-32 w-px bg-gray-200" />
+          <span className="py-4 text-xs font-medium text-gray-400 uppercase tracking-widest vertical-text">
+            Accept Invite
+          </span>
+          <div className="h-32 w-px bg-gray-200" />
+        </div>
 
-          <Form {...acceptForm}>
-            <form
-              onSubmit={acceptForm.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
-              <FormInput
-                control={acceptForm.control}
-                name="email"
-                label="Email"
-                disabled
-              />
+        <div className="flex-1 flex justify-center lg:justify-start lg:pl-16">
+          <div className="w-full max-w-[360px] space-y-6">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold text-[#0F172A]">
+                Welcome To ScholarPro!
+              </h1>
+              <p className="text-slate-500 text-sm">
+                Set up your password to accept the invitation
+              </p>
+            </div>
 
-              <FormInput
-                control={acceptForm.control}
-                name="password"
-                label="New Password"
-                type="password"
-              />
-
-              <FormInput
-                control={acceptForm.control}
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-              />
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={rememberMe}
-                  onCheckedChange={(v) => setRememberMe(v === true)}
-                />
-                <Label>I agree to the terms and conditions</Label>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full text-white"
-                disabled={validating || isValidInvite === false}
+            <Form {...acceptForm}>
+              <form
+                onSubmit={acceptForm.handleSubmit(onSubmit)}
+                className="space-y-4"
               >
-                {validating ? "Validating..." : "Accept Invitation"}
-              </Button>
+                <FormInput
+                  control={acceptForm.control}
+                  name="email"
+                  label="Email"
+                  disabled
+                />
 
-              {isValidInvite === false && (
-                <p className="text-sm text-red-500">
-                  This invite link is invalid or expired.
-                </p>
-              )}
-            </form>
-          </Form>
+                <FormInput
+                  control={acceptForm.control}
+                  name="password"
+                  label="New Password"
+                  type="password"
+                />
+
+                <FormInput
+                  control={acceptForm.control}
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                />
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={rememberMe}
+                    onCheckedChange={(v) => setRememberMe(v === true)}
+                  />
+                  <Label>I agree to the terms and conditions</Label>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-[#113768] hover:bg-[#0d2a50] text-white py-6 text-base font-semibold rounded-md"
+                  disabled={
+                    validating || isSubmitting || isValidInvite === false
+                  }
+                >
+                  {validating
+                    ? "Validating..."
+                    : isSubmitting
+                      ? "Creating account..."
+                      : "Accept Invitation"}
+                </Button>
+
+                {isValidInvite === false && (
+                  <p className="text-sm text-red-500">
+                    This invite link is invalid or expired.
+                  </p>
+                )}
+              </form>
+            </Form>
+          </div>
         </div>
       </div>
     </div>

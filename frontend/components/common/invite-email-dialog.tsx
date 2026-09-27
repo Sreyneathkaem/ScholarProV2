@@ -27,6 +27,7 @@ interface InviteDialogProps {
   emailPlaceholder?: string;
   roleLabel?: string;
   rolePlaceholder?: string;
+  defaultRole?: string;
   buttonText?: ReactNode;
   confirmText?: string;
   onSubmit?: (values: { name: string; email: string; role: string }) => void;
@@ -40,23 +41,32 @@ export default function InviteDialog({
   emailPlaceholder = "Enter email",
   buttonText = "Invite",
   roleLabel = "Role",
-  rolePlaceholder = "Enter role",
+  rolePlaceholder = "Select role",
+  defaultRole = "",
   confirmText = "Send Invite",
   onSubmit,
 }: InviteDialogProps) {
   const [open, setOpen] = useState(false);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
-  const [roleValue, setRoleValue] = useState("");
+  const [roleValue, setRoleValue] = useState(defaultRole);
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      setRoleValue(defaultRole);
+    }
+  };
 
   const handleSubmit = () => {
+    const finalRole = roleValue || defaultRole;
     if (onSubmit) {
-      onSubmit({ name: nameValue, email: emailValue, role: roleValue });
+      onSubmit({ name: nameValue, email: emailValue, role: finalRole });
     }
     setOpen(false);
     setNameValue("");
     setEmailValue("");
-    setRoleValue("");
+    setRoleValue(defaultRole);
   };
 
   return (
@@ -71,7 +81,7 @@ export default function InviteDialog({
       </Button>
 
       {/* Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>

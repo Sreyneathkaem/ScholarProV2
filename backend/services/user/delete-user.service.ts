@@ -1,31 +1,51 @@
 import { db } from '@db';
 import { users } from '@db/schema/user';
 import { eq } from 'drizzle-orm';
-import { NotFoundError } from '@utils/errors';
+import { NotFoundError, ValidationError } from '@utils/errors';
 import { userLogger, auditLogger } from '@utils/logger';
+import { deleteUserCascade } from './delete-user-cascade.util';
 
 export class DeleteUserService {
   static async deleteUser(userId: string, performedBy?: { id: string; role: string }) {
-    // Soft delete - set isActive to false
-    const [deletedUser] = await db
-      .update(users)
-      .set({
-        isActive: false,
-        updatedAt: new Date(),
-      })
-      .where(eq(users.id, userId))
-      .returning({
-        id: users.id,
-        email: users.email,
-        role: users.role,
-        phoneNumber: users.phoneNumber,
-        isActive: users.isActive,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-      });
+    if (performedBy?.id && String(performedBy.id) === String(userId)) {
+      throw new ValidationError('You cannot delete your own account');
+    }
 
-    if (!deletedUser) {
+    const [existing] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!existing) {
       throw new NotFoundError('User not found');
+    }
+
+    let deletedUser;
+
+    // If user is already inactive (or permanently deleting), remove all associated records and user record
+    if (!existing.isActive) {
+      const [removed] = await deleteUserCascade(userId);
+      deletedUser = removed || existing;
+    } else {
+      // Soft delete - set isActive to false
+      const [updated] = await db
+        .update(users)
+        .set({
+          isActive: false,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId))
+        .returning({
+          id: users.id,
+          email: users.email,
+          role: users.role,
+          phoneNumber: users.phoneNumber,
+          isActive: users.isActive,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt,
+        });
+      deletedUser = updated;
     }
 
     // =========================

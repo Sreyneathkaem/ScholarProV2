@@ -1,36 +1,43 @@
-import loginService from '@services/auth/login.service';
-import { loginSchema } from '@validation/user/auth.schema';
-import { Request, Response } from 'express';
+import loginService from "@services/auth/login.service";
+import { loginSchema } from "@validation/user/auth.schema";
+import { Request, Response } from "express";
 
 const loginController = async (req: Request, res: Response) => {
-    const validatedData = loginSchema.parse(req.body);
-    const ipRaw = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-    const ip = typeof ipRaw === "string" ? ipRaw : Array.isArray(ipRaw) ? ipRaw[0] : ipRaw ?? "";
-    const result = await loginService(validatedData.email, validatedData.password, ip);
-    
-    if (!result?.success || !result) {
-        return res.status(404).json({
-            success: false,
-            message: result.msg,
-        })
-    }
+  const validatedData = loginSchema.parse(req.body);
+  const ipRaw = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  const ip =
+    typeof ipRaw === "string"
+      ? ipRaw
+      : Array.isArray(ipRaw)
+        ? ipRaw[0]
+        : (ipRaw ?? "");
+  const result = await loginService(
+    validatedData.email,
+    validatedData.password,
+    ip,
+  );
 
-    res.cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,     
-        secure: true,      
-        sameSite: 'lax',    
-        path: '/',          
-        maxAge: 15 * 24 * 60 * 60 * 1000 
+  if (!result?.success || !result) {
+    return res.status(401).json({
+      success: false,
+      message: result.msg,
     });
+  }
 
-    return res.status(200).json(
-        {
-            success: true,
-            message: "Login successfully",
-            userProfile: result.userProfile,
-            token: result.accessToken
-        }
-    )
-}
+  res.cookie("refreshToken", result.refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 15 * 24 * 60 * 60 * 1000,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Login successfully",
+    userProfile: result.userProfile,
+    token: result.accessToken,
+  });
+};
 
 export default loginController;

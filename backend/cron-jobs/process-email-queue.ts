@@ -2,6 +2,7 @@ import { db } from "@db";
 import { emailSents } from "@db/schema/email-sent";
 import { emailBatchJobs } from "@db/schema/email-batch-jobs";
 import { eq, sql, inArray } from "drizzle-orm";
+import { and, or, lt } from "drizzle-orm";
 import sesClient from "@utils/ses-client";
 import { SendEmailCommand } from "@aws-sdk/client-sesv2";
 import { systemLogger } from "@utils/logger";
@@ -12,7 +13,15 @@ async function fetchAndMarkEmails() {
     const pendingEmails = await tx
       .select()
       .from(emailSents)
-      .where(eq(emailSents.status, "pending"))
+      .where(
+        or(
+          eq(emailSents.status, "pending"),
+          and(
+            eq(emailSents.status, "processing"),
+            lt(emailSents.updatedAt, new Date(Date.now() - 10 * 60 * 1000)),
+          ),
+        ),
+      )
       .limit(50);
 
     if (pendingEmails.length === 0) return [];
@@ -42,7 +51,6 @@ async function sendSingleEmail(email: any): Promise<"sent" | "failed"> {
           TemplateData: templateData,
         },
       },
-      ConfigurationSetName: "email-tracking",
     });
 
     await sesClient.send(command);
@@ -54,9 +62,12 @@ async function sendSingleEmail(email: any): Promise<"sent" | "failed"> {
 
     return "sent";
   } catch (error: any) {
-    systemLogger.error(`[EmailQueue] Failed ID ${email.id} (${email.toEmail}):`, {
-      error: error.message,
-    });
+    systemLogger.error(
+      `[EmailQueue] Failed ID ${email.id} (${email.toEmail}):`,
+      {
+        error: error.message,
+      },
+    );
 
     await db
       .update(emailSents)
@@ -67,12 +78,21 @@ async function sendSingleEmail(email: any): Promise<"sent" | "failed"> {
   }
 }
 
-async function updateJobProgress(jobId: number, statusUpdate: "sent" | "failed") {
+async function updateJobProgress(
+  jobId: number,
+  statusUpdate: "sent" | "failed",
+) {
   const [updatedJob] = await db
     .update(emailBatchJobs)
     .set({
-      sentCount: statusUpdate === "sent" ? sql`${emailBatchJobs.sentCount} + 1` : emailBatchJobs.sentCount,
-      failedCount: statusUpdate === "failed" ? sql`${emailBatchJobs.failedCount} + 1` : emailBatchJobs.failedCount,
+      sentCount:
+        statusUpdate === "sent"
+          ? sql`${emailBatchJobs.sentCount} + 1`
+          : emailBatchJobs.sentCount,
+      failedCount:
+        statusUpdate === "failed"
+          ? sql`${emailBatchJobs.failedCount} + 1`
+          : emailBatchJobs.failedCount,
       status: "processing",
     })
     .where(eq(emailBatchJobs.id, jobId))
@@ -81,7 +101,8 @@ async function updateJobProgress(jobId: number, statusUpdate: "sent" | "failed")
   if (!updatedJob) return;
 
   let finalJobState = updatedJob;
-  const isComplete = updatedJob.sentCount + updatedJob.failedCount >= updatedJob.totalCount;
+  const isComplete =
+    updatedJob.sentCount + updatedJob.failedCount >= updatedJob.totalCount;
 
   if (isComplete) {
     const [completedJob] = await db
@@ -107,7 +128,9 @@ export default async function processEmailQueue() {
 
   if (emailsToProcess.length === 0) return;
 
-  systemLogger.info(`[EmailQueue] Processing ${emailsToProcess.length} emails...`);
+  systemLogger.info(
+    `[EmailQueue] Processing ${emailsToProcess.length} emails...`,
+  );
 
   for (const email of emailsToProcess) {
     const statusUpdate = await sendSingleEmail(email);

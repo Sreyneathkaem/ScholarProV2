@@ -20,6 +20,7 @@ export default function ComittePage() {
       <div className="flex flex-row gap-2 items-center mb-4 mt-4">
         <InviteDialog
           title="Invite Committee"
+          defaultRole="committee"
           emailLabel="Committee Email"
           emailPlaceholder="Enter committee email"
           nameLabel="Committee Name"

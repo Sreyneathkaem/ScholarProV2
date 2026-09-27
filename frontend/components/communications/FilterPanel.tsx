@@ -18,6 +18,7 @@ interface FilterPanelProps {
   selectedMajor: string;
   selectedStatus: string;
   selectedScholarshipPercentage?: string | null;
+  hasSearchTerm: boolean;
   batches: Batch[];
   isBatchesLoading: boolean;
   isSearching: boolean;
@@ -34,6 +35,7 @@ export function FilterPanel({
   selectedMajor,
   selectedStatus,
   selectedScholarshipPercentage,
+  hasSearchTerm,
   batches,
   isBatchesLoading,
   isSearching,
@@ -177,7 +179,11 @@ export function FilterPanel({
         <label className="text-sm font-medium">&nbsp;</label>
         <Button
           onClick={onSearchClick}
-          disabled={!selectedBatch || isBatchesLoading || isSearching}
+          disabled={
+            (!selectedBatch && !hasSearchTerm) ||
+            isBatchesLoading ||
+            isSearching
+          }
           className="bg-[#0F386C] hover:bg-[#0a2a4f] text-white"
         >
           <Search className="h-4 w-4 mr-2" />

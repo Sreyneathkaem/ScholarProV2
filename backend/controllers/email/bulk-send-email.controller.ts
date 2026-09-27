@@ -11,6 +11,20 @@ export default async (req: Request, res: Response) => {
   }
   const templateName = req.params.name as string;
 
+  const parseCsvList = (value: unknown): string[] => {
+    if (!value) return [];
+    const items = Array.isArray(value) ? value : String(value).split(",");
+    return items.map((item) => String(item).trim()).filter(Boolean);
+  };
+
+  const applicationIds = parseCsvList(req.query.applicationIds)
+    .map((value) => Number(value))
+    .filter((value) => !Number.isNaN(value) && value > 0);
+
+  const emails = parseCsvList(req.query.emails).filter((email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+  );
+
   const filter = {
     batchId: req.query.batchId ? Number(req.query.batchId) : undefined,
     status:
@@ -31,6 +45,8 @@ export default async (req: Request, res: Response) => {
       String(req.query.major).trim() !== ""
         ? String(req.query.major)
         : undefined,
+    applicationIds: applicationIds.length ? applicationIds : undefined,
+    emails: emails.length ? emails : undefined,
   };
 
   const result = await bulkSendEmailService(userId, templateName, filter);
