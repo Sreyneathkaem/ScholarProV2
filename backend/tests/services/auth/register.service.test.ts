@@ -90,7 +90,7 @@ describe("Register Service", () => {
   it("should fail if user already exists", async () => {
     mockTx.limit
       .mockResolvedValueOnce([{ token: "hashedToken" }]) // invite found
-      .mockResolvedValueOnce([{ id: 1 }]); // user already exists
+      .mockResolvedValueOnce([{ id: 1, isActive: true }]); // user already exists and is active
 
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
@@ -98,5 +98,28 @@ describe("Register Service", () => {
 
     expect(result.success).toBe(false);
     expect(result.msg).toBe("Email already registered");
+  });
+
+  it("should cleanup stale inactive user and register successfully", async () => {
+    const mockInvite = {
+      role: "admin",
+      name: "Test User",
+      token: "hashedToken",
+    };
+
+    mockTx.limit
+      .mockResolvedValueOnce([mockInvite]) // invite found
+      .mockResolvedValueOnce([{ id: 1, isActive: false }]); // stale inactive user exists
+
+    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    (bcrypt.hash as jest.Mock).mockResolvedValue("hashedPassword");
+    mockTx.returning.mockResolvedValue([{ id: 1 }]);
+
+    const result = await registerService("inviteId", "validToken", "test@example.com", "password");
+
+    expect(result.success).toBe(true);
+    expect(result.msg).toBe("Register successfully");
+    expect(mockTx.insert).toHaveBeenCalledWith(users);
+    expect(mockTx.delete).toHaveBeenCalledWith(inviteUsers);
   });
 });
