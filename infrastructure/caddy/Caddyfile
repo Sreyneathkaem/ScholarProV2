@@ -1,0 +1,9 @@
+{$APP_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy scholarpro-frontend:3000
+}
+
+{$API_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy scholarpro-backend:3000
+}

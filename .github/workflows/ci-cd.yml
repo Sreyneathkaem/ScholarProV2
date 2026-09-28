@@ -83,13 +83,23 @@ jobs:
       - frontend-quality
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     permissions:
       contents: read
       packages: write
     strategy:
       fail-fast: false
       matrix:
-        app: [backend, frontend]
+        include:
+          - app: backend
+            context: ./backend
+            target: runtime
+          - app: backend-migrator
+            context: ./backend
+            target: migrator
+          - app: frontend
+            context: ./frontend
+            target: runner
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -118,12 +128,41 @@ jobs:
         id: image_tag
         run: echo "tag=$(echo '${{ github.ref_name }}' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g')" >> "$GITHUB_OUTPUT"
 
+      - name: Validate frontend production configuration
+        if: matrix.app == 'frontend'
+        id: frontend_config
+        env:
+          NEXT_PUBLIC_BACKEND_URL: ${{ vars.NEXT_PUBLIC_BACKEND_URL }}
+          NEXT_PUBLIC_JWT_PUBLIC_KEY: ${{ vars.NEXT_PUBLIC_JWT_PUBLIC_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$NEXT_PUBLIC_BACKEND_URL" || -z "$NEXT_PUBLIC_JWT_PUBLIC_KEY" ]]; then
+            echo "NEXT_PUBLIC_BACKEND_URL and NEXT_PUBLIC_JWT_PUBLIC_KEY must be set in this GitHub environment."
+            exit 1
+          fi
+          if [[ "$NEXT_PUBLIC_BACKEND_URL" != https://*/api/v1 || "$NEXT_PUBLIC_BACKEND_URL" == */ ]]; then
+            echo "NEXT_PUBLIC_BACKEND_URL must be an HTTPS API base URL ending in /api/v1 with no trailing slash."
+            exit 1
+          fi
+          if [[ "$NEXT_PUBLIC_JWT_PUBLIC_KEY" != *"BEGIN PUBLIC KEY"* || "$NEXT_PUBLIC_JWT_PUBLIC_KEY" != *"END PUBLIC KEY"* ]]; then
+            echo "NEXT_PUBLIC_JWT_PUBLIC_KEY must contain a PEM public key."
+            exit 1
+          fi
+          public_key="${NEXT_PUBLIC_JWT_PUBLIC_KEY//$'\r'/}"
+          public_key="${public_key//$'\n'/\\n}"
+          printf 'backend_url=%s\n' "$NEXT_PUBLIC_BACKEND_URL" >> "$GITHUB_OUTPUT"
+          printf 'jwt_public_key=%s\n' "$public_key" >> "$GITHUB_OUTPUT"
+
       - name: Build and push ${{ matrix.app }} image
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ matrix.app }}
-          file: ./${{ matrix.app }}/Dockerfile
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/Dockerfile
+          target: ${{ matrix.target }}
           push: true
+          build-args: |
+            NEXT_PUBLIC_BACKEND_URL=${{ steps.frontend_config.outputs.backend_url }}
+            NEXT_PUBLIC_JWT_PUBLIC_KEY=${{ steps.frontend_config.outputs.jwt_public_key }}
           secrets: |
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: |
@@ -137,6 +176,9 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -147,19 +189,28 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_OWNER: ${{ github.repository_owner }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          if [ -z "$DEPLOY_HOST" ] || [ -z "$DEPLOY_USER" ]; then
-            echo "Skipping deployment because DEPLOY_HOST and DEPLOY_USER are not configured."
-            exit 0
+          set -euo pipefail
+          if [[ -z "$DEPLOY_HOST" || -z "$DEPLOY_USER" || -z "$DEPLOY_SSH_PRIVATE_KEY" || -z "$DEPLOY_KNOWN_HOSTS" ]]; then
+            echo "DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_PRIVATE_KEY, and DEPLOY_KNOWN_HOSTS must be configured in this GitHub environment."
+            exit 1
           fi
+
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
 
           chmod +x scripts/deploy.sh
 
-          scp -P "$DEPLOY_PORT" -o StrictHostKeyChecking=no scripts/deploy.sh "$DEPLOY_USER@$DEPLOY_HOST:/tmp/deploy.sh"
+          scp -i "$HOME/.ssh/id_ed25519" -P "$DEPLOY_PORT" scripts/deploy.sh "$DEPLOY_USER@$DEPLOY_HOST:/tmp/deploy-${APP_ENV}.sh"
+          scp -i "$HOME/.ssh/id_ed25519" -P "$DEPLOY_PORT" infrastructure/caddy/Caddyfile "$DEPLOY_USER@$DEPLOY_HOST:/tmp/Caddyfile.${APP_ENV}"
 
-          ssh -p "$DEPLOY_PORT" -o StrictHostKeyChecking=no "$DEPLOY_USER@$DEPLOY_HOST" \
-            "APP_ENV='${APP_ENV}' IMAGE_TAG='${IMAGE_TAG}' GHCR_OWNER='${GHCR_OWNER}' GITHUB_ACTOR='${GITHUB_ACTOR}' GITHUB_TOKEN='${GITHUB_TOKEN}' bash /tmp/deploy.sh"
+          printf '%s' "$GITHUB_TOKEN" | ssh -i "$HOME/.ssh/id_ed25519" -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "APP_ENV='${APP_ENV}' IMAGE_TAG='${IMAGE_TAG}' GHCR_OWNER='${GHCR_OWNER}' GITHUB_ACTOR='${GITHUB_ACTOR}' bash /tmp/deploy-${APP_ENV}.sh"
