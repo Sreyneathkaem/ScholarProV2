@@ -6,6 +6,7 @@ import {
   pgEnum,
   uuid,
   jsonb,
+  text,
 } from "drizzle-orm/pg-core";
 import { admins } from "./admin";
 import { emailBatchJobs } from "./email-batch-jobs";
@@ -29,6 +30,9 @@ export const emailSents = pgTable("email_sents", {
   templateName: varchar("template_name", { length: 255 }).notNull(),
   emailData: jsonb("email_data"),
   status: emailStatusEnum("status").notNull(),
+  // Why SES rejected the message, when it did. Without this the UI could only
+  // report a failed count and the reason existed solely in a log file.
+  errorMessage: text("error_message"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()

@@ -10,8 +10,22 @@ import { batches } from "@db/schema/batch";
 import { majors } from "@db/schema/major";
 import { studentRegistrationSchema } from "@validation/student-registration.schema";
 import { ValidationError, ConflictError, InternalServerError } from "@utils/errors";
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, desc, eq, ne, sql } from "drizzle-orm";
 import { AttachmentService } from "@services/attachment/attachment.service";
+
+/**
+ * Phone numbers reach this service in inconsistent shapes. Legacy and seeded rows
+ * are stored digits-only in local form ("012345678"), while applicants type the
+ * international form ("+855 12 345 678"). Both denote the same number, so a raw
+ * equality check silently misses real duplicates. This reduces a phone number to
+ * its national digits so duplicates are detected however they were typed.
+ */
+const toNationalPhoneDigits = (phone: string | null | undefined): string => {
+  const digits = (phone ?? "").replace(/\D/g, "");
+  if (!digits) return "";
+  const withoutCountryCode = digits.startsWith("855") ? digits.slice(3) : digits;
+  return withoutCountryCode.startsWith("0") ? withoutCountryCode.slice(1) : withoutCountryCode;
+};
 
 export class StudentRegistrationService {
   static async execute(
@@ -104,12 +118,19 @@ export class StudentRegistrationService {
       }
     }
 
-    // Check for duplicate phone number
-    const existingStudentByPhone = await db
-      .select()
-      .from(students)
-      .where(eq(students.phoneNumber, data.student.phoneNumber))
-      .limit(1);
+    // Check for a duplicate phone number. Compared on national digits only, so
+    // "+855 12 345 678" is matched against a stored "012345678".
+    const submittedNationalPhone = toNationalPhoneDigits(data.student.phoneNumber);
+
+    const existingStudentByPhone = submittedNationalPhone
+      ? await db
+          .select()
+          .from(students)
+          .where(
+            sql`regexp_replace(regexp_replace(${students.phoneNumber}, '\D', '', 'g'), '^(855|0)', '') = ${submittedNationalPhone}`
+          )
+          .limit(1)
+      : [];
 
     if (existingStudentByPhone.length > 0) {
       if (!existingStudent || existingStudent.id !== existingStudentByPhone[0].id) {
@@ -124,7 +145,12 @@ export class StudentRegistrationService {
           )
           .limit(1);
         if (otherStudentApp.length > 0) {
-          throw new ConflictError(`Student with phone number ${data.student.phoneNumber} already exists`);
+          const holder = existingStudentByPhone[0];
+          throw new ConflictError(
+            `Phone number ${data.student.phoneNumber} is already registered to ` +
+              `${holder.nameEn ?? "another student"} (${holder.email}), who has an application on file. ` +
+              `Use a different phone number, or continue that application instead.`
+          );
         }
         existingStudent = existingStudentByPhone[0];
       }

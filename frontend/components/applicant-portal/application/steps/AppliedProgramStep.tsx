@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -103,10 +103,9 @@ export default function AppliedProgramStep({
     return () => subscription.unsubscribe();
   }, [form, paymentProof, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
-
+  // form.handleSubmit runs the zodResolver; the payment-proof file check stays
+  // in the valid path so it only fires once the form itself is clean.
+  const handleSubmit = form.handleSubmit((values) => {
     if (paymentProof.length === 0) {
       setPaymentError("Please upload your payment proof");
       return;
@@ -114,7 +113,7 @@ export default function AppliedProgramStep({
 
     setPaymentError("");
     onNext({ ...values, paymentProof });
-  };
+  });
 
   return (
     <Form {...form}>

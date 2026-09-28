@@ -7,6 +7,7 @@ import bulkSendEmailController from "./bulk-send-email.controller";
 import listRecipentController from "./list-recipent.controller";
 import getEmailJobController from "./get-email-job.controller";
 import streamEmailJobEventsController from "./stream-email-job-events.controller";
+import sendTestEmailController from "./send-test-email.controller";
 
 export const emailController = {
   createEmailTemplateController,
@@ -18,4 +19,5 @@ export const emailController = {
   listRecipentController,
   getEmailJobController,
   streamEmailJobEventsController,
+  sendTestEmailController,
 };

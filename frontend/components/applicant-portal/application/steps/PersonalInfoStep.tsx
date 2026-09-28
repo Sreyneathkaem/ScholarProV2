@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -100,10 +100,7 @@ export default function PersonalInfoStep({
     return () => subscription.unsubscribe();
   }, [form, identityDocument, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
-
+  const onValidSubmit = (values: PersonalInfoValues) => {
     if (identityDocument.length === 0) {
       setFileError("Please upload at least one identity document");
       return;
@@ -112,6 +109,11 @@ export default function PersonalInfoStep({
     setFileError("");
     onNext({ ...values, identityDocument });
   };
+
+  // form.handleSubmit runs the zodResolver so the wizard cannot advance with
+  // invalid values. The backend enforces the same rules, so skipping this just
+  // defers the failure to a raw 400 on the final submit.
+  const handleSubmit = form.handleSubmit(onValidSubmit);
 
   return (
     <Form {...form}>
@@ -129,7 +131,9 @@ export default function PersonalInfoStep({
               name="nameKhmer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Student&apos;s full name in Khmer</FormLabel>
+                  <FormLabel>
+                    Student&apos;s full name in Khmer <RequiredMark />
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Your answer" {...field} />
                   </FormControl>

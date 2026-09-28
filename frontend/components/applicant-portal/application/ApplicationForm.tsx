@@ -16,7 +16,7 @@ import {
 } from "@/lib/utils/student-portal";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { apiClient } from "@/api/api";
-import axios from "axios";
+import { getApiErrorMessage } from "@/lib/utils/api-error";
 import { toast } from "sonner";
 
 const INITIAL_DATA: ApplicationFormData = {
@@ -274,9 +274,9 @@ export default function ApplicationForm() {
         headers: { "Content-Type": "multipart/form-data" },
       });
     } catch (error) {
-      const response = axios.isAxiosError(error) ? error.response?.data : null;
-      const message = response?.message || response?.errors?.join(", ") || "Unable to submit your application";
-      toast.error(message);
+      toast.error(
+        getApiErrorMessage(error, "Unable to submit your application"),
+      );
       throw error;
     }
 

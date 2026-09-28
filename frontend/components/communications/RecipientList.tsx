@@ -1,7 +1,8 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Users, Mail, CheckSquare, Square } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Users, Mail, CheckSquare, Square, Send } from "lucide-react";
 import { RecipientListSkeleton } from "@/components/communications/EmailSkeletons";
 
 interface LocalApplicant {
@@ -28,6 +29,8 @@ interface RecipientListProps {
   onSearchTermChange: (value: string) => void;
   manualEmails: string;
   onManualEmailsChange: (value: string) => void;
+  onSendTest: () => void;
+  isSendingTest: boolean;
 }
 
 export function RecipientList({
@@ -42,6 +45,8 @@ export function RecipientList({
   onSearchTermChange,
   manualEmails,
   onManualEmailsChange,
+  onSendTest,
+  isSendingTest,
 }: RecipientListProps) {
   return (
     <Card className="p-6">
@@ -72,6 +77,21 @@ export function RecipientList({
           placeholder="rv6024010101@camtech.edu.kh, rangsey.virak@camtech.edu"
           className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
         />
+        <p className="mt-2 text-xs text-muted-foreground">
+          "Send test now" pushes the first address straight through SES and
+          reports the result immediately, without waiting for the email queue.
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mt-2"
+          onClick={onSendTest}
+          disabled={isSendingTest || !manualEmails.trim()}
+        >
+          <Send className="h-3.5 w-3.5 mr-1.5" />
+          {isSendingTest ? "Sending test..." : "Send test now"}
+        </Button>
       </div>
 
       {searchError ? (

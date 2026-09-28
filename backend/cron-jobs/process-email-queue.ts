@@ -53,25 +53,35 @@ async function sendSingleEmail(email: any): Promise<"sent" | "failed"> {
       },
     });
 
-    await sesClient.send(command);
+    const result = await sesClient.send(command);
+
+    // SES can return without a MessageId on a soft failure; recording that as
+    // 'sent' would make a broken send look successful.
+    if (!result?.MessageId) {
+      throw new Error("SES returned no MessageId for this message");
+    }
 
     await db
       .update(emailSents)
-      .set({ status: "sent", updatedAt: new Date() })
+      .set({ status: "sent", errorMessage: null, updatedAt: new Date() })
       .where(eq(emailSents.id, email.id));
 
     return "sent";
   } catch (error: any) {
+    const reason = `${error?.name ? `${error.name}: ` : ""}${
+      error?.message || "Unknown SES error"
+    }`;
+
     systemLogger.error(
       `[EmailQueue] Failed ID ${email.id} (${email.toEmail}):`,
       {
-        error: error.message,
+        error: reason,
       },
     );
 
     await db
       .update(emailSents)
-      .set({ status: "failed", updatedAt: new Date() })
+      .set({ status: "failed", errorMessage: reason.slice(0, 2000), updatedAt: new Date() })
       .where(eq(emailSents.id, email.id));
 
     return "failed";
