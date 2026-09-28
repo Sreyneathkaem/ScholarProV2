@@ -36,15 +36,15 @@ export default function ReviewSubmitStep({
     return (
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center space-y-5">
         <CheckCircle2 className="size-20 text-emerald-500" strokeWidth={1.5} />
-        <h2 className="text-2xl font-bold text-[#1e2d6b]">
+        <h2 className="text-2xl font-bold text-primary">
           Application Submitted!
         </h2>
-        <p className="max-w-md text-slate-600 text-sm leading-relaxed">
+        <p className="max-w-md text-muted-foreground text-sm leading-relaxed">
           Thank you for applying to CamTech University. We have received your
           application and will review it shortly. You will be notified via email
           about the next steps.
         </p>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-muted-foreground">
           Please keep your reference number for future correspondence.
         </p>
       </div>
@@ -60,8 +60,8 @@ export default function ReviewSubmitStep({
         subtitle="Please review your information carefully before submitting"
       />
 
-      <div className="px-4 sm:px-8 py-6 space-y-3">
-        <p className="text-sm text-slate-500">
+      <div className="px-4 sm:px-8 py-6 space-y-4">
+        <p className="text-sm text-muted-foreground">
           Click on each section to expand and review your answers.
         </p>
 
@@ -268,9 +268,9 @@ export default function ReviewSubmitStep({
         </ReviewSection>
 
         {/* Disclaimer */}
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+        <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/80 dark:bg-amber-950/20 px-5 py-4 text-sm text-amber-900 dark:text-amber-200">
           <p className="font-semibold mb-1">Before you submit:</p>
-          <p>
+          <p className="leading-relaxed">
             Please ensure all information is accurate. Once submitted, changes
             can only be made by contacting the admissions office. Applications
             with false or misleading information will be rejected.
@@ -278,7 +278,7 @@ export default function ReviewSubmitStep({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="flex items-center justify-between border-t border-border bg-card pt-4">
           <Button
             type="button"
             variant="outline"
@@ -292,7 +292,7 @@ export default function ReviewSubmitStep({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="bg-[#1e2d6b] hover:bg-[#162055] text-white px-8"
+            className="px-8"
           >
             {isSubmitting ? (
               <>
@@ -345,19 +345,19 @@ function ReviewSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 overflow-hidden">
+    <div className="rounded-xl border border-border bg-card overflow-hidden transition-colors">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-slate-50 transition-colors"
+        className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-muted/50 transition-colors cursor-pointer"
         aria-expanded={isOpen}
         aria-controls={`section-${id}`}
       >
-        <span className="font-semibold text-slate-800 text-sm">{title}</span>
+        <span className="font-semibold text-foreground text-sm">{title}</span>
         {isOpen ? (
-          <ChevronUp className="size-4 text-slate-400 shrink-0" />
+          <ChevronUp className="size-4 text-muted-foreground shrink-0" />
         ) : (
-          <ChevronDown className="size-4 text-slate-400 shrink-0" />
+          <ChevronDown className="size-4 text-muted-foreground shrink-0" />
         )}
       </button>
 
@@ -368,7 +368,7 @@ function ReviewSection({
           isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
-        <div className="border-t border-slate-100 px-5 py-4 space-y-4">
+        <div className="border-t border-border bg-card px-5 py-4 space-y-4">
           {children}
         </div>
       </div>
@@ -378,7 +378,7 @@ function ReviewSection({
 
 function SubSectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <h5 className="font-semibold text-xs uppercase tracking-wider text-slate-500 mt-4 mb-2">
+    <h5 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground mt-4 mb-2">
       {children}
     </h5>
   );
@@ -401,10 +401,10 @@ function ReviewItem({
 }) {
   return (
     <div className={cn("space-y-0.5", fullWidth && "sm:col-span-2")}>
-      <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">
+      <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
         {label}
       </p>
-      <p className="text-sm text-slate-800 font-medium break-words">
+      <p className="text-sm text-foreground font-medium break-words">
         {value || "—"}
       </p>
     </div>

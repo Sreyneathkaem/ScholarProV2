@@ -201,8 +201,8 @@ export function AppSidebar({
                           tooltip={item.title}
                           className={`flex items-center justify-between w-full ${
                             isActive
-                              ? "bg-primary text-white"
-                              : "hover:bg-primary hover:text-white"
+                              ? "bg-primary text-primary-foreground font-semibold"
+                              : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                           }`}
                         >
                           <div className="flex items-center gap-2">
@@ -222,8 +222,8 @@ export function AppSidebar({
                           tooltip={item.title}
                           className={`${
                             isActive
-                              ? "bg-primary text-white"
-                              : "hover:bg-primary hover:text-white"
+                              ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                              : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                           }`}
                         >
                           <Link href={item.url}>
@@ -237,7 +237,7 @@ export function AppSidebar({
                       {hasSub && isOpen && (
                         <div className="ml-8 mt-1 space-y-1">
                           {item.items
-                            ?.filter((sub) => sub.roles.includes(role)) // ⭐ filter again
+                            ?.filter((sub) => sub.roles.includes(role))
                             .map((sub) => {
                               const isSubActive = pathname === sub.url;
 
@@ -245,10 +245,10 @@ export function AppSidebar({
                                 <Link
                                   key={sub.title}
                                   href={sub.url}
-                                  className={`block px-3 py-1.5 rounded-md text-sm ${
+                                  className={`block px-3 py-1.5 rounded-md text-sm transition-colors ${
                                     isSubActive
-                                      ? "bg-primary text-white"
-                                      : "hover:bg-primary hover:text-white"
+                                      ? "bg-primary text-primary-foreground font-medium"
+                                      : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                   }`}
                                 >
                                   {sub.title}

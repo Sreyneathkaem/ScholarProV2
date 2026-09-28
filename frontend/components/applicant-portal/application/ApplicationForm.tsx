@@ -105,7 +105,6 @@ export default function ApplicationForm() {
       setUserKey(resolvedEmail || "guest");
 
       if (saved.applicationData) {
-        // User already has a saved draft/record
         setFormData({
           ...saved.applicationData,
           personal: {
@@ -119,7 +118,6 @@ export default function ApplicationForm() {
         setCurrentStep(saved.currentStep || 1);
         setCompletedSteps(saved.completedSteps ?? []);
       } else {
-        // Brand new registration: provide fresh clean form
         setFormData({
           ...INITIAL_DATA,
           personal: {
@@ -320,7 +318,7 @@ export default function ApplicationForm() {
   if (!isLoaded) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1e2d6b]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -328,23 +326,22 @@ export default function ApplicationForm() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:py-12">
       {/* Brand Blue Registration Header Card */}
-      <div className="rounded-t-2xl bg-gradient-to-br from-[#1e2d6b] to-[#141f4d] px-6 py-8 sm:px-10 sm:py-10 text-white relative overflow-hidden shadow-lg">
-        {/* Subtle background pattern for a premium feel */}
+      <div className="rounded-t-2xl bg-gradient-to-br from-[#10386B] to-[#141f4d] dark:from-[#0e274b] dark:to-[#071326] px-6 py-8 sm:px-10 sm:py-10 text-white relative overflow-hidden shadow-lg border border-primary/20">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGllcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50" />
 
         <div className="relative z-10">
-          <div className="text-[11px] font-semibold tracking-[0.2em] text-blue-300/80 uppercase">
+          <div className="text-[11px] font-semibold tracking-[0.2em] text-blue-200/90 uppercase">
             Registration Process
           </div>
 
           <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">
             New Candidate Registration
           </h1>
-          <p className="mt-3 text-sm text-blue-100/70 max-w-2xl leading-relaxed">
+          <p className="mt-3 text-sm text-blue-100/80 max-w-2xl leading-relaxed">
             Welcome to the CamTech admissions portal. Complete the form below to enter the evaluation pool for academic funding.
           </p>
 
-          <div className="my-8 border-t border-white/10" />
+          <div className="my-8 border-t border-white/15" />
 
           {/* Step Indicator */}
           <FormStepper
@@ -356,32 +353,32 @@ export default function ApplicationForm() {
       </div>
 
       {/* Step Content */}
-      <div className="rounded-b-2xl bg-white shadow-lg border border-slate-200/60 border-t-0 overflow-hidden">
+      <div className="rounded-b-2xl bg-card text-card-foreground shadow-lg border border-border border-t-0 overflow-hidden">
         {currentStep === 1 && (
           <>
             {/* Instructions */}
-            <div className="px-6 py-6 sm:px-10 sm:py-8 border-b border-slate-100 bg-slate-50/40">
-              <div className="bg-white border border-slate-200/80 rounded-xl p-5 sm:p-6 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#1e2d6b]" />
+            <div className="px-6 py-6 sm:px-10 sm:py-8 border-b border-border bg-muted/40">
+              <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-sm">
+                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
                   Application Instructions
                 </h3>
-                <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   Please complete all required information accurately and upload the following documents:
                 </p>
-                <ul className="space-y-2.5 text-sm text-slate-600 mb-5">
+                <ul className="space-y-2.5 text-sm text-muted-foreground mb-5">
                   <li className="flex items-start gap-2.5">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                     <span>Birth Certificate, National ID Card, or Passport (PDF/JPG)</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                     <span>High school certificate, equivalent document, or grade 12 student ID card</span>
                   </li>
                 </ul>
-                <div className="flex items-start gap-2.5 bg-blue-50 border border-blue-100 rounded-lg p-3.5">
-                  <Info className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
-                  <p className="text-xs text-blue-700 leading-relaxed">
+                <div className="flex items-start gap-2.5 bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg p-3.5">
+                  <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                  <p className="text-xs text-blue-900 dark:text-blue-300 leading-relaxed">
                     <span className="font-semibold">Note:</span> Incomplete applications will be rejected. For assistance, contact 078 / 086 21 21 81.
                   </p>
                 </div>

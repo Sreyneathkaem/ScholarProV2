@@ -1,6 +1,5 @@
 "use client";
 
-// import Image from "next/image";
 import { Bell, LogOut, PanelLeftIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/context/auth-context";
@@ -19,11 +18,11 @@ import {
   getStudentInitials,
   getStudentRoleLabel,
 } from "@/lib/utils/student-portal";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function ApplicantHeader({
   title = "University Admissions Portal",
   className,
-  // collapsed = false,
   onToggleSidebar,
 }: {
   title?: string;
@@ -76,7 +75,7 @@ export default function ApplicantHeader({
   return (
     <header
       className={cn(
-        "hidden lg:flex items-center justify-between px-6 h-16 border-b bg-white sticky top-0 z-40",
+        "hidden lg:flex items-center justify-between px-6 h-16 border-b border-border bg-background sticky top-0 z-40 transition-colors",
         className,
       )}
     >
@@ -84,57 +83,56 @@ export default function ApplicantHeader({
         <button
           onClick={onToggleSidebar}
           aria-label="Toggle Sidebar"
-          className="p-2 rounded-md hover:bg-slate-50 relative z-50"
+          className="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer relative z-50"
         >
-          <PanelLeftIcon className="w-5 h-5 text-slate-700" />
+          <PanelLeftIcon className="w-5 h-5" />
         </button>
 
         <div>
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        <ThemeToggle />
+
         <button
           aria-label="Notifications"
-          className="relative p-2 rounded-full hover:bg-slate-50"
+          className="relative p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
         >
-          <Bell className="w-5 h-5 text-slate-600" />
-          <span className="absolute -top-1 -right-1 inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-1.5 right-1.5 inline-flex h-2 w-2 rounded-full bg-destructive" />
         </button>
 
         <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+                className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Account menu"
               >
-                <Avatar className="border border-slate-200">
-                  <AvatarImage
-                    src={avatarUrl}
-                    alt={userName}
-                  />
-                  <AvatarFallback className="bg-[#1e2d6b]/10 text-[#1e2d6b] font-semibold text-xs">
+                <Avatar className="border border-border">
+                  <AvatarImage src={avatarUrl} alt={userName} />
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="text-right">
-                  <div className="text-sm font-medium">{userName}</div>
-                  <div className="text-xs text-slate-500">{userRole}</div>
+                  <div className="text-sm font-medium text-foreground">{userName}</div>
+                  <div className="text-xs text-muted-foreground">{userRole}</div>
                 </div>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium">{userName}</span>
-                <span className="text-xs font-normal text-slate-500 truncate">
+                <span className="text-sm font-medium text-foreground">{userName}</span>
+                <span className="text-xs font-normal text-muted-foreground truncate">
                   {userEmail || user?.email}
                 </span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+                className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
                 onClick={() => logout("/students")}
               >
                 <LogOut className="w-4 h-4 mr-2" />
@@ -147,4 +145,3 @@ export default function ApplicantHeader({
     </header>
   );
 }
-

@@ -6,6 +6,8 @@ import {
   loadStudentPortalSnapshot,
   type StudentPortalSnapshot,
 } from "@/lib/utils/student-portal";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const sampleTerms = [
   {
@@ -88,55 +90,56 @@ export default function StudentGradePanel() {
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
               Result
             </p>
-            <h1 className="mt-2 text-2xl font-semibold text-slate-900">
-              Result report
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+              Result Report
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground leading-relaxed">
               Review your academic outcomes and keep track of your current
               standing.
             </p>
           </div>
-          <button
+          <Button
             onClick={exportGrades}
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+            variant="outline"
+            className="gap-2 self-start lg:self-auto"
           >
             <Download className="size-4" />
-            Export result
-          </button>
+            Export Result
+          </Button>
         </div>
 
-        <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-4">
             {sampleTerms.map((term) => (
               <div
                 key={term.name}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                className="rounded-xl border border-border bg-muted/30 p-4 space-y-3"
               >
-                <div className="flex items-center justify-between gap-2 text-slate-800">
+                <div className="flex items-center justify-between gap-2 text-foreground">
                   <div className="flex items-center gap-2">
-                    <BookOpenCheck className="size-4 text-blue-600" />
-                    <p className="font-medium">{term.name}</p>
+                    <BookOpenCheck className="size-4 text-primary" />
+                    <p className="font-semibold text-sm">{term.name}</p>
                   </div>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">
+                  <Badge variant="secondary" className="font-medium text-xs">
                     GPA {term.gpa}
-                  </span>
+                  </Badge>
                 </div>
-                <div className="mt-4 space-y-2 text-sm text-slate-700">
+                <div className="space-y-2 text-sm">
                   {term.courses.map((course) => (
                     <div
                       key={course.name}
-                      className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2"
+                      className="flex items-center justify-between rounded-lg border border-border bg-card px-3.5 py-2.5 shadow-xs"
                     >
-                      <span>{course.name}</span>
-                      <div className="flex items-center gap-4 text-slate-600">
-                        <span>{course.credit} credit</span>
-                        <span className="font-semibold text-slate-900">
+                      <span className="text-foreground font-medium">{course.name}</span>
+                      <div className="flex items-center gap-4 text-muted-foreground">
+                        <span className="text-xs">{course.credit} credits</span>
+                        <span className="font-bold text-foreground">
                           {course.grade}
                         </span>
                       </div>
@@ -147,35 +150,37 @@ export default function StudentGradePanel() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div className="flex items-center gap-2 text-slate-800">
-              <GraduationCap className="size-4 text-emerald-600" />
-              <p className="font-medium">Summary</p>
+          <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+            <div className="flex items-center gap-2 text-foreground">
+              <GraduationCap className="size-5 text-emerald-600 dark:text-emerald-400" />
+              <p className="font-semibold text-sm">Academic Summary</p>
             </div>
-            <div className="mt-4 space-y-3 text-sm text-slate-700">
-              <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+            <div className="space-y-3 text-sm">
+              <div className="rounded-xl border border-border bg-muted/20 p-3.5">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
                   Total credits
                 </p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+                <p className="mt-1 text-lg font-bold text-foreground">
                   {totals.totalCredits}
                 </p>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                  GPA
+              <div className="rounded-xl border border-border bg-muted/20 p-3.5">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+                  Cumulative GPA
                 </p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+                <p className="mt-1 text-lg font-bold text-foreground">
                   3.7 / 4.0
                 </p>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Status
+              <div className="rounded-xl border border-border bg-muted/20 p-3.5">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+                  Academic Status
                 </p>
-                <p className="mt-1 font-semibold text-slate-900">
-                  Good Standing
-                </p>
+                <div className="mt-1">
+                  <Badge variant="success" className="text-xs font-semibold">
+                    Good Standing
+                  </Badge>
+                </div>
               </div>
             </div>
           </div>

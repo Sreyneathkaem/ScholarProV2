@@ -7,6 +7,9 @@ import {
   saveStudentPortalSnapshot,
   type StudentPortalSnapshot,
 } from "@/lib/utils/student-portal";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export default function StudentProfilePanel() {
   const [snapshot, setSnapshot] = useState<StudentPortalSnapshot | null>(null);
@@ -37,84 +40,89 @@ export default function StudentProfilePanel() {
       },
     });
     setSnapshot(next);
+    toast.success("Profile details synced successfully");
   };
 
   if (!snapshot) return null;
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
               Profile
             </p>
-            <h1 className="mt-2 text-2xl font-semibold text-slate-900">
-              Your account overview
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+              Your Account Overview
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground leading-relaxed">
               Keep your personal and contact information up to date while the
               committee reviews your application.
             </p>
           </div>
-          <div className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
-            Active account
-          </div>
+          <Badge variant="success" className="px-3 py-1 font-semibold text-xs">
+            Active Account
+          </Badge>
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
-            <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+          <div className="rounded-2xl border border-border bg-muted/30 p-6 text-center">
+            <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-primary/10 text-primary">
               <UserCircle2 className="size-10" />
             </div>
-            <h2 className="mt-4 text-xl font-semibold text-slate-900">
+            <h2 className="mt-4 text-xl font-bold text-foreground">
               {snapshot.profile.name}
             </h2>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-muted-foreground">
               Applicant ID: {snapshot.profile.studentId}
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
-              <BadgeCheck className="size-4" />
-              Verified profile
+            <div className="mt-4 inline-flex items-center gap-1.5">
+              <Badge variant="success" className="px-3 py-1 text-xs">
+                <BadgeCheck className="size-3.5 mr-1" />
+                Verified Profile
+              </Badge>
             </div>
           </div>
 
-          <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex items-center gap-3 rounded-lg border border-slate-200 p-3">
-              <Mail className="size-4 text-blue-600" />
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-6">
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-background p-3.5 shadow-xs">
+              <Mail className="size-4 text-primary shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
                   Email
                 </p>
-                <p className="text-sm font-medium text-slate-800">
+                <p className="text-sm font-medium text-foreground truncate">
                   {snapshot.profile.email}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded-lg border border-slate-200 p-3">
-              <Phone className="size-4 text-blue-600" />
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-background p-3.5 shadow-xs">
+              <Phone className="size-4 text-primary shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
                   Phone
                 </p>
-                <p className="text-sm font-medium text-slate-800">
+                <p className="text-sm font-medium text-foreground truncate">
                   {snapshot.profile.phone}
                 </p>
               </div>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4 text-sm text-slate-600">
-              <p className="font-medium text-slate-800">Application status</p>
-              <p className="mt-2">
+            <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground text-xs uppercase tracking-wider">
+                Application Status
+              </p>
+              <p className="mt-1 leading-relaxed">
                 Your profile stays connected to the committee review workflow
                 and will be updated as your status changes.
               </p>
             </div>
-            <button
+            <Button
               onClick={handleSave}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              className="w-full sm:w-auto"
             >
-              Sync profile snapshot
-            </button>
+              Sync Profile Snapshot
+            </Button>
           </div>
         </div>
       </div>

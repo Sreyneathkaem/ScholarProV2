@@ -19,6 +19,8 @@ import {
   loadStudentPortalSnapshot,
   type StudentPortalSnapshot,
 } from "@/lib/utils/student-portal";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type SessionType = "interview" | "exam";
 
@@ -75,27 +77,21 @@ const TYPE_CONFIG: Record<
   {
     icon: LucideIcon;
     label: string;
-    color: string;
-    bg: string;
-    border: string;
+    badgeVariant: "warning" | "info";
     iconBg: string;
   }
 > = {
   interview: {
     icon: Star,
     label: "Interview",
-    color: "text-amber-800",
-    bg: "bg-amber-50",
-    border: "border-amber-200/80",
-    iconBg: "bg-amber-100/70 border-amber-200 text-amber-700",
+    badgeVariant: "warning",
+    iconBg: "bg-amber-100/80 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60",
   },
   exam: {
     icon: ClipboardList,
     label: "Examination",
-    color: "text-[#1e2d6b]",
-    bg: "bg-[#1e2d6b]/10",
-    border: "border-[#1e2d6b]/20",
-    iconBg: "bg-[#1e2d6b]/10 border-[#1e2d6b]/20 text-[#1e2d6b]",
+    badgeVariant: "info",
+    iconBg: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-blue-300 dark:border-blue-800/60",
   },
 };
 
@@ -109,7 +105,6 @@ const SESSIONS_BY_DATE: { date: string; sessions: Session[] }[] = (() => {
   return groups;
 })();
 
-// Helper to parse date/time
 const parseDateTime = (dateStr: string, timeStr: string): Date => {
   const date = new Date(dateStr);
   const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -126,7 +121,6 @@ const parseDateTime = (dateStr: string, timeStr: string): Date => {
   return date;
 };
 
-// Add single session to Google Calendar
 const addToGoogleCalendar = (session: Session) => {
   const startDate = parseDateTime(session.date, session.time);
   const durationMatch = session.duration.match(/(\d+(?:\.\d+)?)\s*(hour|min)/i);
@@ -161,7 +155,6 @@ const addToGoogleCalendar = (session: Session) => {
   toast.success("Opening Google Calendar to add event");
 };
 
-// Add all sessions to Google Calendar (opens multiple tabs)
 const addAllToGoogleCalendar = () => {
   let added = 0;
   MOCK_SESSIONS.forEach((session, index) => {
@@ -173,11 +166,10 @@ const addAllToGoogleCalendar = () => {
           description: "Please allow pop-ups to add all events",
         });
       }
-    }, index * 300); // Stagger to avoid browser blocking
+    }, index * 300);
   });
 };
 
-// Export all sessions to Google Calendar (creates a single URL with multiple events)
 const exportAllToGoogleCalendar = () => {
   toast.info("Google Calendar Integration", {
     description:
@@ -189,7 +181,6 @@ const exportAllToGoogleCalendar = () => {
   }, 1000);
 };
 
-// Share session
 const shareSession = (session: Session) => {
   const shareData = {
     title: session.title,
@@ -207,15 +198,14 @@ const shareSession = (session: Session) => {
   }
 };
 
-// Request reschedule
 const requestReschedule = (session: Session) => {
   toast.info("Reschedule Request", {
-    description: `To reschedule ${session.title}, please contact the examination office at exam.office@scholarpro.edu or call (555) 123-4567.`,
+    description: `To reschedule ${session.title}, please contact the examination office at admissions@camtech.edu.kh or call 078 21 21 81.`,
     duration: 6000,
     action: {
       label: "Copy Email",
       onClick: () => {
-        navigator.clipboard.writeText("exam.office@scholarpro.edu");
+        navigator.clipboard.writeText("admissions@camtech.edu.kh");
         toast.success("Email copied to clipboard");
       },
     },
@@ -252,36 +242,36 @@ function DropdownMenu({ session, isOpen, onClose }: DropdownMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 top-10 z-20 w-64 rounded-2xl border border-slate-200/90 bg-white py-2 shadow-xl ring-1 ring-black/5 focus:outline-none"
+      className="absolute right-0 top-10 z-20 w-64 rounded-2xl border border-border bg-card py-2 shadow-xl ring-1 ring-black/5 focus:outline-none"
     >
       <button
         onClick={() => {
           addToGoogleCalendar(session);
           onClose();
         }}
-        className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#1e2d6b]/5 transition-colors"
+        className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors cursor-pointer"
       >
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e2d6b]/10 text-[#1e2d6b]">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <Calendar className="h-4 w-4" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-slate-900">
+          <p className="text-sm font-semibold text-foreground">
             Add to Google Calendar
           </p>
-          <p className="text-xs text-slate-500">Open in Google Calendar</p>
+          <p className="text-xs text-muted-foreground">Open in Google Calendar</p>
         </div>
       </button>
 
-      <div className="my-1.5 border-t border-slate-100" />
+      <div className="my-1.5 border-t border-border" />
 
       <button
         onClick={() => {
           shareSession(session);
           onClose();
         }}
-        className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+        className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-foreground hover:bg-muted/50 transition-colors cursor-pointer"
       >
-        <Share2 className="h-4 w-4 text-[#1e2d6b]" />
+        <Share2 className="h-4 w-4 text-primary" />
         <span className="font-medium">Share Session</span>
       </button>
 
@@ -290,9 +280,9 @@ function DropdownMenu({ session, isOpen, onClose }: DropdownMenuProps) {
           requestReschedule(session);
           onClose();
         }}
-        className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+        className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-foreground hover:bg-muted/50 transition-colors cursor-pointer"
       >
-        <ExternalLink className="h-4 w-4 text-slate-400" />
+        <ExternalLink className="h-4 w-4 text-muted-foreground" />
         <span className="font-medium">Request Reschedule</span>
       </button>
     </div>
@@ -305,7 +295,7 @@ function SessionCard({ session }: { session: Session }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="group relative rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-[#1e2d6b]/30 print:border print:shadow-none">
+    <div className="group relative rounded-2xl border border-border bg-card p-6 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/40 print:border print:shadow-none">
       {/* Top row: type badge + menu */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -316,31 +306,29 @@ function SessionCard({ session }: { session: Session }) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold border ${config.bg} ${config.color} ${config.border}`}
-              >
+              <Badge variant={config.badgeVariant}>
                 {config.label}
-              </span>
+              </Badge>
               {session.confirmed && (
-                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                  <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                <Badge variant="success">
+                  <CheckCircle2 className="h-3 w-3 mr-0.5" />
                   Confirmed
-                </span>
+                </Badge>
               )}
             </div>
-            <h3 className="mt-1.5 text-base sm:text-lg font-bold text-slate-900">
+            <h3 className="mt-1.5 text-base sm:text-lg font-bold text-foreground">
               {session.title}
             </h3>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200/60 hidden sm:inline-block">
+          <span className="font-mono text-[11px] font-semibold text-muted-foreground bg-muted px-2.5 py-1 rounded-md border border-border hidden sm:inline-block">
             {session.id}
           </span>
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+              className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
               aria-label="More options"
             >
               <MoreVertical className="h-4 w-4" />
@@ -357,24 +345,24 @@ function SessionCard({ session }: { session: Session }) {
       {/* Details grid */}
       <div className="mt-5 grid grid-cols-2 gap-4">
         <div className="flex items-start gap-2.5">
-          <Clock className="mt-0.5 h-4 w-4 shrink-0 text-[#1e2d6b]" />
+          <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Time
             </p>
-            <p className="mt-0.5 text-sm font-semibold text-slate-900">
+            <p className="mt-0.5 text-sm font-semibold text-foreground">
               {session.time}
             </p>
-            <p className="text-xs text-slate-500">{session.duration}</p>
+            <p className="text-xs text-muted-foreground">{session.duration}</p>
           </div>
         </div>
         <div className="flex items-start gap-2.5">
-          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1e2d6b]" />
+          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Location
             </p>
-            <p className="mt-0.5 text-sm font-semibold text-slate-900">
+            <p className="mt-0.5 text-sm font-semibold text-foreground">
               {session.location}
             </p>
           </div>
@@ -383,27 +371,30 @@ function SessionCard({ session }: { session: Session }) {
 
       {/* Note */}
       {session.note && (
-        <div className="mt-4 rounded-xl bg-slate-50/80 px-3.5 py-2.5 border border-slate-200/60">
-          <p className="text-xs text-slate-600 leading-relaxed">{session.note}</p>
+        <div className="mt-4 rounded-xl bg-muted/40 px-3.5 py-2.5 border border-border">
+          <p className="text-xs text-muted-foreground leading-relaxed">{session.note}</p>
         </div>
       )}
 
       {/* Actions */}
-      <div className="mt-5 flex items-center gap-2.5 border-t border-slate-100 pt-4">
-        <button
+      <div className="mt-5 flex items-center gap-2.5 border-t border-border pt-4">
+        <Button
           onClick={() => addToGoogleCalendar(session)}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#1e2d6b] hover:bg-[#162055] px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-[#1e2d6b]/20 transition-all active:scale-[0.98]"
+          size="sm"
+          className="gap-2"
         >
           <Calendar className="h-3.5 w-3.5" />
           Add to Google Calendar
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => shareSession(session)}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-white px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+          variant="outline"
+          size="sm"
+          className="gap-1.5"
         >
-          <Share2 className="h-3.5 w-3.5 text-slate-500" />
+          <Share2 className="h-3.5 w-3.5" />
           Share
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -430,69 +421,69 @@ export default function StudentExamPanel() {
   if (!snapshot) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8 font-sans antialiased text-slate-900">
+    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8 font-sans antialiased text-foreground">
       <div className="mx-auto max-w-4xl space-y-8">
         {/* Page Header */}
         <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-2 text-[#1e2d6b]">
+            <div className="flex items-center gap-2 text-primary">
               <Calendar className="size-4" />
               <span className="text-xs font-bold tracking-widest uppercase">
                 Examination & Schedule
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               Upcoming Schedule
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               Your confirmed exam and interview sessions
             </p>
           </div>
-          <button
+          <Button
             onClick={exportAllToGoogleCalendar}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1e2d6b] hover:bg-[#162055] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#1e2d6b]/20 transition-all active:scale-[0.98] self-start sm:self-auto"
+            className="gap-2 self-start sm:self-auto"
           >
             <Calendar className="h-4 w-4" />
             Add All to Google Calendar
-          </button>
+          </Button>
         </header>
 
         {/* Notice */}
-        <div className="flex items-start gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/80 px-4.5 py-4 shadow-sm print:hidden">
-          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/80 dark:bg-amber-950/20 px-4.5 py-4 shadow-xs print:hidden">
+          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
           <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-900">
+            <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
               Important reminder
             </p>
-            <p className="mt-0.5 text-sm text-amber-800 leading-relaxed">
-              Please bring your registration confirmation and a valid student ID to each session.
+            <p className="mt-0.5 text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
+              Please bring your registration confirmation and a valid national ID card or passport to each session.
             </p>
           </div>
         </div>
 
         {/* Summary stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 print:hidden">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Total Sessions
             </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl sm:text-3xl font-bold text-foreground">
               {MOCK_SESSIONS.length}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Confirmed
             </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-bold text-emerald-600">
+            <p className="mt-1 text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
               {MOCK_SESSIONS.filter((s) => s.confirmed).length}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Upcoming
             </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-bold text-[#1e2d6b]">
+            <p className="mt-1 text-2xl sm:text-3xl font-bold text-primary">
               {MOCK_SESSIONS.length}
             </p>
           </div>
@@ -503,14 +494,14 @@ export default function StudentExamPanel() {
           {SESSIONS_BY_DATE.map((group) => (
             <section key={group.date} className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#1e2d6b] text-white shadow-sm shadow-[#1e2d6b]/20">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs">
                   <Calendar className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-900">
+                  <h2 className="text-base font-bold text-foreground">
                     {group.date}
                   </h2>
-                  <p className="text-xs font-medium text-slate-500">
+                  <p className="text-xs font-medium text-muted-foreground">
                     {group.sessions.length} session
                     {group.sessions.length > 1 ? "s" : ""} scheduled
                   </p>
@@ -526,9 +517,9 @@ export default function StudentExamPanel() {
         </div>
 
         {/* Footer */}
-        <footer className="border-t border-slate-200/80 pt-6">
-          <p className="text-xs text-slate-500 leading-relaxed">
-            All times are displayed in your local timezone. To reschedule, contact the examination office at least 48 hours in advance.
+        <footer className="border-t border-border pt-6">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            All times are displayed in your local timezone (ICT). To reschedule, contact the admissions examination office at least 48 hours in advance.
           </p>
         </footer>
       </div>

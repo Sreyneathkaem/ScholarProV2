@@ -146,18 +146,18 @@ export default function EducationStep({
       <form onSubmit={handleSubmit} className="space-y-0">
         <SectionHeader
           title="Section 3: Educational Background"
-          subtitle="Complete the following required information:"
+          subtitle="Complete the required academic history and proficiency below"
         />
 
         <div className="px-4 sm:px-8 py-6 space-y-8">
           {/* 3.1 General Education */}
-          <div className="rounded-lg border-l-4 border-[#1e2d6b] bg-blue-50/50 px-4 py-3">
-            <h3 className="font-semibold text-[#1e2d6b]">
+          <div className="rounded-xl border-l-4 border-primary bg-primary/5 px-4 py-3.5 border border-border/60">
+            <h3 className="font-semibold text-primary">
               3.1. General Education
             </h3>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               Complete your educational background listing from the current
-              school to the previous schools.
+              school to previous schools.
             </p>
           </div>
 
@@ -168,7 +168,7 @@ export default function EducationStep({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  What is your current education? <RequiredMark />
+                  What is your current education level? <RequiredMark />
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -206,8 +206,8 @@ export default function EducationStep({
 
           {/* University Block */}
           {isUniversity && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5 shadow-xs">
-              <h4 className="font-semibold text-slate-800">
+            <div className="rounded-xl border border-border bg-card p-5 space-y-5 shadow-xs">
+              <h4 className="font-semibold text-foreground">
                 Current University Information
               </h4>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -220,7 +220,7 @@ export default function EducationStep({
                         Current Major <RequiredMark />
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Your answer" {...field} />
+                        <Input placeholder="Enter major" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -233,7 +233,7 @@ export default function EducationStep({
                     <FormItem>
                       <FormLabel>Institution Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your answer" {...field} />
+                        <Input placeholder="Enter university name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -258,8 +258,8 @@ export default function EducationStep({
 
           {/* High School Block — full (for University + HS Graduate) */}
           {(isUniversity || isHighSchoolGraduate) && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5 shadow-xs">
-              <h4 className="font-semibold text-slate-800">
+            <div className="rounded-xl border border-border bg-card p-5 space-y-5 shadow-xs">
+              <h4 className="font-semibold text-foreground">
                 High School Information
               </h4>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -272,7 +272,7 @@ export default function EducationStep({
                         Academic Year <RequiredMark />
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Your answer" {...field} />
+                        <Input placeholder="e.g. 2024-2025" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -287,7 +287,7 @@ export default function EducationStep({
                         School Name <RequiredMark />
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Your answer" {...field} />
+                        <Input placeholder="Enter high school name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -351,15 +351,15 @@ export default function EducationStep({
                 maxFiles={1}
                 maxSizeMB={100}
                 accept=".pdf,.jpg,.jpeg"
-                label="Upload your high school certificate or any equivalent document (PDF/JPG)"
+                label="Upload your high school certificate or equivalent document (PDF/JPG)"
               />
             </div>
           )}
 
           {/* 12th Grader Block */}
           {is12thGrader && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5 shadow-xs">
-              <h4 className="font-semibold text-slate-800">12th Grader</h4>
+            <div className="rounded-xl border border-border bg-card p-5 space-y-5 shadow-xs">
+              <h4 className="font-semibold text-foreground">12th Grader Information</h4>
               <FormField
                 control={form.control}
                 name="highSchoolName"
@@ -369,7 +369,7 @@ export default function EducationStep({
                       High school name <RequiredMark />
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Your answer" {...field} />
+                      <Input placeholder="Enter high school name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -448,11 +448,11 @@ export default function EducationStep({
             </div>
           )}
 
-          {/* 3.2 English Language Proficiency — shown for all education levels */}
+          {/* 3.2 English Language Proficiency */}
           {showEnglishProficiency && (
             <>
-              <div className="rounded-lg border-l-4 border-[#1e2d6b] bg-blue-50/50 px-4 py-3">
-                <h3 className="font-semibold text-[#1e2d6b]">
+              <div className="rounded-xl border-l-4 border-primary bg-primary/5 px-4 py-3.5 border border-border/60">
+                <h3 className="font-semibold text-primary">
                   3.2. English Language Proficiency
                 </h3>
               </div>
@@ -463,7 +463,7 @@ export default function EducationStep({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Do you have IELTS or TOEFL certificate?
+                      Do you have an IELTS or TOEFL certificate?
                     </FormLabel>
                     <FormControl>
                       <RadioGroup

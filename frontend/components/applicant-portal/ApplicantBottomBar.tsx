@@ -23,7 +23,7 @@ export default function ApplicantBottomBar({
   return (
     <nav
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 bg-white border-t lg:hidden",
+        "fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border lg:hidden transition-colors",
         className,
       )}
     >
@@ -47,18 +47,18 @@ export default function ApplicantBottomBar({
                 <Link
                   key={it.url}
                   href={it.url}
-                  className="flex flex-col items-center justify-center px-2 py-1"
+                  className="flex flex-col items-center justify-center px-2 py-1 transition-colors"
                 >
                   <Icon
                     className={cn(
-                      "size-6",
-                      active ? "text-slate-900" : "text-slate-500",
+                      "size-5",
+                      active ? "text-primary font-semibold" : "text-muted-foreground",
                     )}
                   />
                   <span
                     className={cn(
                       "text-xs mt-1",
-                      active ? "text-slate-900 font-medium" : "text-slate-500",
+                      active ? "text-primary font-semibold" : "text-muted-foreground",
                     )}
                   >
                     {it.title}

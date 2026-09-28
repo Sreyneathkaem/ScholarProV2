@@ -10,6 +10,7 @@ import {
   getStudentDisplayName,
   getStudentInitials,
 } from "@/lib/utils/student-portal";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function ApplicantAppBar({ className }: { className?: string }) {
   const { user } = useAuth();
@@ -40,17 +41,17 @@ export default function ApplicantAppBar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b",
+        "lg:hidden fixed top-0 left-0 right-0 z-40 bg-background border-b border-border transition-colors",
         className,
       )}
     >
       <div className="max-w-screen-lg mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            className="p-2 rounded-md hover:bg-slate-50"
+            className="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Menu"
           >
-            <Menu className="w-5 h-5 text-slate-600" />
+            <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 relative">
@@ -62,25 +63,23 @@ export default function ApplicantAppBar({ className }: { className?: string }) {
                 className="object-contain"
               />
             </div>
-            <div className="text-sm font-medium">Admissions</div>
+            <div className="text-sm font-semibold text-foreground">Admissions</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           <button
-            className="relative p-2 rounded-full hover:bg-slate-50"
+            className="relative p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Notifications"
           >
-            <Bell className="w-5 h-5 text-slate-600" />
-            <span className="absolute -top-1 -right-1 inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-1.5 right-1.5 inline-flex h-2 w-2 rounded-full bg-destructive" />
           </button>
 
-          <Avatar className="border border-slate-200">
-            <AvatarImage
-              src={avatarUrl}
-              alt={userName}
-            />
-            <AvatarFallback className="bg-[#1e2d6b]/10 text-[#1e2d6b] font-semibold text-xs">
+          <Avatar className="border border-border h-8 w-8">
+            <AvatarImage src={avatarUrl} alt={userName} />
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -89,4 +88,3 @@ export default function ApplicantAppBar({ className }: { className?: string }) {
     </div>
   );
 }
-
