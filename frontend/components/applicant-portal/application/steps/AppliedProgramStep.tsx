@@ -111,7 +111,7 @@ export default function AppliedProgramStep({
 
     setPaymentError("");
     onNext({ ...values, paymentProof });
-  };
+  });
 
   const onInvalidSubmit = () => {
     if (paymentProof.length === 0) {

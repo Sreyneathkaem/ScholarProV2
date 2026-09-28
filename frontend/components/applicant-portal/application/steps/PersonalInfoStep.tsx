@@ -135,7 +135,9 @@ export default function PersonalInfoStep({
               name="nameKhmer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Student&apos;s full name in Khmer</FormLabel>
+                  <FormLabel>
+                    Student&apos;s full name in Khmer <RequiredMark />
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Enter Khmer name" {...field} />
                   </FormControl>

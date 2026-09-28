@@ -130,7 +130,7 @@ export default function EducationStep({
       ieltsDocument,
       grade12IdCard,
     });
-  };
+  });
 
   const isUniversity = educationLevel === "university";
   const isHighSchoolGraduate = educationLevel === "high_school_graduate";
@@ -228,7 +228,9 @@ export default function EducationStep({
                   name="universityInstitutionName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Institution Name</FormLabel>
+                      <FormLabel>
+                        Institution Name <RequiredMark />
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="Enter university name" {...field} />
                       </FormControl>
@@ -242,7 +244,9 @@ export default function EducationStep({
                 name="universityYearOfStudy"
                 render={({ field }) => (
                   <FormItem className="max-w-xs">
-                    <FormLabel>Current Year of Study</FormLabel>
+                    <FormLabel>
+                      Current Year of Study <RequiredMark />
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. Year 2" {...field} />
                     </FormControl>
@@ -341,6 +345,7 @@ export default function EducationStep({
                 control={form.control}
                 name="highSchoolEnglishGrade"
                 label="English grade"
+                required
               />
               <FileUpload
                 files={hsCertificate}

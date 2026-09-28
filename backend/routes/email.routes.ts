@@ -34,6 +34,16 @@ router.get(
   asyncHandler(emailController.listRecipentController)
 );
 
+// Sends one real email straight through SES and returns the verdict, bypassing
+// the email_sents queue. Registered before /:name so it can never be captured
+// as a template name.
+router.post(
+  "/test-send",
+  authenticateUser,
+  authorizeRole("admin"),
+  asyncHandler(emailController.sendTestEmailController)
+);
+
 router.post(
   "/",
   authenticateUser,

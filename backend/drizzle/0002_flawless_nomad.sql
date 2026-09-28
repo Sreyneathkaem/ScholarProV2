@@ -1,0 +1,1 @@
+ALTER TABLE "email_sents" ADD COLUMN "error_message" text;
