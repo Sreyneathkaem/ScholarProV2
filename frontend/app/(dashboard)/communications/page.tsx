@@ -11,6 +11,7 @@ import { EmailComposer } from "@/components/communications/EmailComposer";
 import { SendPreviewDialog } from "@/components/communications/SendPreviewDialog";
 import axios from "axios";
 import { EMAIL_VARIABLES } from "@/constants/email-variables";
+import { getApiErrorMessage } from "@/lib/utils/api-error";
 
 function CommunicationsPageContent() {
   const { setTitle } = useHeader();
@@ -40,6 +41,39 @@ function CommunicationsPageContent() {
   );
   const [recipientSearchTerm, setRecipientSearchTerm] = useState("");
   const [manualEmails, setManualEmails] = useState("");
+  const [isSendingTest, setIsSendingTest] = useState(false);
+
+  // Bypasses the email_sents queue and the 1-minute cron, so the SES verdict
+  // (including the real rejection reason) comes back in about a second.
+  const handleSendTest = async () => {
+    const target = manualEmails
+      .split(",")
+      .map((email) => email.trim())
+      .filter(Boolean)[0];
+
+    if (!target) {
+      toast.error("Enter an email address to test with.");
+      return;
+    }
+
+    try {
+      setIsSendingTest(true);
+      const result = await emailService.sendTestEmail(target);
+
+      if (result.success) {
+        toast.success(
+          `SES accepted the test message for ${target}. Message ID: ${result.messageId ?? "n/a"}`,
+        );
+      } else {
+        console.error("[test-send] SES rejected the message", result);
+        toast.error(`SES rejected the test message: ${result.message}`);
+      }
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Failed to run the email test."));
+    } finally {
+      setIsSendingTest(false);
+    }
+  };
 
   // Recipient group mapping removed; using explicit filters only
 
@@ -382,13 +416,27 @@ function CommunicationsPageContent() {
       }
 
       toast.info("Email queued. Checking the sending result...");
-      for (let attempt = 0; attempt < 24; attempt += 1) {
+
+      // The queue worker only runs once a minute, so a job queued at t=0 is not
+      // picked up until roughly t=60s. The previous 24 x 3s = 72s window only
+      // just covered that and reported successes as "still processing"; 40 x 5s
+      // gives room for a second cron cycle.
+      const maxAttempts = 40;
+      const pollIntervalMs = 5000;
+
+      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
         try {
           const job = await emailService.getJobStatus(result.jobId);
           if (job.status === "completed") {
             if (job.failedCount > 0) {
+              const reasons = (job.failures ?? [])
+                .map((f) => f.errorMessage)
+                .filter((m): m is string => Boolean(m));
               toast.error(
-                `SES failed to accept ${job.failedCount} of ${job.totalCount} email(s). Check the backend SES error log.`,
+                reasons.length > 0
+                  ? `SES failed to accept ${job.failedCount} of ${job.totalCount} email(s). First error: ${reasons[0]}`
+                  : `SES failed to accept ${job.failedCount} of ${job.totalCount} email(s).`,
+                { duration: 15000 },
               );
             } else {
               toast.success(
@@ -399,7 +447,7 @@ function CommunicationsPageContent() {
           }
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 304) {
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
             continue;
           }
           toast.warning(
@@ -408,11 +456,14 @@ function CommunicationsPageContent() {
           return;
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
       }
 
       toast.warning(
-        "The email is still queued or processing. No delivery confirmation is available yet.",
+        `The email is still queued or processing after ${Math.round(
+          (maxAttempts * pollIntervalMs) / 1000,
+        )}s. The worker runs once a minute - check the Applicants tab or retry shortly.`,
+        { duration: 15000 },
       );
     } catch (error: unknown) {
       console.error("Error sending email:", error);
@@ -531,6 +582,8 @@ function CommunicationsPageContent() {
             }}
             manualEmails={manualEmails}
             onManualEmailsChange={setManualEmails}
+            onSendTest={handleSendTest}
+            isSendingTest={isSendingTest}
           />
         </div>
 

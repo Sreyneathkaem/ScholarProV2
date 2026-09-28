@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -109,10 +109,10 @@ export default function EducationStep({
     return () => subscription.unsubscribe();
   }, [form, hsCertificate, ieltsDocument, grade12IdCard, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
-
+  // form.handleSubmit runs the zodResolver (including the superRefine checks
+  // that mirror the backend's educationBackgroundSchema), then the flat form
+  // values are mapped into the nested EducationData shape.
+  const handleSubmit = form.handleSubmit((values) => {
     onNext({
       currentEducationLevel: values.currentEducationLevel,
       university: {
@@ -133,7 +133,7 @@ export default function EducationStep({
       ieltsDocument,
       grade12IdCard,
     });
-  };
+  });
 
   const isUniversity = educationLevel === "university";
   const isHighSchoolGraduate = educationLevel === "high_school_graduate";
@@ -231,7 +231,9 @@ export default function EducationStep({
                   name="universityInstitutionName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Institution Name</FormLabel>
+                      <FormLabel>
+                        Institution Name <RequiredMark />
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="Enter university name" {...field} />
                       </FormControl>
@@ -245,7 +247,9 @@ export default function EducationStep({
                 name="universityYearOfStudy"
                 render={({ field }) => (
                   <FormItem className="max-w-xs">
-                    <FormLabel>Current Year of Study</FormLabel>
+                    <FormLabel>
+                      Current Year of Study <RequiredMark />
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. Year 2" {...field} />
                     </FormControl>
@@ -344,6 +348,7 @@ export default function EducationStep({
                 control={form.control}
                 name="highSchoolEnglishGrade"
                 label="English grade"
+                required
               />
               <FileUpload
                 files={hsCertificate}

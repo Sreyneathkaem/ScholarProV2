@@ -15,6 +15,13 @@
       "when": 1789464877910,
       "tag": "0001_parched_freak",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790569556210,
+      "tag": "0002_flawless_nomad",
+      "breakpoints": true
     }
   ]
 }

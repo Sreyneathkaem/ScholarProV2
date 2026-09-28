@@ -87,6 +87,7 @@ export const API_ENDPOINTS = {
     // Email Sending
     BULK_SEND: (name: string) => `/email/bulk-send/${name}`, // POST - Send bulk email
     GET_JOB: (jobId: number) => `/email/jobs/${jobId}`, // GET - Get email job status
+    TEST_SEND: "/email/test-send", // POST - Send one real email via SES, bypassing the queue
 
     // Recipient Management
     LIST_BATCHES: "/batches", // GET - List all batches

@@ -37,6 +37,21 @@ interface BulkSendApiResponse {
   jobId?: number;
 }
 
+// Test Send Response - API returns the real SES verdict, always HTTP 200 on a
+// well-formed request. `success: false` carries the SES rejection reason.
+interface TestSendApiResponse {
+  success: boolean;
+  message: string;
+  messageId?: string;
+  errorName?: string;
+  errorDetail?: string;
+  config?: {
+    region?: string;
+    fromEmail?: string;
+    hasStaticCredentials?: boolean;
+  };
+}
+
 // ============================================
 // EXPORTED TYPES (Frontend-friendly interfaces)
 // ============================================
@@ -70,6 +85,8 @@ export interface EmailJobStatus {
   sentCount: number;
   failedCount: number;
   status: "queued" | "processing" | "completed";
+  /** Per-recipient SES rejection reasons, when the backend has recorded any. */
+  failures?: Array<{ toEmail?: string | null; errorMessage?: string | null }>;
 }
 
 export interface Batch {
@@ -352,5 +369,25 @@ export const emailService = {
       count: response.data.pagination?.count ?? recipientData.length,
       data: recipientData,
     };
+  },
+
+  /**
+   * Send a single real email straight through SES, bypassing the queue and the
+   * 1-minute cron, and report the actual SES verdict.
+   *
+   * Use this to answer "is the sending service working?". The queued path cannot:
+   * it only reports a failed count, and the worker runs once a minute.
+   *
+   * POST /api/email/test-send
+   */
+  async sendTestEmail(
+    to: string,
+    templateName?: string,
+  ): Promise<TestSendApiResponse> {
+    const response = await apiClient.post<TestSendApiResponse>(
+      API_ENDPOINTS.EMAIL.TEST_SEND,
+      templateName ? { to, templateName } : { to },
+    );
+    return response.data;
   },
 };

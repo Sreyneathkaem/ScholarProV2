@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, type FormEvent } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -86,11 +86,11 @@ export default function ParentsGuardiansStep({
     return () => subscription.unsubscribe();
   }, [form, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
+  // form.handleSubmit runs the zodResolver; form.getValues() would skip
+  // validation entirely and let blanks reach the backend.
+  const handleSubmit = form.handleSubmit((values) => {
     onNext(values);
-  };
+  });
 
   return (
     <Form {...form}>

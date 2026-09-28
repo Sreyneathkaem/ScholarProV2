@@ -28,6 +28,18 @@ const phoneNumberSchema = z.preprocess(
     .regex(/^\+?[0-9]{8,15}$/, "Invalid phone number format"),
 );
 
+// `students.email` is UNIQUE and the duplicate-student lookup compares with
+// `eq()` (case-sensitive), while the Google OAuth path stores
+// `email.toLowerCase()`. Without normalising here, a student who signs in with
+// Google as `Sokha@gmail.com` and then retypes `Sokha@gmail.com` misses the
+// lookup, takes the INSERT branch, and the unique violation rolls the whole
+// registration transaction back. Lowercasing at the schema boundary keeps the
+// lookup, the insert, and the admin name/email search consistent.
+const emailSchema = z.preprocess(
+  (value) => (typeof value === "string" ? value.trim().toLowerCase() : value),
+  z.string().email("Invalid email format"),
+);
+
 // Personal Information Schema
 export const personalInfoSchema = z.object({
   nameKh: z.string().min(1, "Khmer name is required"),
@@ -43,7 +55,7 @@ export const personalInfoSchema = z.object({
   address: z.string().min(1, "Address is required"),
   country: z.string().min(1, "Country is required"),
   phoneNumber: phoneNumberSchema,
-  email: z.string().email("Invalid email format"),
+  email: emailSchema,
 });
 
 // Parent/Guardian Information Schema
@@ -170,7 +182,7 @@ export const studentRegistrationSchema = z.object({
   student: z.object({
     nameEn: z.string().min(1, "English name is required"),
     nameKh: z.string().min(1, "Khmer name is required"),
-    email: z.string().email("Invalid email format"),
+    email: emailSchema,
     phoneNumber: phoneNumberSchema,
     dateOfBirth: z.coerce.date({
       message: "Valid date of birth is required",
