@@ -12,6 +12,7 @@ import { SendPreviewDialog } from "@/components/communications/SendPreviewDialog
 import axios from "axios";
 import { EMAIL_VARIABLES } from "@/constants/email-variables";
 import { PageHero } from "@/components/common/page-hero";
+import { getApiErrorMessage } from "@/lib/utils/api-error";
 
 function CommunicationsPageContent() {
   const { setTitle } = useHeader();

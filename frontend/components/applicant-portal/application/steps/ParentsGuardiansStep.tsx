@@ -88,7 +88,7 @@ export default function ParentsGuardiansStep({
 
   const onValidSubmit = (values: ParentsValues) => {
     onNext(values);
-  });
+  };
 
   return (
     <Form {...form}>

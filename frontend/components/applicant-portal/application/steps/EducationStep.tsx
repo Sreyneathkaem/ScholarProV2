@@ -130,7 +130,7 @@ export default function EducationStep({
       ieltsDocument,
       grade12IdCard,
     });
-  });
+  };
 
   const isUniversity = educationLevel === "university";
   const isHighSchoolGraduate = educationLevel === "high_school_graduate";
