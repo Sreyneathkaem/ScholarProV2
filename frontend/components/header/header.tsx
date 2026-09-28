@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useHeader } from "@/components/header/header-context";
 import { useAuth } from "@/lib/context/auth-context";
 import { useRouter } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface PageHeaderProps {
   showNotifications?: boolean;
@@ -50,15 +51,18 @@ export function PageHeader({ showProfile = true }: PageHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 overflow-x-hidden">
+    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-border bg-background/95 backdrop-blur-sm px-4 overflow-x-hidden transition-colors">
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <SidebarTrigger className="-ml-1" />
-        <h1 className="text-xl font-semibold truncate">{title}</h1>
+        <h1 className="text-xl font-semibold truncate text-foreground">{title}</h1>
       </div>
 
-      <div className="flex items-center gap-4 min-w-0">
+      <div className="flex items-center gap-3 min-w-0">
         {/* Page-specific actions injected by pages via header context */}
         {actions}
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Profile Dropdown */}
         {showProfile && user && (
@@ -66,16 +70,16 @@ export function PageHeader({ showProfile = true }: PageHeaderProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-10 px-2 rounded-md flex items-center gap-3 min-w-0"
+                className="h-10 px-2 rounded-lg flex items-center gap-3 min-w-0 hover:bg-accent"
               >
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 border border-border">
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="hidden sm:flex flex-col items-start text-left min-w-0">
-                  <span className="text-sm font-medium leading-none truncate max-w-[160px]">
+                  <span className="text-sm font-medium leading-none truncate max-w-[160px] text-foreground">
                     {user.name}
                   </span>
                   <span className="text-xs text-muted-foreground leading-none truncate max-w-[200px]">
@@ -87,8 +91,8 @@ export function PageHeader({ showProfile = true }: PageHeaderProps) {
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                  <p className="text-sm font-medium text-foreground">{user.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                   <p className="text-xs text-muted-foreground capitalize">
                     Role: {user.role}
                   </p>
@@ -100,7 +104,7 @@ export function PageHeader({ showProfile = true }: PageHeaderProps) {
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
+              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>

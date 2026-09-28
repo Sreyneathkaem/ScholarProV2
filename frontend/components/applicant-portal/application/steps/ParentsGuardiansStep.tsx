@@ -97,7 +97,7 @@ export default function ParentsGuardiansStep({
       <form onSubmit={handleSubmit} className="space-y-0">
         <SectionHeader
           title="Section 2: Parents/Guardians Details"
-          subtitle="Please fill in the information below"
+          subtitle="Please fill in the parent or guardian information below"
         />
 
         <div className="px-4 sm:px-8 py-6 space-y-6">
@@ -112,8 +112,8 @@ export default function ParentsGuardiansStep({
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Your answer"
-                    className="max-w-sm"
+                    placeholder="Enter parent/guardian full name"
+                    className="w-full"
                     {...field}
                   />
                 </FormControl>
@@ -166,8 +166,8 @@ export default function ParentsGuardiansStep({
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Your answer"
-                    className="max-w-sm"
+                    placeholder="e.g. Cambodian"
+                    className="w-full"
                     {...field}
                   />
                 </FormControl>
@@ -191,7 +191,7 @@ export default function ParentsGuardiansStep({
                 >
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Choose your current address" />
+                      <SelectValue placeholder="Choose current address" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -225,7 +225,7 @@ export default function ParentsGuardiansStep({
                     Job Position <RequiredMark />
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Your answer" {...field} />
+                    <Input placeholder="e.g. Business Owner, Teacher" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -240,7 +240,7 @@ export default function ParentsGuardiansStep({
                     Phone Number <RequiredMark />
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Your answer" type="tel" {...field} />
+                    <Input placeholder="012 345 678" type="tel" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

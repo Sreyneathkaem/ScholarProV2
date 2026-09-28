@@ -118,7 +118,7 @@ export default function PersonalInfoStep({
       <form onSubmit={handleSubmit} className="space-y-0">
         <SectionHeader
           title="Section 1: Personal Information"
-          subtitle="Please fill in your personal information"
+          subtitle="Please fill in your personal details accurately"
         />
 
         <div className="px-4 sm:px-8 py-6 space-y-6">
@@ -131,7 +131,7 @@ export default function PersonalInfoStep({
                 <FormItem>
                   <FormLabel>Student&apos;s full name in Khmer</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your answer" {...field} />
+                    <Input placeholder="Enter Khmer name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,7 +146,7 @@ export default function PersonalInfoStep({
                     Student&apos;s full name in English <RequiredMark />
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Your answer" {...field} />
+                    <Input placeholder="Enter English name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -165,7 +165,7 @@ export default function PersonalInfoStep({
                     Nationality <RequiredMark />
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Your answer" {...field} />
+                    <Input placeholder="e.g. Cambodian" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -340,7 +340,7 @@ export default function PersonalInfoStep({
                     Phone Number <RequiredMark />
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Your answer" type="tel" {...field} />
+                    <Input placeholder="012 345 678" type="tel" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -403,17 +403,17 @@ export function SectionHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="rounded-t-xl bg-[#1e2d6b] px-6 py-5 text-center text-white">
-      <h2 className="text-base sm:text-lg font-semibold">{title}</h2>
+    <div className="rounded-t-xl bg-primary px-6 py-5 text-center text-primary-foreground shadow-xs">
+      <h2 className="text-base sm:text-lg font-semibold tracking-tight">{title}</h2>
       {subtitle && (
-        <p className="mt-1 text-xs sm:text-sm text-blue-200">{subtitle}</p>
+        <p className="mt-1 text-xs sm:text-sm text-primary-foreground/80">{subtitle}</p>
       )}
     </div>
   );
 }
 
 export function RequiredMark() {
-  return <span className="text-red-500 ml-0.5">*</span>;
+  return <span className="text-destructive ml-0.5">*</span>;
 }
 
 export function StepNavigation({
@@ -428,7 +428,7 @@ export function StepNavigation({
   isSubmitting?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between border-t border-slate-100 px-4 sm:px-8 py-4">
+    <div className="flex items-center justify-between border-t border-border bg-card px-4 sm:px-8 py-4">
       {showBack ? (
         <Button
           type="button"
@@ -444,7 +444,7 @@ export function StepNavigation({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="bg-[#1e2d6b] hover:bg-[#162055] text-white px-8"
+        className="px-8"
       >
         {submitLabel}
       </Button>

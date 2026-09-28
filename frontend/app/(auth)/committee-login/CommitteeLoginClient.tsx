@@ -100,7 +100,7 @@ export default function CommitteeLoginClient() {
   }, [searchParams, acceptForm]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-4">
       <div className="w-full max-w-4xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-0">
         <div className="flex-1 flex justify-center lg:justify-end lg:pr-10">
           <div className="relative w-64 h-64 md:w-80 md:h-80">
@@ -116,20 +116,20 @@ export default function CommitteeLoginClient() {
         </div>
 
         <div className="hidden lg:flex flex-col items-center">
-          <div className="h-32 w-px bg-gray-200" />
-          <span className="py-4 text-xs font-medium text-gray-400 uppercase tracking-widest vertical-text">
+          <div className="h-32 w-px bg-border" />
+          <span className="py-4 text-xs font-medium text-muted-foreground uppercase tracking-widest vertical-text">
             Accept Invite
           </span>
-          <div className="h-32 w-px bg-gray-200" />
+          <div className="h-32 w-px bg-border" />
         </div>
 
         <div className="flex-1 flex justify-center lg:justify-start lg:pl-16">
           <div className="w-full max-w-[360px] space-y-6">
             <div className="space-y-1">
-              <h1 className="text-2xl font-bold text-[#0F172A]">
+              <h1 className="text-2xl font-bold text-foreground">
                 Welcome To ScholarPro!
               </h1>
-              <p className="text-slate-500 text-sm">
+              <p className="text-muted-foreground text-sm">
                 Set up your password to accept the invitation
               </p>
             </div>
@@ -170,7 +170,7 @@ export default function CommitteeLoginClient() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#113768] hover:bg-[#0d2a50] text-white py-6 text-base font-semibold rounded-md"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-base font-semibold rounded-md"
                   disabled={
                     validating || isSubmitting || isValidInvite === false
                   }
@@ -183,7 +183,7 @@ export default function CommitteeLoginClient() {
                 </Button>
 
                 {isValidInvite === false && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     This invite link is invalid or expired.
                   </p>
                 )}

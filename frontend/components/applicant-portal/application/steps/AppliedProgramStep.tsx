@@ -121,7 +121,7 @@ export default function AppliedProgramStep({
       <form onSubmit={handleSubmit} className="space-y-0">
         <SectionHeader
           title="Section 4: Applied Program"
-          subtitle="Choose your interested major"
+          subtitle="Choose your interested major and preferences"
         />
 
         <div className="px-4 sm:px-8 py-6 space-y-8">
@@ -141,7 +141,7 @@ export default function AppliedProgramStep({
                       control={form.control}
                       name="interestedMajors"
                       render={({ field }) => (
-                        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 transition-colors hover:bg-slate-50 has-[:checked]:border-[#1e2d6b] has-[:checked]:bg-blue-50/50">
+                        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-muted has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                           <Checkbox
                             checked={field.value.includes(major)}
                             onCheckedChange={(checked) => {
@@ -155,7 +155,7 @@ export default function AppliedProgramStep({
                             }}
                             id={`major-${major}`}
                           />
-                          <span className="text-sm text-slate-700">
+                          <span className="text-sm text-foreground">
                             {major}
                           </span>
                         </label>
@@ -290,7 +290,7 @@ export default function AppliedProgramStep({
             render={() => (
               <FormItem>
                 <FormLabel>
-                  How do you know CamTech? <RequiredMark />
+                  How did you know about CamTech? <RequiredMark />
                 </FormLabel>
                 <div className="mt-3 space-y-2">
                   {HOW_DID_YOU_KNOW.map((source) => (
@@ -299,7 +299,7 @@ export default function AppliedProgramStep({
                       control={form.control}
                       name="howDidYouKnow"
                       render={({ field }) => (
-                        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 transition-colors hover:bg-slate-50 has-[:checked]:border-[#1e2d6b] has-[:checked]:bg-blue-50/50">
+                        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-muted has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                           <Checkbox
                             checked={field.value.includes(source)}
                             onCheckedChange={(checked) => {
@@ -313,7 +313,7 @@ export default function AppliedProgramStep({
                             }}
                             id={`know-${source}`}
                           />
-                          <span className="text-sm text-slate-700">
+                          <span className="text-sm text-foreground">
                             {source}
                           </span>
                         </label>
@@ -327,13 +327,13 @@ export default function AppliedProgramStep({
           />
 
           {/* Confirmation & Data Protection */}
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 space-y-3">
-            <h4 className="font-semibold text-slate-800">
+          <div className="rounded-xl border border-border bg-muted/40 p-5 space-y-3">
+            <h4 className="font-semibold text-foreground">
               Confirmation &amp; Data Protection
             </h4>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               CamTech University will use your email to stay in touch and update
-              you about our events and activities.
+              you about admissions, evaluation results, and university events.
             </p>
             <FormField
               control={form.control}
@@ -378,9 +378,9 @@ export default function AppliedProgramStep({
             name="declaration"
             render={({ field }) => (
               <FormItem>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 space-y-3">
-                  <h4 className="font-semibold text-slate-800">Declaration</h4>
-                  <p className="text-sm text-slate-600 italic">
+                <div className="rounded-xl border border-border bg-muted/40 p-5 space-y-3">
+                  <h4 className="font-semibold text-foreground">Declaration</h4>
+                  <p className="text-sm text-muted-foreground italic leading-relaxed">
                     I declare that all information provided is correct and
                     understand that any false, inaccurate, or misleading
                     information will result in the student&apos;s withdrawal
@@ -395,9 +395,9 @@ export default function AppliedProgramStep({
                       />
                       <Label
                         htmlFor="declaration-check"
-                        className="cursor-pointer font-medium text-sm"
+                        className="cursor-pointer font-medium text-sm text-foreground"
                       >
-                        Yes I agree
+                        Yes, I agree
                       </Label>
                     </label>
                   </FormControl>
@@ -408,46 +408,46 @@ export default function AppliedProgramStep({
           />
 
           {/* Application Fee */}
-          <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-5 space-y-4">
-            <h4 className="font-bold text-[#1e2d6b] text-base">
+          <div className="rounded-xl border border-blue-200 dark:border-blue-900/50 bg-gradient-to-br from-blue-50/80 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 space-y-4">
+            <h4 className="font-bold text-primary dark:text-blue-400 text-base">
               Application Fee $10
             </h4>
             <div className="flex flex-col sm:flex-row gap-6 items-start">
-              <div className="space-y-1.5">
-                <p className="text-sm text-slate-700">
-                  <span className="font-medium">Canada Bank Account QR</span>
+              <div className="space-y-1.5 flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  Canadia Bank Account QR
                 </p>
-                <p className="text-sm text-slate-700">
+                <p className="text-sm text-muted-foreground">
                   Bank Account Name:{" "}
-                  <span className="font-semibold text-[#1e2d6b]">CAMTECH</span>
+                  <span className="font-semibold text-primary dark:text-blue-300">CAMTECH</span>
                 </p>
-                <p className="text-sm text-slate-700">
+                <p className="text-sm text-muted-foreground">
                   Bank Account Number:{" "}
-                  <span className="font-semibold text-[#1e2d6b] tracking-wider">
+                  <span className="font-semibold text-primary dark:text-blue-300 tracking-wider">
                     001009930401
                   </span>
                 </p>
-                <p className="mt-2 text-xs text-amber-700 font-medium">
+                <p className="mt-2 text-xs text-amber-700 dark:text-amber-400 font-medium">
                   * The application fee is non-refundable. Your account transfer
                   fee should match the registered name.
                 </p>
               </div>
-              {/* QR Code placeholder */}
-              <div className="shrink-0 flex size-28 items-center justify-center rounded-xl border-2 border-dashed border-[#1e2d6b]/30 bg-white p-2">
-                <div className="grid grid-cols-4 gap-0.5 opacity-40">
+              {/* QR Code container */}
+              <div className="shrink-0 flex size-28 items-center justify-center rounded-xl border-2 border-dashed border-primary/30 bg-card p-2">
+                <div className="grid grid-cols-4 gap-1 opacity-50">
                   {Array.from({ length: 16 }).map((_, i) => (
                     <div
                       key={i}
-                      className={`size-5 rounded-sm ${Math.random() > 0.5 ? "bg-[#1e2d6b]" : "bg-white"}`}
+                      className={`size-4 rounded-xs ${i % 2 === 0 || i === 5 ? "bg-primary" : "bg-muted"}`}
                     />
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-blue-100 pt-4 space-y-2">
-              <p className="text-sm font-medium text-slate-700">
-                Must upload in order to pay
+            <div className="border-t border-border/80 pt-4 space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                Payment Verification
               </p>
               <FileUpload
                 files={paymentProof}
@@ -459,7 +459,7 @@ export default function AppliedProgramStep({
                 maxSizeMB={10}
                 hint="Upload 1 supported file: PDF or image. Max 10 MB."
                 error={paymentError}
-                label="Upload payment proof (PDF/JPG)"
+                label="Upload payment proof receipt (PDF/JPG)"
               />
             </div>
           </div>

@@ -1,32 +1,34 @@
-import { Badge } from "@/components/ui/badge"
-import { StudentStatus } from "@/types/exam"
+import { Badge } from "@/components/ui/badge";
+import { StudentStatus } from "@/types/exam";
 
 interface StatusIndicatorProps {
-  status: StudentStatus
-  type?: "badge" | "dot"
+  status: StudentStatus;
+  type?: "badge" | "dot";
 }
 
 export function StatusIndicator({ status, type = "badge" }: StatusIndicatorProps) {
   if (type === "dot") {
     if (status === "Exempt") {
       return (
-        <span className="inline-flex items-center gap-1 text-sm text-green-700">
+        <span className="inline-flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
           Exempt
         </span>
-      )
+      );
     } else {
-      return <span className="text-sm text-gray-600">Required</span>
+      return (
+        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground font-medium">
+          <span className="h-2 w-2 rounded-full bg-muted-foreground" />
+          Required
+        </span>
+      );
     }
   }
 
   // Badge type (default)
-  const badgeClasses = 
-    status === "Exempt" ? "bg-blue-50 text-blue-700" :
-    "bg-gray-50 text-gray-700"
-
   return (
-    <Badge variant="secondary" className={badgeClasses}>
+    <Badge variant={status === "Exempt" ? "info" : "secondary"}>
       {status}
     </Badge>
-  )
+  );
 }

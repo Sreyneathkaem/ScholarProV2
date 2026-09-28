@@ -43,7 +43,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-4">
       <div className="w-full max-w-4xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-0">
         {/* Left Side: University Logo */}
         <div className="flex-1 flex justify-center lg:justify-end lg:pr-10">
@@ -61,21 +61,21 @@ export default function LoginPage() {
 
         {/* Middle: The Vertical Divider with Text */}
         <div className="hidden lg:flex flex-col items-center">
-          <div className="h-32 w-[1px] bg-gray-200" />
-          <span className="py-4 text-xs font-medium text-gray-400 uppercase tracking-widest vertical-text">
+          <div className="h-32 w-[1px] bg-border" />
+          <span className="py-4 text-xs font-medium text-muted-foreground uppercase tracking-widest vertical-text">
             Log In
           </span>
-          <div className="h-32 w-[1px] bg-gray-200" />
+          <div className="h-32 w-[1px] bg-border" />
         </div>
 
         {/* Right Side: Form */}
         <div className="flex-1 flex justify-center lg:justify-start lg:pl-16">
           <div className="w-full max-w-[360px] space-y-6">
             <div className="space-y-1">
-              <h1 className="text-2xl font-bold text-[#0F172A]">
+              <h1 className="text-2xl font-bold text-foreground">
                 Welcome To ScholarPro!
               </h1>
-              <p className="text-slate-500 text-sm">
+              <p className="text-muted-foreground text-sm">
                 Enter your details below to login
               </p>
             </div>
@@ -83,7 +83,7 @@ export default function LoginPage() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4 bg-white border-gray-200 focus:ring-1 focus:ring-blue-900"
+                className="space-y-4"
               >
                 <FormInput<LoginSchema>
                   control={form.control}
@@ -103,14 +103,14 @@ export default function LoginPage() {
                 <div className="pt-2">
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-slate-600 hover:text-[#113768] hover:underline underline-offset-4 transition-colors"
+                    className="text-sm text-muted-foreground hover:text-primary hover:underline underline-offset-4 transition-colors"
                   >
                     Forgot your password?
                   </Link>
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#113768] hover:bg-[#0d2a50] text-white py-6 text-base font-semibold transition-all rounded-md"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-base font-semibold transition-all rounded-md"
                   disabled={isLoading}
                 >
                   {isLoading ? "Logging in..." : "Log In"}
@@ -118,11 +118,11 @@ export default function LoginPage() {
               </form>
             </Form>
 
-            <p className="text-center text-sm text-slate-500 pt-1">
+            <p className="text-center text-sm text-muted-foreground pt-1">
               Are you a student?{" "}
               <Link
                 href="/students"
-                className="font-semibold text-[#113768] hover:underline underline-offset-4"
+                className="font-semibold text-primary hover:underline underline-offset-4"
               >
                 Go to the student portal
               </Link>

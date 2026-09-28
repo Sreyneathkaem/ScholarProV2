@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { AuthProvider } from "@/lib/context/auth-context";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export function Providers({
   children,
@@ -15,12 +16,19 @@ export function Providers({
 }) {
   const [queryClient] = useState(() => new QueryClient());
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {children}
-        <Toaster richColors position="top-right" />
-      </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} styleNonce={nonce} />
-    </QueryClientProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} styleNonce={nonce} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
