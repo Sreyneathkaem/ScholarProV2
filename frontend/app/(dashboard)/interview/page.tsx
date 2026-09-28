@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
 
+import { useEffect, useState } from "react";
 import { apiClient } from "@/api/api";
 import { API_ENDPOINTS } from "@/api/endpoint";
 import { useHeader } from "@/components/header/header-context";
+import { PageHero } from "@/components/common/page-hero";
 import { useRouter } from "next/navigation";
-import { UpcomingSchedule } from "@/components/schedule-card";
-import { ScheduleCard } from "@/components/schedule-card";
+import { UpcomingSchedule, ScheduleCard } from "@/components/schedule-card";
 
 export default function Interview() {
   const { setTitle } = useHeader();
@@ -40,7 +40,12 @@ export default function Interview() {
   }, []);
 
   return (
-    <div className="p-10">
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <PageHero
+        title="Interview Evaluation Sessions"
+        subtitle="Select a scheduled oral interview panel to evaluate candidates and input criteria ratings"
+      />
+
       {/* Only show schedules for subjectId === 3 */}
       <ScheduleCard
         schedules={upcomingSchedules.filter(

@@ -26,7 +26,7 @@ export default function GenderChart({ data }: Props) {
     datasets: [
       {
         data: [data.female, data.male],
-        backgroundColor: ["#0A2A6A", "#D9DCE3"],
+        backgroundColor: ["#0F386C", "#5a9be6"],
         borderWidth: 0,
         hoverOffset: 6,
       },
@@ -37,21 +37,20 @@ export default function GenderChart({ data }: Props) {
   const options: ChartOptions<"doughnut"> = {
     cutout: "72%",
     responsive: true,
-    maintainAspectRatio: false, // Added to prevent layout shifts
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       tooltip: {
         callbacks: {
           label: (ctx: TooltipItem<"doughnut">) => {
-            // Safety check for raw value
             const value = ctx.raw || 0;
             return `${ctx.label}: ${value}`;
           },
         },
-        backgroundColor: "#ffffff",
-        titleColor: "#000000",
-        bodyColor: "#000000",
-        borderColor: "#ddd",
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        titleColor: "#ffffff",
+        bodyColor: "#ffffff",
+        borderColor: "rgba(255, 255, 255, 0.1)",
         borderWidth: 1,
         bodyFont: { size: 12 },
         displayColors: false,
@@ -66,10 +65,10 @@ export default function GenderChart({ data }: Props) {
   };
 
   return (
-    <div className="bg-white border rounded-xl shadow-sm p-5 h-[360px] flex flex-col">
-      <p className="text-sm font-semibold text-blue-900">Total Applicants</p>
-      <p className="text-xs text-gray-500 mb-3">
-        Gender distribution – Click to filter
+    <div className="bg-card border border-border/80 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] p-6 h-[360px] flex flex-col">
+      <p className="text-sm font-semibold text-foreground">Total Applicants</p>
+      <p className="text-xs text-muted-foreground mb-4">
+        Gender distribution – Ratio analysis
       </p>
 
       <div className="flex items-center gap-6 h-full">
@@ -79,23 +78,23 @@ export default function GenderChart({ data }: Props) {
         </div>
 
         {/* Side Stats */}
-        <div className="text-sm space-y-2">
+        <div className="text-sm space-y-3">
           <div>
-            <p className="font-medium text-blue-900">Total Students</p>
-            <p className="text-xl font-bold">{data.total.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">Total Students</p>
+            <p className="text-2xl font-semibold text-foreground">{data.total.toLocaleString()}</p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-blue-900" />
-            <p className="text-xs text-gray-600">
-              Female: {calculatePercentage(data.female)}%
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0F386C]" />
+            <p className="text-xs text-muted-foreground">
+              Female: <span className="font-medium text-foreground">{calculatePercentage(data.female)}%</span>
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-gray-300" />
-            <p className="text-xs text-gray-600">
-              Male: {calculatePercentage(data.male)}%
+            <span className="w-2.5 h-2.5 rounded-full bg-[#5a9be6]" />
+            <p className="text-xs text-muted-foreground">
+              Male: <span className="font-medium text-foreground">{calculatePercentage(data.male)}%</span>
             </p>
           </div>
         </div>

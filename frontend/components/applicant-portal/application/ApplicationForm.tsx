@@ -105,6 +105,18 @@ export default function ApplicationForm() {
       setUserKey(resolvedEmail || "guest");
 
       if (saved.applicationData) {
+        const rawCompleted = Array.isArray(saved.completedSteps) ? saved.completedSteps : [];
+        const validCompleted: number[] = [];
+        for (let i = 1; i <= 4; i++) {
+          if (rawCompleted.includes(i)) {
+            validCompleted.push(i);
+          } else {
+            break;
+          }
+        }
+        const maxStepAllowed = validCompleted.length + 1;
+        const resolvedStep = Math.min(saved.currentStep || 1, maxStepAllowed);
+
         setFormData({
           ...saved.applicationData,
           personal: {
@@ -115,8 +127,8 @@ export default function ApplicationForm() {
             email: saved.applicationData.personal?.email || resolvedEmail || "",
           },
         });
-        setCurrentStep(saved.currentStep || 1);
-        setCompletedSteps(saved.completedSteps ?? []);
+        setCurrentStep(resolvedStep);
+        setCompletedSteps(validCompleted);
       } else {
         setFormData({
           ...INITIAL_DATA,
@@ -196,16 +208,30 @@ export default function ApplicationForm() {
     }
   };
 
-  const goToStep = (nextStep: number, nextData?: ApplicationFormData) => {
+  const isStepAccessible = (targetStep: number, activeCompleted = completedSteps): boolean => {
+    if (targetStep === currentStep) return true;
+    if (targetStep < currentStep) return true;
+    for (let i = 1; i < targetStep; i++) {
+      if (!activeCompleted.includes(i)) return false;
+    }
+    return true;
+  };
+
+  const goToStep = (
+    nextStep: number,
+    nextData?: ApplicationFormData,
+    overrideCompleted?: number[],
+  ) => {
     const activeData = nextData ?? formData;
     const safeStep = Math.min(Math.max(nextStep, 1), 5);
-    const nextCompletedSteps =
-      safeStep > currentStep
-        ? Array.from(new Set([...completedSteps, currentStep]))
-        : completedSteps;
+    const activeCompleted = overrideCompleted ?? completedSteps;
+
+    if (!isStepAccessible(safeStep, activeCompleted)) {
+      return;
+    }
 
     setCurrentStep(safeStep);
-    persistForm(activeData, safeStep, nextCompletedSteps);
+    persistForm(activeData, safeStep, activeCompleted);
 
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -324,24 +350,22 @@ export default function ApplicationForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:py-12">
-      {/* Brand Blue Registration Header Card */}
-      <div className="rounded-t-2xl bg-gradient-to-br from-[#10386B] to-[#141f4d] dark:from-[#0e274b] dark:to-[#071326] px-6 py-8 sm:px-10 sm:py-10 text-white relative overflow-hidden shadow-lg border border-primary/20">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGllcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50" />
-
+    <div className="w-full space-y-6">
+      {/* Ant Design Registration Header Card */}
+      <div className="rounded-t-lg bg-gradient-to-r from-[#0F386C] to-[#1E3A5F] px-6 py-5 sm:px-6 sm:py-6 text-white relative overflow-hidden shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] border border-primary/30">
         <div className="relative z-10">
-          <div className="text-[11px] font-semibold tracking-[0.2em] text-blue-200/90 uppercase">
+          <div className="text-xs font-medium text-white/80">
             Registration Process
           </div>
 
-          <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-white">
             New Candidate Registration
           </h1>
-          <p className="mt-3 text-sm text-blue-100/80 max-w-2xl leading-relaxed">
-            Welcome to the CamTech admissions portal. Complete the form below to enter the evaluation pool for academic funding.
+          <p className="mt-1 text-xs sm:text-sm text-white/80 max-w-3xl leading-relaxed">
+            Welcome to the admissions portal. Complete the form below to enter the evaluation pool for academic funding.
           </p>
 
-          <div className="my-8 border-t border-white/15" />
+          <div className="my-4 border-t border-white/20" />
 
           {/* Step Indicator */}
           <FormStepper
@@ -353,32 +377,32 @@ export default function ApplicationForm() {
       </div>
 
       {/* Step Content */}
-      <div className="rounded-b-2xl bg-card text-card-foreground shadow-lg border border-border border-t-0 overflow-hidden">
+      <div className="rounded-b-lg bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] border border-border/80 border-t-0 overflow-hidden">
         {currentStep === 1 && (
           <>
             {/* Instructions */}
-            <div className="px-6 py-6 sm:px-10 sm:py-8 border-b border-border bg-muted/40">
-              <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-sm">
-                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+            <div className="px-6 py-4 border-b border-border/80 bg-muted/20">
+              <div className="bg-card border border-border/80 rounded-[6px] p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]">
+                <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-primary" />
                   Application Instructions
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-3">
                   Please complete all required information accurately and upload the following documents:
                 </p>
-                <ul className="space-y-2.5 text-sm text-muted-foreground mb-5">
+                <ul className="space-y-2 text-sm text-muted-foreground mb-4">
                   <li className="flex items-start gap-2.5">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                     <span>Birth Certificate, National ID Card, or Passport (PDF/JPG)</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                     <span>High school certificate, equivalent document, or grade 12 student ID card</span>
                   </li>
                 </ul>
-                <div className="flex items-start gap-2.5 bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg p-3.5">
-                  <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
-                  <p className="text-xs text-blue-900 dark:text-blue-300 leading-relaxed">
+                <div className="flex items-start gap-2.5 bg-[#edf4fc] dark:bg-[#0f2238] border border-[#b8d4f6] dark:border-[#1e3f66] rounded-[6px] p-3">
+                  <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <p className="text-xs text-[#0F386C] dark:text-[#5a9be6] leading-relaxed">
                     <span className="font-semibold">Note:</span> Incomplete applications will be rejected. For assistance, contact 078 / 086 21 21 81.
                   </p>
                 </div>
@@ -395,7 +419,8 @@ export default function ApplicationForm() {
               }}
               onNext={(data) => {
                 const next = { ...formData, personal: data };
-                goToStep(2, next);
+                const nextCompleted = Array.from(new Set([...completedSteps, 1]));
+                goToStep(2, next, nextCompleted);
               }}
             />
           </>
@@ -412,7 +437,8 @@ export default function ApplicationForm() {
             }}
             onNext={(data) => {
               const next = { ...formData, parents: data };
-              goToStep(3, next);
+              const nextCompleted = Array.from(new Set([...completedSteps, 2]));
+              goToStep(3, next, nextCompleted);
             }}
             onBack={goBack}
           />
@@ -429,7 +455,8 @@ export default function ApplicationForm() {
             }}
             onNext={(data) => {
               const next = { ...formData, education: data };
-              goToStep(4, next);
+              const nextCompleted = Array.from(new Set([...completedSteps, 3]));
+              goToStep(4, next, nextCompleted);
             }}
             onBack={goBack}
           />
@@ -446,7 +473,8 @@ export default function ApplicationForm() {
             }}
             onNext={(data) => {
               const next = { ...formData, program: data };
-              goToStep(5, next);
+              const nextCompleted = Array.from(new Set([...completedSteps, 4]));
+              goToStep(5, next, nextCompleted);
             }}
             onBack={goBack}
           />

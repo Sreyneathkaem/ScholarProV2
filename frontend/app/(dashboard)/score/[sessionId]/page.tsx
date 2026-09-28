@@ -141,14 +141,24 @@ export default function ScoreEntrySessionPage() {
       : students.filter((s) => s.batch === selectedBatch);
 
   return (
-    <div className="p-10 flex flex-col gap-6">
-      <div className="flex items-center gap-4">
-        <Badge variant="secondary">{filteredStudents.length} student(s)</Badge>
-        <div className="ml-auto text-white">
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-border/60">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">
+            Session {sessionId} Scores
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Manage applicant examinees and update examination session test results
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="text-xs px-2.5 py-0.5 rounded-full border border-border/80">
+            {filteredStudents.length} candidate{filteredStudents.length === 1 ? "" : "s"}
+          </Badge>
           <Button
             variant="default"
             onClick={() => router.push(`/score/${sessionId}/input`)}
-            className="h-10"
+            className="h-9 px-4 text-xs font-medium bg-primary text-white hover:bg-primary/90 rounded-[6px] shadow-sm cursor-pointer"
           >
             Input Scores
           </Button>

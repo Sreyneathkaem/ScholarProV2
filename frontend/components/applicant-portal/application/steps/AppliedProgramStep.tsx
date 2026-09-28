@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -103,10 +103,7 @@ export default function AppliedProgramStep({
     return () => subscription.unsubscribe();
   }, [form, paymentProof, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
-
+  const onValidSubmit = (values: AppliedProgramValues) => {
     if (paymentProof.length === 0) {
       setPaymentError("Please upload your payment proof");
       return;
@@ -116,15 +113,24 @@ export default function AppliedProgramStep({
     onNext({ ...values, paymentProof });
   };
 
+  const onInvalidSubmit = () => {
+    if (paymentProof.length === 0) {
+      setPaymentError("Please upload your payment proof");
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-0">
+      <form
+        onSubmit={form.handleSubmit(onValidSubmit, onInvalidSubmit)}
+        className="space-y-0"
+      >
         <SectionHeader
           title="Section 4: Applied Program"
           subtitle="Choose your interested major and preferences"
         />
 
-        <div className="px-4 sm:px-8 py-6 space-y-8">
+        <div className="p-6 space-y-5">
           {/* Interested Majors */}
           <FormField
             control={form.control}

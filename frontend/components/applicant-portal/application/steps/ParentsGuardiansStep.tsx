@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, type FormEvent } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -86,21 +86,19 @@ export default function ParentsGuardiansStep({
     return () => subscription.unsubscribe();
   }, [form, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
+  const onValidSubmit = (values: ParentsValues) => {
     onNext(values);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-0">
+      <form onSubmit={form.handleSubmit(onValidSubmit)} className="space-y-0">
         <SectionHeader
           title="Section 2: Parents/Guardians Details"
           subtitle="Please fill in the parent or guardian information below"
         />
 
-        <div className="px-4 sm:px-8 py-6 space-y-6">
+        <div className="p-6 space-y-5">
           {/* Parent/Guardian Name */}
           <FormField
             control={form.control}

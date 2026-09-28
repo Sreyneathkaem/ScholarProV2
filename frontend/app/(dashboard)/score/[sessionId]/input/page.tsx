@@ -145,17 +145,24 @@ export default function ScoreInputPage() {
   };
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">
-          Input Scores (Session {sessionId})
-        </h2>
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-border/60">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">
+            Input Scores (Session {sessionId})
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Record and persist examination grades for candidate examinees
+          </p>
+        </div>
         <div className="flex items-center gap-3">
-          <Badge variant="secondary">{students.length} students</Badge>
+          <Badge variant="outline" className="text-xs px-2.5 py-0.5 rounded-full border border-border/80">
+            {students.length} student{students.length === 1 ? "" : "s"}
+          </Badge>
           <Button
             onClick={handleSaveAll}
             disabled={savingAll}
-            className="h-10 text-white"
+            className="h-9 px-4 text-xs font-medium bg-primary text-white hover:bg-primary/90 rounded-[6px] shadow-sm cursor-pointer"
           >
             {savingAll ? "Saving..." : "Save All"}
           </Button>

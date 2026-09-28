@@ -2,8 +2,21 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const uploadDir =
-  process.env.UPLOAD_DIR || path.join(__dirname, "../public/image");
+const resolveUploadDir = (): string => {
+  const envDir = process.env.UPLOAD_DIR;
+  if (!envDir) {
+    return path.join(__dirname, "../public/image");
+  }
+
+  // Handle container absolute paths like "/app/public/image" when running outside container (e.g. on Windows)
+  if (envDir.startsWith("/app/")) {
+    return path.resolve(process.cwd(), envDir.slice(5));
+  }
+
+  return path.isAbsolute(envDir) ? envDir : path.resolve(process.cwd(), envDir);
+};
+
+export const uploadDir = resolveUploadDir();
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });

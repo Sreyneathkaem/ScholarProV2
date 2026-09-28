@@ -5,30 +5,32 @@ import ScheduleTabs from "@/components/schedule/common/ScheduleTabs";
 import { ExamSchedule } from "@/components/schedule/exam/ExamSchedule";
 import { InterviewSchedule } from "@/components/schedule/interview/InterviewSchedule";
 import { useHeader } from "@/components/header/header-context";
+import { PageHero } from "@/components/common/page-hero";
 
 export default function ExamSchedulePage() {
   const { setTitle } = useHeader();
+  const [activeTab, setActiveTab] = useState("exam");
 
   useEffect(() => {
     setTitle("Schedule");
   }, [setTitle]);
-  const [activeTab, setActiveTab] = useState("exam");
 
   return (
-    <div className="min-h-screen py-6 px-2">
-      <div className="mx-auto max-w-full">
-        {/* Navigation Tabs */}
-        <ScheduleTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <PageHero
+        title="Exam & Interview Schedule"
+        subtitle="Organize examination timetables, room capacities, and committee interview appointments"
+      />
 
-        {/* Content with conditional layout */}
-        {activeTab === "exam" ? (
-          // Exam tab uses its own internal layout
-          <ExamSchedule />
-        ) : activeTab === "interview" ? (
-          // Interview tab uses its own internal layout
-          <InterviewSchedule />
-        ) : null}
-      </div>
+      {/* Navigation Tabs */}
+      <ScheduleTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      {/* Content with conditional layout */}
+      {activeTab === "exam" ? (
+        <ExamSchedule />
+      ) : activeTab === "interview" ? (
+        <InterviewSchedule />
+      ) : null}
     </div>
   );
 }

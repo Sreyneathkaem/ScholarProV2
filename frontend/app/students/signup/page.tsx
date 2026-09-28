@@ -66,7 +66,7 @@ export default function StudentSignupPage() {
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <div className="bg-card text-card-foreground border border-border rounded-2xl p-8 shadow-xl">
+          <div className="bg-card text-card-foreground border border-border/80 rounded-lg p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
             <div className="flex justify-center mb-5">
               <div className="w-14 h-14 relative">
                 <Image
@@ -87,18 +87,18 @@ export default function StudentSignupPage() {
               <Button
                 onClick={handleGoogle}
                 variant="outline"
-                className="w-full flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-sm h-11"
+                className="w-full flex items-center justify-start gap-3 rounded-md px-4 py-3 text-sm h-11"
               >
                 <GoogleColor size={24} className="shrink-0" />
-                <span className="flex-1 text-center">Continue with Google</span>
+                <span className="flex-1 text-center font-medium">Continue with Google</span>
               </Button>
 
               <Button
                 onClick={handleTelegram}
-                className="w-full flex items-center justify-start gap-3 bg-[#26a5e4] hover:bg-[#1fa1db] active:bg-[#158fc0] rounded-lg px-4 py-3 text-white text-sm h-11"
+                className="w-full flex items-center justify-start gap-3 bg-[#26a5e4] hover:bg-[#1fa1db] active:bg-[#158fc0] rounded-md px-4 py-3 text-white text-sm h-11"
               >
                 <TelegramWhite size={20} className="shrink-0" />
-                <span className="flex-1 text-center">
+                <span className="flex-1 text-center font-medium">
                   Continue with Telegram
                 </span>
               </Button>

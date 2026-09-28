@@ -79,17 +79,17 @@ export default function StudentPortalDashboard() {
   if (!snapshot) return null;
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="p-6 space-y-6">
+      <div className="rounded-lg border border-border/80 bg-card p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
               Admissions Overview
             </p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
               Welcome back, {snapshot.profile.name}
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground leading-relaxed">
+            <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground leading-relaxed">
               Your current status is{" "}
               <span className="font-semibold text-foreground">{statusMeta?.label}</span>. See your progress,
               exam schedule, and result status in one place.
@@ -113,7 +113,7 @@ export default function StudentPortalDashboard() {
         </div>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-xl border border-border bg-muted/30 p-5 space-y-4">
+          <div className="rounded-lg border border-border/80 bg-muted/20 p-5 space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-foreground">
                 Application Progress
@@ -130,7 +130,7 @@ export default function StudentPortalDashboard() {
               {progressItems.map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-start justify-between gap-3 rounded-lg border border-border bg-card px-3.5 py-2.5 shadow-xs"
+                  className="flex items-start justify-between gap-3 rounded-lg border border-border/80 bg-card px-3.5 py-2.5 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]"
                 >
                   <div>
                     <p className="text-sm font-medium text-foreground">
@@ -149,16 +149,16 @@ export default function StudentPortalDashboard() {
             </div>
           </div>
 
-          <div className="space-y-4 rounded-xl border border-border bg-card p-5">
-            <div className="rounded-lg border border-border bg-muted/30 p-4">
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <div className="space-y-4 rounded-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+            <div className="rounded-lg border border-border/80 bg-muted/20 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Current Status Detail
               </p>
               <p className="mt-2 text-sm text-foreground leading-relaxed">
                 {statusMeta?.detail}
               </p>
             </div>
-            <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
+            <div className="rounded-lg border border-border/80 p-4 text-sm text-muted-foreground">
               <p className="font-semibold text-foreground text-xs uppercase tracking-wider">
                 Next Milestone
               </p>
@@ -190,7 +190,7 @@ export default function StudentPortalDashboard() {
             <Link
               key={card.key}
               href={card.href}
-              className="group rounded-2xl border border-border bg-card p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md cursor-pointer"
+              className="group rounded-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-all duration-200 hover:border-primary/50 hover:shadow-md cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
@@ -201,7 +201,7 @@ export default function StudentPortalDashboard() {
                     {card.description}
                   </p>
                 </div>
-                <div className="rounded-xl bg-primary/10 p-2.5 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground shrink-0">
+                <div className="rounded-lg bg-primary/10 p-2.5 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground shrink-0">
                   <Icon className="size-5" />
                 </div>
               </div>

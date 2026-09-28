@@ -6,8 +6,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins);
-  --font-mono: var(--font-poppins);
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -38,87 +38,89 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.99 0.002 240);
-  --foreground: oklch(0.18 0.03 250);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 250);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 250);
-  --primary: #10386B;
-  --primary-foreground: #FFFFFF;
-  --secondary: oklch(0.96 0.01 240);
-  --secondary-foreground: #10386B;
-  --muted: oklch(0.96 0.005 240);
-  --muted-foreground: oklch(0.50 0.02 240);
-  --accent: oklch(0.95 0.015 240);
-  --accent-foreground: #10386B;
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: #FFFFFF;
-  --border: oklch(0.90 0.008 240);
-  --input: oklch(0.90 0.008 240);
-  --ring: #10386B;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #10386B;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: oklch(0.95 0.015 240);
-  --sidebar-accent-foreground: #10386B;
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: #10386B;
-  --red: #F8300B;
-  --green: #00A901;
-  --base: #FFFFFF;
+  /* Ant Design System v5 Design Tokens */
+  --radius: 0.375rem;
+  --background: #f5f5f5;
+  --foreground: #1f1f1f;
+  --card: #ffffff;
+  --card-foreground: #1f1f1f;
+  --popover: #ffffff;
+  --popover-foreground: #1f1f1f;
+  --primary: #0F386C;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #1f1f1f;
+  --muted: #fafafa;
+  --muted-foreground: #8c8c8c;
+  --accent: #edf4fc;
+  --accent-foreground: #0F386C;
+  --destructive: #ff4d4f;
+  --destructive-foreground: #ffffff;
+  --border: #d9d9d9;
+  --input: #d9d9d9;
+  --ring: #0F386C;
+  --chart-1: #0F386C;
+  --chart-2: #1E3A5F;
+  --chart-3: #52c41a;
+  --chart-4: #faad14;
+  --chart-5: #722ed1;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f1f1f;
+  --sidebar-primary: #0F386C;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #edf4fc;
+  --sidebar-accent-foreground: #0F386C;
+  --sidebar-border: #f0f0f0;
+  --sidebar-ring: #0F386C;
+  --red: #ff4d4f;
+  --green: #52c41a;
+  --base: #ffffff;
 }
 
 .dark {
-  --background: oklch(0.16 0.02 260);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.025 260);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.025 260);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #2563EB;
-  --primary-foreground: #FFFFFF;
-  --secondary: oklch(0.27 0.02 260);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.27 0.02 260);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.27 0.02 260);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: #FFFFFF;
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #3B82F6;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: #2563EB;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: oklch(0.27 0.02 260);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #3B82F6;
-  --red: #F8300B;
-  --green: #00A901;
-  --base: #FFFFFF;
+  /* Ant Design Dark Theme Tokens */
+  --background: #141414;
+  --foreground: rgba(255, 255, 255, 0.85);
+  --card: #1f1f1f;
+  --card-foreground: rgba(255, 255, 255, 0.85);
+  --popover: #1f1f1f;
+  --popover-foreground: rgba(255, 255, 255, 0.85);
+  --primary: #3b77ba;
+  --primary-foreground: #ffffff;
+  --secondary: #262626;
+  --secondary-foreground: rgba(255, 255, 255, 0.85);
+  --muted: #1f1f1f;
+  --muted-foreground: rgba(255, 255, 255, 0.45);
+  --accent: #0f2238;
+  --accent-foreground: #5a9be6;
+  --destructive: #dc4446;
+  --destructive-foreground: #ffffff;
+  --border: #303030;
+  --input: #424242;
+  --ring: #3b77ba;
+  --chart-1: #3b77ba;
+  --chart-2: #1E3A5F;
+  --chart-3: #49aa19;
+  --chart-4: #d89614;
+  --chart-5: #642ab5;
+  --sidebar: #141414;
+  --sidebar-foreground: rgba(255, 255, 255, 0.85);
+  --sidebar-primary: #3b77ba;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #0f2238;
+  --sidebar-accent-foreground: #5a9be6;
+  --sidebar-border: #303030;
+  --sidebar-ring: #3b77ba;
+  --red: #dc4446;
+  --green: #49aa19;
+  --base: #1f1f1f;
 }
 
 @layer base {
@@ -126,10 +128,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-  }
-  .font-poppins {
-    font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    @apply bg-background text-foreground font-sans;
   }
 }
 

@@ -242,7 +242,7 @@ function DropdownMenu({ session, isOpen, onClose }: DropdownMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 top-10 z-20 w-64 rounded-2xl border border-border bg-card py-2 shadow-xl ring-1 ring-black/5 focus:outline-none"
+      className="absolute right-0 top-10 z-20 w-64 rounded-lg border border-border/80 bg-card py-1.5 shadow-md focus:outline-none"
     >
       <button
         onClick={() => {
@@ -295,12 +295,12 @@ function SessionCard({ session }: { session: Session }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="group relative rounded-2xl border border-border bg-card p-6 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/40 print:border print:shadow-none">
+    <div className="group relative rounded-lg border border-border/80 bg-card p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-all duration-200 hover:shadow-md hover:border-primary/50 print:border print:shadow-none">
       {/* Top row: type badge + menu */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div
-            className={`flex h-11 w-11 items-center justify-center rounded-xl border ${config.iconBg}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-lg border ${config.iconBg}`}
           >
             <Icon className="h-5 w-5" />
           </div>
@@ -371,13 +371,13 @@ function SessionCard({ session }: { session: Session }) {
 
       {/* Note */}
       {session.note && (
-        <div className="mt-4 rounded-xl bg-muted/40 px-3.5 py-2.5 border border-border">
+        <div className="mt-4 rounded-md bg-muted/30 px-3.5 py-2.5 border border-border/80">
           <p className="text-xs text-muted-foreground leading-relaxed">{session.note}</p>
         </div>
       )}
 
       {/* Actions */}
-      <div className="mt-5 flex items-center gap-2.5 border-t border-border pt-4">
+      <div className="mt-5 flex items-center gap-2.5 border-t border-border/80 pt-4">
         <Button
           onClick={() => addToGoogleCalendar(session)}
           size="sm"
@@ -421,108 +421,100 @@ export default function StudentExamPanel() {
   if (!snapshot) return null;
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8 font-sans antialiased text-foreground">
-      <div className="mx-auto max-w-4xl space-y-8">
-        {/* Page Header */}
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-2 text-primary">
-              <Calendar className="size-4" />
-              <span className="text-xs font-bold tracking-widest uppercase">
-                Examination & Schedule
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Upcoming Schedule
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Your confirmed exam and interview sessions
-            </p>
-          </div>
-          <Button
-            onClick={exportAllToGoogleCalendar}
-            className="gap-2 self-start sm:self-auto"
-          >
-            <Calendar className="h-4 w-4" />
-            Add All to Google Calendar
-          </Button>
-        </header>
-
-        {/* Notice */}
-        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/80 dark:bg-amber-950/20 px-4.5 py-4 shadow-xs print:hidden">
-          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-              Important reminder
-            </p>
-            <p className="mt-0.5 text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
-              Please bring your registration confirmation and a valid national ID card or passport to each session.
-            </p>
-          </div>
-        </div>
-
-        {/* Summary stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 print:hidden">
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Total Sessions
-            </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-bold text-foreground">
-              {MOCK_SESSIONS.length}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Confirmed
-            </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-              {MOCK_SESSIONS.filter((s) => s.confirmed).length}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Upcoming
-            </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-bold text-primary">
-              {MOCK_SESSIONS.length}
-            </p>
-          </div>
-        </div>
-
-        {/* Schedule */}
-        <div className="space-y-8">
-          {SESSIONS_BY_DATE.map((group) => (
-            <section key={group.date} className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs">
-                  <Calendar className="h-4 w-4" />
-                </div>
-                <div>
-                  <h2 className="text-base font-bold text-foreground">
-                    {group.date}
-                  </h2>
-                  <p className="text-xs font-medium text-muted-foreground">
-                    {group.sessions.length} session
-                    {group.sessions.length > 1 ? "s" : ""} scheduled
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-3.5">
-                {group.sessions.map((session) => (
-                  <SessionCard key={session.id} session={session} />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <footer className="border-t border-border pt-6">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            All times are displayed in your local timezone (ICT). To reschedule, contact the admissions examination office at least 48 hours in advance.
+    <div className="p-6 space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-border/60">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">
+            Upcoming Schedule
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Your confirmed exam and interview sessions
           </p>
-        </footer>
+        </div>
+        <Button
+          onClick={exportAllToGoogleCalendar}
+          className="gap-2 self-start sm:self-auto rounded-md"
+        >
+          <Calendar className="h-4 w-4" />
+          Add All to Google Calendar
+        </Button>
       </div>
+
+      {/* Notice */}
+      <div className="flex items-start gap-3 rounded-md border border-[#ffe58f] dark:border-[#594214] bg-[#fffbe6] dark:bg-[#2b2111] px-4 py-3 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)] print:hidden">
+        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#d46b08] dark:text-[#e8b339]" />
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-[#d46b08] dark:text-[#e8b339]">
+            Important reminder
+          </p>
+          <p className="mt-0.5 text-xs text-[#d46b08]/90 dark:text-[#e8b339]/90 leading-relaxed">
+            Please bring your registration confirmation and a valid national ID card or passport to each session.
+          </p>
+        </div>
+      </div>
+
+      {/* Summary stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 print:hidden">
+        <div className="rounded-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Total Sessions
+          </p>
+          <p className="mt-1 text-2xl font-bold text-foreground">
+            {MOCK_SESSIONS.length}
+          </p>
+        </div>
+        <div className="rounded-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Confirmed
+          </p>
+          <p className="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            {MOCK_SESSIONS.filter((s) => s.confirmed).length}
+          </p>
+        </div>
+        <div className="rounded-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Upcoming
+          </p>
+          <p className="mt-1 text-2xl font-bold text-primary">
+            {MOCK_SESSIONS.length}
+          </p>
+        </div>
+      </div>
+
+      {/* Schedule */}
+      <div className="space-y-6">
+        {SESSIONS_BY_DATE.map((group) => (
+          <section key={group.date} className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
+                <Calendar className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">
+                  {group.date}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {group.sessions.length} session
+                  {group.sessions.length > 1 ? "s" : ""} scheduled
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {group.sessions.map((session) => (
+                <SessionCard key={session.id} session={session} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-border/80 pt-4">
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          All times are displayed in your local timezone (ICT). To reschedule, contact the admissions examination office at least 48 hours in advance.
+        </p>
+      </footer>
     </div>
   );
 }

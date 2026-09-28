@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -100,10 +100,7 @@ export default function PersonalInfoStep({
     return () => subscription.unsubscribe();
   }, [form, identityDocument, onDraftChange]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const values = form.getValues();
-
+  const onValidSubmit = (values: PersonalInfoValues) => {
     if (identityDocument.length === 0) {
       setFileError("Please upload at least one identity document");
       return;
@@ -113,15 +110,24 @@ export default function PersonalInfoStep({
     onNext({ ...values, identityDocument });
   };
 
+  const onInvalidSubmit = () => {
+    if (identityDocument.length === 0) {
+      setFileError("Please upload at least one identity document");
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-0">
+      <form
+        onSubmit={form.handleSubmit(onValidSubmit, onInvalidSubmit)}
+        className="space-y-0"
+      >
         <SectionHeader
           title="Section 1: Personal Information"
           subtitle="Please fill in your personal details accurately"
         />
 
-        <div className="px-4 sm:px-8 py-6 space-y-6">
+        <div className="p-6 space-y-5">
           {/* Names Row */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField
@@ -403,10 +409,13 @@ export function SectionHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="rounded-t-xl bg-primary px-6 py-5 text-center text-primary-foreground shadow-xs">
-      <h2 className="text-base sm:text-lg font-semibold tracking-tight">{title}</h2>
+    <div className="border-b border-border/80 bg-muted/20 px-6 py-3.5 text-left">
+      <div className="flex items-center gap-2.5">
+        <span className="h-4 w-1 rounded-xs bg-primary shrink-0" />
+        <h2 className="text-base font-semibold text-foreground tracking-tight">{title}</h2>
+      </div>
       {subtitle && (
-        <p className="mt-1 text-xs sm:text-sm text-primary-foreground/80">{subtitle}</p>
+        <p className="mt-1 text-xs text-muted-foreground pl-3.5 leading-relaxed">{subtitle}</p>
       )}
     </div>
   );
@@ -428,13 +437,13 @@ export function StepNavigation({
   isSubmitting?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between border-t border-border bg-card px-4 sm:px-8 py-4">
+    <div className="flex items-center justify-between border-t border-border/80 bg-card px-6 py-3.5">
       {showBack ? (
         <Button
           type="button"
           variant="outline"
           onClick={onBack}
-          className="px-6"
+          className="px-6 rounded-md"
         >
           Back
         </Button>
@@ -444,7 +453,7 @@ export function StepNavigation({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="px-8"
+        className="px-8 rounded-md"
       >
         {submitLabel}
       </Button>

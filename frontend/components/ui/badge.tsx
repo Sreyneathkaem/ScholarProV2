@@ -5,36 +5,36 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1.5 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2 transition-colors overflow-hidden",
+  "inline-flex items-center justify-center rounded-[4px] border px-2 py-0.5 text-xs font-normal w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1.5 [&>svg]:pointer-events-none transition-colors",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+          "bg-[#edf4fc] text-[#0F386C] border-[#b8d4f6] dark:bg-[#0f2238] dark:text-[#5a9be6] dark:border-[#1e3f66]",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+          "bg-[#fafafa] text-[#595959] border-[#d9d9d9] dark:bg-[#1f1f1f] dark:text-[#8c8c8c] dark:border-[#303030]",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90",
+          "bg-[#fff2f0] text-[#ff4d4f] border-[#ffccc7] dark:bg-[#2a1215] dark:text-[#e84749] dark:border-[#58181c]",
         outline:
-          "text-foreground border-border [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+          "text-foreground border-border bg-transparent",
         success:
-          "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50",
+          "bg-[#f6ffed] text-[#52c41a] border-[#b7eb8f] dark:bg-[#162312] dark:text-[#49aa19] dark:border-[#274916]",
         approve:
-          "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50",
+          "bg-[#f6ffed] text-[#52c41a] border-[#b7eb8f] dark:bg-[#162312] dark:text-[#49aa19] dark:border-[#274916]",
         warning:
-          "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/50",
+          "bg-[#fffbe6] text-[#faad14] border-[#ffe58f] dark:bg-[#2b2111] dark:text-[#d89614] dark:border-[#594214]",
         reject:
-          "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/50",
+          "bg-[#fff2f0] text-[#ff4d4f] border-[#ffccc7] dark:bg-[#2a1215] dark:text-[#e84749] dark:border-[#58181c]",
         info:
-          "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/50",
+          "bg-[#edf4fc] text-[#0F386C] border-[#b8d4f6] dark:bg-[#0f2238] dark:text-[#5a9be6] dark:border-[#1e3f66]",
         draft:
-          "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-700",
+          "bg-[#fafafa] text-[#8c8c8c] border-[#d9d9d9] dark:bg-[#1f1f1f] dark:text-[#8c8c8c] dark:border-[#303030]",
         engineering:
-          "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/50",
+          "bg-[#edf4fc] text-[#0F386C] border-[#b8d4f6] dark:bg-[#0f2238] dark:text-[#5a9be6] dark:border-[#1e3f66]",
         architecture:
-          "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/50",
+          "bg-[#fffbe6] text-[#d48806] border-[#ffe58f] dark:bg-[#2b2111] dark:text-[#d89614] dark:border-[#594214]",
         business:
-          "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50",
+          "bg-[#f6ffed] text-[#389e0d] border-[#b7eb8f] dark:bg-[#162312] dark:text-[#49aa19] dark:border-[#274916]",
       },
     },
     defaultVariants: {

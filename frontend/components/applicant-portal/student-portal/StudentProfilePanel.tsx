@@ -46,17 +46,17 @@ export default function StudentProfilePanel() {
   if (!snapshot) return null;
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="p-6 space-y-6">
+      <div className="rounded-lg border border-border/80 bg-card p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
               Profile
             </p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
               Your Account Overview
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground leading-relaxed">
+            <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground leading-relaxed">
               Keep your personal and contact information up to date while the
               committee reviews your application.
             </p>
@@ -67,7 +67,7 @@ export default function StudentProfilePanel() {
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-2xl border border-border bg-muted/30 p-6 text-center">
+          <div className="rounded-lg border border-border/80 bg-muted/20 p-6 text-center">
             <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-primary/10 text-primary">
               <UserCircle2 className="size-10" />
             </div>
@@ -85,11 +85,11 @@ export default function StudentProfilePanel() {
             </div>
           </div>
 
-          <div className="space-y-4 rounded-2xl border border-border bg-card p-6">
-            <div className="flex items-center gap-3 rounded-lg border border-border bg-background p-3.5 shadow-xs">
+          <div className="space-y-4 rounded-lg border border-border/80 bg-card p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+            <div className="flex items-center gap-3 rounded-lg border border-border/80 bg-background p-3.5 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]">
               <Mail className="size-4 text-primary shrink-0" />
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
                   Email
                 </p>
                 <p className="text-sm font-medium text-foreground truncate">
@@ -97,10 +97,10 @@ export default function StudentProfilePanel() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded-lg border border-border bg-background p-3.5 shadow-xs">
+            <div className="flex items-center gap-3 rounded-lg border border-border/80 bg-background p-3.5 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]">
               <Phone className="size-4 text-primary shrink-0" />
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
                   Phone
                 </p>
                 <p className="text-sm font-medium text-foreground truncate">
@@ -108,7 +108,7 @@ export default function StudentProfilePanel() {
                 </p>
               </div>
             </div>
-            <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+            <div className="rounded-lg border border-border/80 bg-muted/20 p-4 text-sm text-muted-foreground">
               <p className="font-semibold text-foreground text-xs uppercase tracking-wider">
                 Application Status
               </p>
@@ -119,7 +119,7 @@ export default function StudentProfilePanel() {
             </div>
             <Button
               onClick={handleSave}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto rounded-md"
             >
               Sync Profile Snapshot
             </Button>

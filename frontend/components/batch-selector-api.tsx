@@ -84,11 +84,11 @@ export function BatchSelectorApi({
   return (
     <div className={className}>
       {label && (
-        <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+        <label className="text-xs font-medium text-foreground/80 mb-1 block">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-destructive ml-1">*</span>}
           {showBatchCount && (
-            <span className="text-gray-500 font-normal ml-2">
+            <span className="text-muted-foreground font-normal ml-2">
               ({batchCount} available)
             </span>
           )}

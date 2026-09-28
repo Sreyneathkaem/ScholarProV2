@@ -18,6 +18,7 @@ import morgan from "morgan";
 import { errorHandler } from "@middleware/error-handler";
 import { systemLogger } from "@utils/logger";
 import { requestLogger } from "@middleware/requestLogger";
+import { uploadDir } from "@middleware/multer";
 
 // Add error handlers at the top
 process.on("unhandledRejection", (reason, promise) => {
@@ -78,7 +79,8 @@ app.use(morgan("dev"));
 app.use(limiter);
 app.use("/api/v1/auth", authLimiter);
 
-app.use("/image", express.static(path.join(__dirname, "public/image")));
+app.use("/image", express.static(uploadDir));
+app.use("/public/image", express.static(uploadDir));
 
 app.use("/api/v1", router);
 
@@ -88,7 +90,7 @@ if (process.env.NODE_ENV !== "production") {
     res.sendFile(path.join(__dirname, "telegram-login-demo.html"));
   });
 
-  app.get("/debug-sentry", function mainHandler(req, res) {
+  app.get("/debug-sentry", function mainHandler(_req, _res) {
     throw new Error("My first Sentry error!");
   });
 }

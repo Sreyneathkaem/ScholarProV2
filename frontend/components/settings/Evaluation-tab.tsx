@@ -1,3 +1,9 @@
+"use client";
+
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Sliders, BookOpen } from "lucide-react";
+
 interface EvaluationTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -8,25 +14,32 @@ export default function EvaluationTabs({
   setActiveTab,
 }: EvaluationTabsProps) {
   const tabs = [
-    { id: "criteria", label: "Evaluation Criteria" },
-    { id: "subject", label: "Subject" },
+    { id: "criteria", label: "Evaluation Criteria", icon: Sliders },
+    { id: "subject", label: "Subject Weightings", icon: BookOpen },
   ];
 
   return (
-    <div className="mb-6 flex gap-2 bg-white border-1 border-gray-200 rounded-xl py-1 px-1 w-max">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => setActiveTab(tab.id)}
-          className={`rounded-lg px-6 py-2.5 text-[14px] font-medium transition-colors ${
-            activeTab === tab.id
-              ? "bg-[#0F386C] text-white"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          }`}
-        >
-          {tab.label}
-        </button>
-      ))}
+    <div className="flex items-center gap-1 bg-muted/70 p-1 rounded-[8px] border border-border/80 w-max shadow-inner">
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-[6px] transition-all cursor-pointer",
+              isActive
+                ? "bg-card text-[#0F386C] dark:text-[#5a9be6] shadow-[0_1px_3px_rgba(0,0,0,0.08)] font-semibold"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/50",
+            )}
+          >
+            <Icon className="h-3.5 w-3.5" />
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

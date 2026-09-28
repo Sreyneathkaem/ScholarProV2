@@ -2,8 +2,22 @@
 
 "use client";
 
+import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronsUpDown, MoreVertical } from "lucide-react";
+import {
+  ChevronsUpDown,
+  MoreVertical,
+  Eye,
+  ArrowRightLeft,
+  Check,
+  Loader2,
+  FileText,
+  AlertCircle,
+  Award,
+  CheckCircle2,
+  XCircle,
+  Mail,
+} from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,85 +29,136 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
-
+import { cn } from "@/lib/utils";
+import { apiClient } from "@/api/api";
+import { API_ENDPOINTS } from "@/api/endpoint";
+import { toast } from "sonner";
 import { StudentStatus } from "@/constants/enum";
 
-const StatusBadge = ({
+export const STATUS_CONFIG: Record<
+  string,
+  { label: string; className: string }
+> = {
+  submitted: {
+    label: "Submitted",
+    className: "bg-[#edf4fc] text-[#0F386C] border-[#b8d4f6]",
+  },
+  incomplete: {
+    label: "Incomplete",
+    className: "bg-amber-50 text-amber-700 border-amber-200",
+  },
+  shortlisted: {
+    label: "Shortlisted",
+    className: "bg-purple-50 text-purple-700 border-purple-200",
+  },
+  graded: {
+    label: "Graded",
+    className: "bg-blue-50 text-blue-700 border-blue-200",
+  },
+  accepted: {
+    label: "Accepted",
+    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  },
+  rejected: {
+    label: "Rejected",
+    className: "bg-rose-50 text-rose-700 border-rose-200",
+  },
+  accepted_email_sent: {
+    label: "Accepted Email Sent",
+    className: "bg-teal-50 text-teal-700 border-teal-200",
+  },
+  shortlisted_email_sent: {
+    label: "Shortlisted Email Sent",
+    className: "bg-indigo-50 text-indigo-700 border-indigo-200",
+  },
+  assessment_scheduled: {
+    label: "Assessment Scheduled",
+    className: "bg-sky-50 text-sky-700 border-sky-200",
+  },
+};
+
+export const StatusBadge = ({
   status,
   student,
 }: {
-  status: StudentStatus;
+  status: StudentStatus | string;
   student?: Student;
 }) => {
-  const statusConfig = {
-    // "new-applicant": {
-    //   label: "New Applicant",
-    //   variant: "default" as const,
-    //   className: "text-white",
-    // },
-    shortlisted: {
-      label: "Shortlisted",
-      variant: "outline" as const,
-      className: "bg-green-100 text-green-700 border-green-300",
-    },
-    graded: {
-      label: "Graded",
-      variant: "outline" as const,
-      className: "bg-blue-100 text-blue-700 border-blue-300",
-    },
-    accepted: {
-      label: "Accepted",
-      variant: "default" as const,
-      className: "bg-green-100 text-green-700 border-green-300",
-    },
-    rejected: {
-      label: "Rejected",
-      variant: "outline" as const,
-      className: "bg-red-100 text-red-700 border-red-300",
-    },
-    incomplete: {
-      label: "Incomplete",
-      variant: "outline" as const,
-      className: "bg-amber-100 text-amber-700 border-amber-300",
-    },
-    submitted: {
-      label: "Submitted",
-      variant: "outline" as const,
-      className: "bg-green-100 text-green-700 border-green-300",
-    },
-    accepted_email_sent: {
-      label: "Accepted Email",
-      variant: "default" as const,
-      className: "bg-green-100 text-green-700 border-green-300",
-    },
-    shortlisted_email_sent: {
-      label: "Shortlisted Email ",
-      variant: "outline" as const,
-      className: "bg-green-100 text-green-700 border-green-300",
-    },
-  };
-
-  const config = statusConfig[status] || statusConfig.submitted;
-
-  // If the original status from API is "submitted", display that instead
-  let displayLabel = config.label;
-  if (
-    // status === "new-applicant" &&
-    student?.originalStatus?.toLowerCase() === "submitted"
-  ) {
-    displayLabel = "Submitted";
-  }
+  const normalizedKey = (status || student?.originalStatus || "submitted").toLowerCase();
+  const config = STATUS_CONFIG[normalizedKey] || STATUS_CONFIG.submitted;
 
   return (
     <Badge
-      variant={config.variant}
-      className={`whitespace-nowrap ${config.className}`}
+      variant="outline"
+      className={cn(
+        "whitespace-nowrap font-medium text-xs px-2.5 py-0.5 rounded-full border shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
+        config.className
+      )}
     >
-      {displayLabel}
+      {config.label}
     </Badge>
   );
 };
+
+export const STATUS_OPTIONS: {
+  value: StudentStatus;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color: string;
+}[] = [
+  {
+    value: "submitted",
+    label: "Submitted",
+    icon: FileText,
+    color: "text-[#0F386C]",
+  },
+  {
+    value: "incomplete",
+    label: "Incomplete",
+    icon: AlertCircle,
+    color: "text-amber-600",
+  },
+  {
+    value: "shortlisted",
+    label: "Shortlisted",
+    icon: CheckCircle2,
+    color: "text-purple-600",
+  },
+  {
+    value: "graded",
+    label: "Graded",
+    icon: Award,
+    color: "text-blue-600",
+  },
+  {
+    value: "accepted",
+    label: "Accepted",
+    icon: Award,
+    color: "text-emerald-600",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+    icon: XCircle,
+    color: "text-rose-600",
+  },
+  {
+    value: "shortlisted_email_sent",
+    label: "Shortlisted Email Sent",
+    icon: Mail,
+    color: "text-indigo-600",
+  },
+  {
+    value: "accepted_email_sent",
+    label: "Accepted Email Sent",
+    icon: Mail,
+    color: "text-teal-600",
+  },
+];
 
 // Base columns that are common across all table variants
 export const baseStudentColumns: ColumnDef<Student>[] = [
@@ -297,37 +362,131 @@ export const statusColumn: ColumnDef<Student> = {
   },
 };
 
-const ActionsCell: React.FC<{ student: Student }> = ({ student }) => {
+export interface ActionsCellProps {
+  student: Student;
+  onStatusUpdated?: (studentId: string, newStatus: StudentStatus) => void;
+}
+
+export const ActionsCell: React.FC<ActionsCellProps> = ({
+  student,
+  onStatusUpdated,
+}) => {
   const router = useRouter();
+  const [isUpdating, setIsUpdating] = React.useState(false);
+
+  const handleStatusChange = async (
+    newStatus: StudentStatus,
+    label: string,
+  ) => {
+    const currentStatus = (student.status || student.originalStatus || "").toLowerCase();
+    if (currentStatus === newStatus.toLowerCase()) {
+      toast.info(`${student.nameEn || "Applicant"} is already ${label}.`);
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      await apiClient.patch(`${API_ENDPOINTS.APPLICANT}/${student.id}`, {
+        status: newStatus,
+      });
+      toast.success(`Applicant moved to ${label}`);
+      onStatusUpdated?.(student.id, newStatus);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("refresh-applicant-table", {
+            detail: { studentId: student.id, status: newStatus },
+          }),
+        );
+      }
+    } catch (err: unknown) {
+      const apiError = err as {
+        response?: { data?: { message?: string } };
+      };
+      toast.error(
+        apiError.response?.data?.message || "Failed to update applicant status",
+      );
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button
+          variant="ghost"
+          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          disabled={isUpdating}
+        >
           <span className="sr-only">Open menu</span>
-          <MoreVertical className="h-4 w-4" />
+          {isUpdating ? (
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          ) : (
+            <MoreVertical className="h-4 w-4" />
+          )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem
           onClick={() => router.push(`/applicant/${student.id}`)}
+          className="cursor-pointer flex items-center gap-2"
         >
-          View details
+          <Eye className="h-4 w-4 text-muted-foreground" />
+          <span>View details</span>
         </DropdownMenuItem>
 
-        {/* <DropdownMenuItem className="text-destructive">
-          Delete student
-        </DropdownMenuItem> */}
+        <DropdownMenuSeparator />
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="cursor-pointer flex items-center gap-2">
+            <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
+            <span>Move to status</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="w-56 p-1">
+            <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+              Select Status
+            </DropdownMenuLabel>
+            {STATUS_OPTIONS.map((opt) => {
+              const Icon = opt.icon;
+              const currentStatus = (student.status || student.originalStatus || "").toLowerCase();
+              const isCurrent = currentStatus === opt.value.toLowerCase();
+              return (
+                <DropdownMenuItem
+                  key={opt.value}
+                  onClick={() => handleStatusChange(opt.value, opt.label)}
+                  className={cn(
+                    "cursor-pointer flex items-center justify-between text-xs py-2 px-2 rounded-sm",
+                    isCurrent && "bg-accent/60 font-semibold text-primary",
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className={cn("h-3.5 w-3.5", opt.color)} />
+                    <span>{opt.label}</span>
+                  </div>
+                  {isCurrent && (
+                    <Check className="h-3.5 w-3.5 text-primary ml-auto" />
+                  )}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export const actionsColumn: ColumnDef<Student> = {
+export const createActionsColumn = (
+  onStatusUpdated?: (studentId: string, newStatus: StudentStatus) => void,
+): ColumnDef<Student> => ({
   id: "actions",
   enableHiding: true,
-  cell: ({ row }) => <ActionsCell student={row.original} />,
-};
+  cell: ({ row }) => (
+    <ActionsCell student={row.original} onStatusUpdated={onStatusUpdated} />
+  ),
+});
+
+export const actionsColumn: ColumnDef<Student> = createActionsColumn();
 
 // Actions column for Result/Exam tab with scholarship award options
 export const examActionsColumn: ColumnDef<Student> = {
@@ -342,59 +501,169 @@ export const examActionsColumn: ColumnDef<Student> = {
   },
 };
 
-const ExamActionsCell: React.FC<{ student: Student }> = ({ student }) => {
+const ExamActionsCell: React.FC<{
+  student: Student;
+  onStatusUpdated?: (studentId: string, newStatus: StudentStatus) => void;
+}> = ({ student, onStatusUpdated }) => {
   const router = useRouter();
+  const [isUpdating, setIsUpdating] = React.useState(false);
 
   const handleScholarshipAward = async (percentage: number) => {
-    // Calculate award amount (3000 = 100%)
-    const awardAmount = (percentage / 100) * 3000;
-
+    setIsUpdating(true);
     try {
-      // TODO: Call your API endpoint to update scholarship award
-      // Example: await updateScholarshipAward(student.id, { awardAmount, status: 'awarded' })
-
-      console.log(
-        `Awarding ${percentage}% scholarship to student ${student.id}`,
-      );
-      console.log(`Award amount: $${awardAmount}`);
+      await apiClient.patch(`${API_ENDPOINTS.APPLICANT}/${student.id}`, {
+        scholarshipPercentage: percentage,
+        status: "accepted",
+      });
+      toast.success(`Awarded ${percentage}% scholarship to applicant`);
+      onStatusUpdated?.(student.id, "accepted");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("refresh-applicant-table", {
+            detail: { studentId: student.id, status: "accepted" },
+          }),
+        );
+      }
     } catch (error) {
       console.error("Error updating scholarship:", error);
+      toast.error("Failed to update scholarship award");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleStatusChange = async (
+    newStatus: StudentStatus,
+    label: string,
+  ) => {
+    const currentStatus = (student.status || student.originalStatus || "").toLowerCase();
+    if (currentStatus === newStatus.toLowerCase()) {
+      toast.info(`${student.nameEn || "Applicant"} is already ${label}.`);
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      await apiClient.patch(`${API_ENDPOINTS.APPLICANT}/${student.id}`, {
+        status: newStatus,
+      });
+      toast.success(`Applicant moved to ${label}`);
+      onStatusUpdated?.(student.id, newStatus);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("refresh-applicant-table", {
+            detail: { studentId: student.id, status: newStatus },
+          }),
+        );
+      }
+    } catch (err: unknown) {
+      const apiError = err as {
+        response?: { data?: { message?: string } };
+      };
+      toast.error(
+        apiError.response?.data?.message || "Failed to update applicant status",
+      );
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button
+          variant="ghost"
+          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          disabled={isUpdating}
+        >
           <span className="sr-only">Open menu</span>
-          <MoreVertical className="h-4 w-4" />
+          {isUpdating ? (
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          ) : (
+            <MoreVertical className="h-4 w-4" />
+          )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Actions
+        </DropdownMenuLabel>
         <DropdownMenuItem
           onClick={() => router.push(`/applicant/${student.id}`)}
+          className="cursor-pointer flex items-center gap-2"
         >
-          View details
+          <Eye className="h-4 w-4 text-muted-foreground" />
+          <span>View details</span>
         </DropdownMenuItem>
+
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Award Scholarship</DropdownMenuLabel>
 
-        <DropdownMenuItem onClick={() => handleScholarshipAward(100)}>
-          Award 100% ($16000)
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="cursor-pointer flex items-center gap-2">
+            <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
+            <span>Move to status</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="w-56 p-1">
+            <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+              Select Status
+            </DropdownMenuLabel>
+            {STATUS_OPTIONS.map((opt) => {
+              const Icon = opt.icon;
+              const currentStatus = (student.status || student.originalStatus || "").toLowerCase();
+              const isCurrent = currentStatus === opt.value.toLowerCase();
+              return (
+                <DropdownMenuItem
+                  key={opt.value}
+                  onClick={() => handleStatusChange(opt.value, opt.label)}
+                  className={cn(
+                    "cursor-pointer flex items-center justify-between text-xs py-2 px-2 rounded-sm",
+                    isCurrent && "bg-accent/60 font-semibold text-primary",
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className={cn("h-3.5 w-3.5", opt.color)} />
+                    <span>{opt.label}</span>
+                  </div>
+                  {isCurrent && (
+                    <Check className="h-3.5 w-3.5 text-primary ml-auto" />
+                  )}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Award Scholarship
+        </DropdownMenuLabel>
+
+        <DropdownMenuItem
+          onClick={() => handleScholarshipAward(100)}
+          className="cursor-pointer"
+        >
+          Award 100%
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => handleScholarshipAward(75)}>
-          Award 75% ($12,000)
+        <DropdownMenuItem
+          onClick={() => handleScholarshipAward(75)}
+          className="cursor-pointer"
+        >
+          Award 75%
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => handleScholarshipAward(50)}>
-          Award 50% ($8,000)
+        <DropdownMenuItem
+          onClick={() => handleScholarshipAward(50)}
+          className="cursor-pointer"
+        >
+          Award 50%
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => handleScholarshipAward(25)}>
-          Award 25% ($4,000)
+        <DropdownMenuItem
+          onClick={() => handleScholarshipAward(25)}
+          className="cursor-pointer"
+        >
+          Award 25%
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -787,22 +1056,29 @@ export const rejectedColumns: ColumnDef<Student>[] = [
 // Helper function to get columns based on table type
 export const getColumnsForTableType = (
   type: StudentStatus | "all",
+  onStatusUpdated?: (studentId: string, newStatus: StudentStatus) => void,
 ): ColumnDef<Student>[] => {
+  const actions = onStatusUpdated
+    ? createActionsColumn(onStatusUpdated)
+    : actionsColumn;
+
   switch (type) {
     case "incomplete":
     case "submitted":
-      return sumittedColumns;
+      return [...coreStudentColumns, dateAppliedColumn, statusColumn, actions];
     case "shortlisted":
-      return shortlistedColumns;
+    case "shortlisted_email_sent":
+      return [...coreStudentColumns, dateAppliedColumn, statusColumn, actions];
     case "graded":
-      return examColumns;
+      return [...coreStudentColumns, ...scoreColumn, statusColumn, actions];
     case "accepted":
-      return awardedColumns;
+    case "accepted_email_sent":
+      return [...coreStudentColumns, scholarshipColumn, statusColumn, actions];
     case "rejected":
-      return rejectedColumns;
+      return [...coreStudentColumns, statusColumn, actions];
     case "all":
     default:
-      // For "all" view, show all columns except status (since it would be mixed)
-      return [...baseStudentColumns, actionsColumn];
+      // For "all" view, show all core columns with status and action menu
+      return [...baseStudentColumns, statusColumn, actions];
   }
 };

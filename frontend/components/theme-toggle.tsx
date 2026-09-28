@@ -30,7 +30,7 @@ export function ThemeToggle({ className, variant = "ghost" }: ThemeToggleProps) 
       <Button
         variant={variant}
         size="icon"
-        className={cn("h-9 w-9 rounded-lg text-muted-foreground", className)}
+        className={cn("h-8 w-8 rounded-[6px] text-muted-foreground", className)}
         aria-label="Toggle theme"
       >
         <Sun className="h-4 w-4" />
@@ -45,17 +45,17 @@ export function ThemeToggle({ className, variant = "ghost" }: ThemeToggleProps) 
           variant={variant}
           size="icon"
           className={cn(
-            "h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground transition-colors",
+            "h-8 w-8 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors",
             className,
           )}
           aria-label="Toggle theme"
         >
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-blue-400" />
+          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-primary" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="rounded-[6px] border border-border/80 shadow-[0_6px_16px_0_rgba(0,0,0,0.08)]">
         <DropdownMenuItem
           onClick={() => setTheme("light")}
           className={cn("cursor-pointer", theme === "light" && "font-semibold text-primary")}

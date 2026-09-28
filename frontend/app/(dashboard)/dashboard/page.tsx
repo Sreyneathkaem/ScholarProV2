@@ -12,6 +12,7 @@ import ProvinceTable from "@/components/dashboard/province-table";
 
 import { FileText, Users, TrendingUp, UserCheck } from "lucide-react";
 import BatchSelectorApi from "@/components/batch-selector-api";
+import { PageHero } from "@/components/common/page-hero";
 
 export default function DashboardPage() {
   const { setTitle } = useHeader();
@@ -56,65 +57,59 @@ export default function DashboardPage() {
   }, [selectedBatchId]);
 
   if (loading || !overview || !charts) {
-    return <div className="p-6">Loading dashboard...</div>;
+    return (
+      <div className="p-12 flex items-center justify-center min-h-[350px]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+          <p className="text-xs text-muted-foreground">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 space-y-8">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="w-40">
-          <BatchSelectorApi
-            value={selectedBatchId}
-            onValueChange={setSelectedBatchId}
-          />
-        </div>
-      </div>
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <PageHero
+        title="Overview & Performance"
+        subtitle="Real-time candidate metrics, admissions funnel, and demographic distribution"
+        actions={
+          <div className="w-48 shrink-0">
+            <BatchSelectorApi
+              value={selectedBatchId}
+              onValueChange={setSelectedBatchId}
+            />
+          </div>
+        }
+      />
 
       {/* TOP STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
           title="New Applications"
           value={overview.newApplications}
           trend="—"
-          icon={
-            <div className="p-3 rounded-xl bg-slate-100">
-              <FileText size={22} className="text-blue-900" />
-            </div>
-          }
+          icon={<FileText size={18} />}
         />
 
         <StatsCard
           title="Total Applicants"
           value={overview.totalApplicants}
           trend="—"
-          icon={
-            <div className="p-3 rounded-xl bg-slate-100">
-              <Users size={22} className="text-blue-900" />
-            </div>
-          }
+          icon={<Users size={18} />}
         />
 
         <StatsCard
           title="Female Ratio (%)"
           value={Number(overview.femaleRatio)}
           trend="—"
-          icon={
-            <div className="p-3 rounded-xl bg-slate-100">
-              <TrendingUp size={22} className="text-blue-900" />
-            </div>
-          }
+          icon={<TrendingUp size={18} />}
         />
 
         <StatsCard
           title="Acceptance Rate (%)"
           value={Number(overview.acceptanceRate)}
           trend="—"
-          icon={
-            <div className="p-3 rounded-xl bg-slate-100">
-              <UserCheck size={22} className="text-blue-900" />
-            </div>
-          }
+          icon={<UserCheck size={18} />}
         />
       </div>
 
