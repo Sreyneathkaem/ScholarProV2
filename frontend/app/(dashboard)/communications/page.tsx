@@ -11,7 +11,7 @@ import { EmailComposer } from "@/components/communications/EmailComposer";
 import { SendPreviewDialog } from "@/components/communications/SendPreviewDialog";
 import axios from "axios";
 import { EMAIL_VARIABLES } from "@/constants/email-variables";
-import { getApiErrorMessage } from "@/lib/utils/api-error";
+import { PageHero } from "@/components/common/page-hero";
 
 function CommunicationsPageContent() {
   const { setTitle } = useHeader();
@@ -539,7 +539,11 @@ function CommunicationsPageContent() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6">
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <PageHero
+        title="Email Communications"
+        subtitle="Broadcast notifications, template-based admissions decisions, and candidate announcements"
+      />
       <FilterPanel
         selectedBatch={selectedBatch}
         selectedBatchId={selectedBatchId}

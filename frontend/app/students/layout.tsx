@@ -48,10 +48,10 @@ export default function StudentLayout({ children }: Readonly<{ children: ReactNo
   return (
     <SidebarProvider>
       <AppSidebar role="student" />
-      <SidebarInset className="overflow-hidden">
+      <SidebarInset className="min-h-svh bg-background flex flex-col min-w-0">
         <HeaderProvider>
           <PageHeader showNotifications showProfile />
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-hidden min-w-0">
+          <div className="flex-1 bg-background min-w-0">
             {children}
           </div>
         </HeaderProvider>

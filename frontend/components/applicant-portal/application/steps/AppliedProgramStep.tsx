@@ -103,9 +103,7 @@ export default function AppliedProgramStep({
     return () => subscription.unsubscribe();
   }, [form, paymentProof, onDraftChange]);
 
-  // form.handleSubmit runs the zodResolver; the payment-proof file check stays
-  // in the valid path so it only fires once the form itself is clean.
-  const handleSubmit = form.handleSubmit((values) => {
+  const onValidSubmit = (values: AppliedProgramValues) => {
     if (paymentProof.length === 0) {
       setPaymentError("Please upload your payment proof");
       return;
@@ -115,15 +113,24 @@ export default function AppliedProgramStep({
     onNext({ ...values, paymentProof });
   });
 
+  const onInvalidSubmit = () => {
+    if (paymentProof.length === 0) {
+      setPaymentError("Please upload your payment proof");
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-0">
+      <form
+        onSubmit={form.handleSubmit(onValidSubmit, onInvalidSubmit)}
+        className="space-y-0"
+      >
         <SectionHeader
           title="Section 4: Applied Program"
           subtitle="Choose your interested major and preferences"
         />
 
-        <div className="px-4 sm:px-8 py-6 space-y-8">
+        <div className="p-6 space-y-5">
           {/* Interested Majors */}
           <FormField
             control={form.control}

@@ -29,8 +29,11 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-muted-foreground">Loading...</div>
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+          <div className="text-xs text-muted-foreground">Authenticating session...</div>
+        </div>
       </div>
     );
   }
@@ -43,10 +46,10 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar role={role} />
-      <SidebarInset className="overflow-hidden">
+      <SidebarInset className="min-h-svh bg-background flex flex-col min-w-0">
         <HeaderProvider>
           <PageHeader showNotifications showProfile />
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-hidden min-w-0">
+          <div className="flex-1 bg-background min-w-0">
             {children}
           </div>
         </HeaderProvider>

@@ -63,13 +63,13 @@ export default function FileUpload({
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition-all",
+          "flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center transition-all duration-200",
           files.length >= maxFiles
             ? "cursor-not-allowed opacity-60"
             : "hover:border-primary hover:bg-primary/5",
           error
             ? "border-destructive bg-destructive/5"
-            : "border-border bg-muted/30",
+            : "border-border/80 bg-muted/20 hover:border-primary/60",
         )}
       >
         <Upload className="mb-3 size-9 text-muted-foreground" />

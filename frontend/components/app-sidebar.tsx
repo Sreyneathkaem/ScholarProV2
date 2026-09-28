@@ -144,14 +144,33 @@ export function AppSidebar({
   role?: string;
 } & React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
-  const [openItem, setOpenItem] = React.useState<string | null>(null);
+  const [openItem, setOpenItem] = React.useState<string | null>(() => {
+    // Initialize open state if current pathname matches a sub item
+    const matched = navMain.find((item) =>
+      item.items?.some(
+        (sub) => pathname === sub.url || pathname.startsWith(sub.url + "/"),
+      ),
+    );
+    return matched ? matched.title : null;
+  });
+
+  React.useEffect(() => {
+    const matched = navMain.find((item) =>
+      item.items?.some(
+        (sub) => pathname === sub.url || pathname.startsWith(sub.url + "/"),
+      ),
+    );
+    if (matched) {
+      setOpenItem(matched.title);
+    }
+  }, [pathname]);
 
   const handleToggle = (title: string) => {
     setOpenItem(openItem === title ? null : title);
   };
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" className="border-r border-border/80 bg-sidebar" {...props}>
       {/* Header */}
       <SidebarHeader>
         <SidebarMenu>
@@ -172,10 +191,10 @@ export function AppSidebar({
       </SidebarHeader>
 
       {/* Navigation */}
-      <SidebarContent>
-        <SidebarGroup>
+      <SidebarContent className="px-2 py-3">
+        <SidebarGroup className="p-0">
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
+            <SidebarMenu className="space-y-1">
               {navMain
                 .filter((item) => item.roles.includes(role)) // 🔥 filter by role
                 .map((item) => {
@@ -194,48 +213,48 @@ export function AppSidebar({
                   const isOpen = openItem === item.title;
 
                   return (
-                    <SidebarMenuItem key={item.title} className="space-y-1">
+                    <SidebarMenuItem key={item.title}>
                       {hasSub ? (
                         <SidebarMenuButton
                           onClick={() => handleToggle(item.title)}
                           tooltip={item.title}
-                          className={`flex items-center justify-between w-full ${
+                          className={`flex items-center justify-between w-full h-10 px-3 rounded-[6px] text-sm transition-colors ${
                             isActive
-                              ? "bg-primary text-primary-foreground font-semibold"
-                              : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                              ? "bg-[#edf4fc] text-[#0F386C] font-medium dark:bg-[#0f2238] dark:text-[#5a9be6]"
+                              : "text-foreground/80 hover:bg-accent/60 hover:text-foreground"
                           }`}
                         >
-                          <div className="flex items-center gap-2">
-                            {!!item.icon && <item.icon className="size-5" />}
+                          <div className="flex items-center gap-2.5">
+                            {!!item.icon && <item.icon className="size-4 shrink-0" />}
                             <span>{item.title}</span>
                           </div>
 
                           {isOpen ? (
-                            <ChevronDown className="size-4" />
+                            <ChevronDown className="size-3.5 opacity-60" />
                           ) : (
-                            <ChevronRight className="size-4" />
+                            <ChevronRight className="size-3.5 opacity-60" />
                           )}
                         </SidebarMenuButton>
                       ) : (
                         <SidebarMenuButton
                           asChild
                           tooltip={item.title}
-                          className={`${
+                          className={`h-10 px-3 rounded-[6px] text-sm transition-colors ${
                             isActive
-                              ? "bg-primary text-primary-foreground font-semibold shadow-xs"
-                              : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                              ? "bg-[#edf4fc] text-[#0F386C] font-medium dark:bg-[#0f2238] dark:text-[#5a9be6]"
+                              : "text-foreground/80 hover:bg-accent/60 hover:text-foreground"
                           }`}
                         >
-                          <Link href={item.url}>
-                            {!!item.icon && <item.icon className="size-5" />}
-                            {item.title}
+                          <Link href={item.url} className="flex items-center gap-2.5">
+                            {!!item.icon && <item.icon className="size-4 shrink-0" />}
+                            <span>{item.title}</span>
                           </Link>
                         </SidebarMenuButton>
                       )}
 
                       {/* Submenu */}
                       {hasSub && isOpen && (
-                        <div className="ml-8 mt-1 space-y-1">
+                        <div className="ml-5 my-1 pl-3 border-l border-border/80 space-y-1">
                           {item.items
                             ?.filter((sub) => sub.roles.includes(role))
                             .map((sub) => {
@@ -245,10 +264,10 @@ export function AppSidebar({
                                 <Link
                                   key={sub.title}
                                   href={sub.url}
-                                  className={`block px-3 py-1.5 rounded-md text-sm transition-colors ${
+                                  className={`block px-3 py-1.5 rounded-[4px] text-xs transition-colors ${
                                     isSubActive
-                                      ? "bg-primary text-primary-foreground font-medium"
-                                      : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                                      ? "bg-[#edf4fc] text-[#0F386C] font-medium dark:bg-[#0f2238] dark:text-[#5a9be6]"
+                                      : "text-muted-foreground hover:bg-accent/60 hover:text-foreground"
                                   }`}
                                 >
                                   {sub.title}

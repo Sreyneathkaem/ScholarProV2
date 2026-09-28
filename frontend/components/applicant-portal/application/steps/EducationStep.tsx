@@ -109,10 +109,7 @@ export default function EducationStep({
     return () => subscription.unsubscribe();
   }, [form, hsCertificate, ieltsDocument, grade12IdCard, onDraftChange]);
 
-  // form.handleSubmit runs the zodResolver (including the superRefine checks
-  // that mirror the backend's educationBackgroundSchema), then the flat form
-  // values are mapped into the nested EducationData shape.
-  const handleSubmit = form.handleSubmit((values) => {
+  const onValidSubmit = (values: EducationValues) => {
     onNext({
       currentEducationLevel: values.currentEducationLevel,
       university: {
@@ -143,13 +140,13 @@ export default function EducationStep({
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-0">
+      <form onSubmit={form.handleSubmit(onValidSubmit)} className="space-y-0">
         <SectionHeader
           title="Section 3: Educational Background"
           subtitle="Complete the required academic history and proficiency below"
         />
 
-        <div className="px-4 sm:px-8 py-6 space-y-8">
+        <div className="p-6 space-y-5">
           {/* 3.1 General Education */}
           <div className="rounded-xl border-l-4 border-primary bg-primary/5 px-4 py-3.5 border border-border/60">
             <h3 className="font-semibold text-primary">

@@ -133,9 +133,21 @@ export default function SessionEntrySessionPage() {
       : students.filter((s) => s.batch === selectedBatch);
 
   return (
-    <div className="p-10 flex flex-col gap-6">
-      <div className="flex items-center gap-4">
-        <Badge variant="secondary">{filteredStudents.length} student(s)</Badge>
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-border/60">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">
+            Session {sessionId} Interviews
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Evaluate scheduled candidate interviews and input criteria scores
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="text-xs px-2.5 py-0.5 rounded-full border border-border/80">
+            {filteredStudents.length} candidate{filteredStudents.length === 1 ? "" : "s"}
+          </Badge>
+        </div>
       </div>
 
       <div className="rounded-md border overflow-hidden">

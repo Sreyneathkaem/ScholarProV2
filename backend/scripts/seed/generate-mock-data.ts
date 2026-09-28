@@ -26,6 +26,31 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { CAMBODIA_PROVINCES } from "../../utils/cambodia-provinces";
 
+const CAMBODIAN_HIGH_SCHOOLS = [
+  "Preah Sisowath High School",
+  "Bak Touk High School",
+  "Indradevi High School",
+  "Chea Sim Santhormok High School",
+  "Toul Tom Poung High School",
+  "Hun Sen Bun Rany Wat Phnom High School",
+  "Preah Yukunthor High School",
+  "Boeung Keng Kang High School",
+  "Chbar Ampov High School",
+  "Angkor High School",
+  "Hun Sen Siem Reap High School",
+  "Battambang High School",
+  "Preah Monivong High School",
+  "Kampong Cham High School",
+  "Hun Sen Skun High School",
+  "Prey Veng High School",
+  "Takeo High School",
+  "Kampot High School",
+  "Preah Sihanouk High School",
+  "Kandal Stung High School",
+  "Svay Rieng High School",
+  "Kratie High School",
+];
+
 async function seed() {
   console.log("🌱 Starting seed...");
 
@@ -304,13 +329,16 @@ async function seed() {
       })
       .returning();
 
+    const studentProvince = faker.helpers.arrayElement(CAMBODIA_PROVINCES);
+    const studentSchool = faker.helpers.arrayElement(CAMBODIAN_HIGH_SCHOOLS);
+
     await db.insert(personalInfo).values({
       studentId: student.id,
       nationality: "Cambodian",
       gender: faker.helpers.arrayElement(["male", "female"]),
       dob: student.dateOfBirth!,
-      placeOfBirth: faker.location.city(),
-      address: faker.location.streetAddress(),
+      placeOfBirth: studentProvince,
+      address: `St. ${faker.number.int({ min: 1, max: 999 })}, ${studentProvince}`,
       attachmentId: attachment.id,
     });
 
@@ -319,7 +347,7 @@ async function seed() {
       name: faker.person.fullName(),
       relationship: "Father",
       nationality: "Cambodian",
-      address: faker.location.streetAddress(),
+      address: `St. ${faker.number.int({ min: 1, max: 999 })}, ${studentProvince}`,
       job: faker.person.jobTitle(),
       phoneNumber: faker.helpers.fromRegExp(/0[1-9][0-9]{7,8}/),
     });
@@ -357,10 +385,10 @@ async function seed() {
     await db.insert(educationBackground).values({
       appId: app.id,
       educationLevel: "high_school",
-      institutionName: faker.company.name(),
+      institutionName: studentSchool,
       academicYear: "2024-2025",
-      highSchoolName: faker.company.name(),
-      schoolLocation: faker.location.city(),
+      highSchoolName: studentSchool,
+      schoolLocation: studentProvince,
       overallGrade: faker.helpers.arrayElement(["A", "B", "C"]),
       mathGrade: faker.helpers.arrayElement(["A", "B", "C"]),
       englishGrade: faker.helpers.arrayElement(["A", "B", "C"]),

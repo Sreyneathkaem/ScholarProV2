@@ -3,7 +3,7 @@ import TitleSetter from "@/components/header/tittle-setter";
 
 export default function ApplicantApplicationPage() {
   return (
-    <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8 transition-colors">
+    <div className="p-6 space-y-6">
       <TitleSetter title="Registration" />
       <ApplicationForm />
     </div>

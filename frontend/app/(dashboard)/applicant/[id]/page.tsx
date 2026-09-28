@@ -244,29 +244,29 @@ export default function StudentDetailsPage() {
   };
 
   return (
-    <div className="flex-1 space-y-4 p-10 pt-4">
-      <div className="max-w-full">
-        {/* Breadcrumb */}
-        <div className="flex items-center justify-between gap-2 text-sm text-gray-600 mb-6">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => router.back()}
-              className="hover:text-blue-600"
-            >
-              New Applicants
-            </button>
-            <ChevronRight size={16} />
-            <span className="text-gray-900 font-medium">
-              {student.name} Detail
-            </span>
-          </div>
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      {/* Breadcrumb */}
+      <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground pb-2 border-b border-border/60">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => router.push("/applicant")}
+            className="hover:text-primary transition-colors cursor-pointer"
+          >
+            Applicant Registry
+          </button>
+          <ChevronRight size={14} className="text-muted-foreground/60" />
+          <span className="text-foreground font-semibold">
+            {student.name} Details
+          </span>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-          {/* LEFT SIDE - Main Content */}
-          <div className="bg-white rounded-lg border">
-            <ScrollArea className="h-[calc(100vh-200px)]">
-              <div className="p-8 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+        {/* LEFT SIDE - Main Content */}
+        <div className="bg-card rounded-[8px] border border-border/80 shadow-sm overflow-hidden">
+          <ScrollArea className="h-[calc(100vh-200px)]">
+            <div className="p-6 space-y-6">
                 <PersonalInformation
                   data={{
                     name: student.name,
@@ -419,6 +419,5 @@ export default function StudentDetailsPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

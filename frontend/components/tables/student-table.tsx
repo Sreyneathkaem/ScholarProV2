@@ -56,10 +56,41 @@ export function StudentTable({
   const [totalCount, setTotalCount] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   const handleSearchChange = React.useCallback((query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
+  }, []);
+
+  // Listen for applicant refresh events triggered across the application
+  React.useEffect(() => {
+    const handleRefresh = (e: Event) => {
+      const customEvent = e as CustomEvent<{
+        studentId?: string;
+        status?: StudentStatus;
+      }>;
+      if (customEvent.detail?.studentId && customEvent.detail?.status) {
+        setFetchedStudents((prev) => {
+          if (!prev) return prev;
+          return prev.map((s) =>
+            s.id === customEvent.detail?.studentId
+              ? {
+                  ...s,
+                  status: customEvent.detail!.status!,
+                  originalStatus: customEvent.detail!.status!,
+                }
+              : s,
+          );
+        });
+      }
+      setRefreshKey((prev) => prev + 1);
+    };
+
+    window.addEventListener("refresh-applicant-table", handleRefresh);
+    return () => {
+      window.removeEventListener("refresh-applicant-table", handleRefresh);
+    };
   }, []);
 
   // Update active tab when defaultTab changes (e.g., after import)
@@ -332,11 +363,26 @@ export function StudentTable({
     return () => {
       cancelled = true;
     };
-  }, [initialData, currentPage, pageSize, activeTab, selectedBatch, searchQuery]);
+  }, [initialData, currentPage, pageSize, activeTab, selectedBatch, searchQuery, refreshKey]);
+
+  const handleStatusUpdated = React.useCallback(
+    (studentId: string, newStatus: StudentStatus) => {
+      setFetchedStudents((prev) => {
+        if (!prev) return prev;
+        return prev.map((s) =>
+          s.id === studentId
+            ? { ...s, status: newStatus, originalStatus: newStatus }
+            : s,
+        );
+      });
+      setRefreshKey((prev) => prev + 1);
+    },
+    [],
+  );
 
   const columns = React.useMemo(
-    () => getColumnsForTableType(activeTab),
-    [activeTab],
+    () => getColumnsForTableType(activeTab, handleStatusUpdated),
+    [activeTab, handleStatusUpdated],
   );
 
   // Handle row selection - memoized to prevent infinite loops

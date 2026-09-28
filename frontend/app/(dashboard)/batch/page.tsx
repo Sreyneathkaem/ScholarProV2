@@ -3,6 +3,7 @@
 import BatchListClient from "@/components/batch/batch-list";
 import { NewBatch } from "@/components/batch/new-batch";
 import { useHeader } from "@/components/header/header-context";
+import { PageHero } from "@/components/common/page-hero";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -19,22 +20,26 @@ export default function Batch() {
   }, [setTitle]);
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-0">
-      <div className="flex flex-row gap-2 items-center mb-4 mt-4">
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-primary text-white"
-        >
-          <Plus size={16} className="mr-2" />
-          New Batch
-        </Button>
+    <div className="p-6 space-y-6 min-w-0 max-w-full">
+      <PageHero
+        title="Batch Management"
+        subtitle="Administer intake cohorts, application cycles, and academic terms"
+        actions={
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-primary hover:bg-primary/90 text-white shadow-sm h-9 px-4 rounded-[6px] text-xs font-medium cursor-pointer"
+          >
+            <Plus size={14} className="mr-1.5" />
+            New Batch
+          </Button>
+        }
+      />
 
-        <NewBatch
-          open={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          onBatchCreated={handleBatchCreated}
-        />
-      </div>
+      <NewBatch
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onBatchCreated={handleBatchCreated}
+      />
 
       <BatchListClient />
     </div>

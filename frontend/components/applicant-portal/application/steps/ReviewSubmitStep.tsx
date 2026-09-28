@@ -60,7 +60,7 @@ export default function ReviewSubmitStep({
         subtitle="Please review your information carefully before submitting"
       />
 
-      <div className="px-4 sm:px-8 py-6 space-y-4">
+      <div className="p-6 space-y-4">
         <p className="text-sm text-muted-foreground">
           Click on each section to expand and review your answers.
         </p>
@@ -345,11 +345,11 @@ function ReviewSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden transition-colors">
+    <div className="rounded-lg border border-border/80 bg-card overflow-hidden shadow-[0_1px_2px_0_rgba(0,0,0,0.02)] transition-colors">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-muted/50 transition-colors cursor-pointer"
+        className="flex w-full items-center justify-between px-5 py-3.5 text-left bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer"
         aria-expanded={isOpen}
         aria-controls={`section-${id}`}
       >
@@ -368,7 +368,7 @@ function ReviewSection({
           isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
-        <div className="border-t border-border bg-card px-5 py-4 space-y-4">
+        <div className="border-t border-border/80 bg-card px-5 py-4 space-y-4">
           {children}
         </div>
       </div>
