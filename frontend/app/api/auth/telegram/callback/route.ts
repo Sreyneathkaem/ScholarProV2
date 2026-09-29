@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { OAuthCallbackResponse } from "@/lib/types/auth";
 
 const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ?? "https://projectesting.site/api/v1";
+  process.env.NEXT_PUBLIC_BACKEND_URL ?? "https://api.scholarpro.work/api/v1";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
