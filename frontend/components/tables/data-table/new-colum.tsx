@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -177,21 +178,18 @@ export const baseStudentColumns: ColumnDef<Student>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="flex items-center cursor-pointer text-white font-medium"
       >
-        NameEn
+        Name
         <ChevronsUpDown className="ml-2 h-4 w-4 text-white" />
       </div>
     ),
-    cell: ({ row }) => {
-      const router = useRouter();
-      return (
-        <div
-          onClick={() => router.push(`/applicant/${row.original.id}`)}
-          className="font-medium text-primary  cursor-pointer hover:underline"
-        >
-          {row.getValue("nameEn")}
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <Link
+        href={`/applicant/${row.original.id}`}
+        className="font-medium text-primary cursor-pointer hover:underline"
+      >
+        {row.getValue("nameEn")}
+      </Link>
+    ),
   },
   {
     accessorKey: "gender",
@@ -206,20 +204,6 @@ export const baseStudentColumns: ColumnDef<Student>[] = [
     ),
     cell: ({ row }) => <div>{row.getValue("gender")}</div>,
   },
-
-  {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <div
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center cursor-pointer text-white font-medium"
-      >
-        Email
-        <ChevronsUpDown className="ml-2 h-4 w-4 text-white" />
-      </div>
-    ),
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
   {
     accessorKey: "major",
     header: ({ column }) => (
@@ -232,6 +216,19 @@ export const baseStudentColumns: ColumnDef<Student>[] = [
       </div>
     ),
     cell: ({ row }) => <div>{row.getValue("major")}</div>,
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => (
+      <div
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="flex items-center cursor-pointer text-white font-medium"
+      >
+        Email
+        <ChevronsUpDown className="ml-2 h-4 w-4 text-white" />
+      </div>
+    ),
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
   {
     accessorKey: "province",
@@ -687,21 +684,18 @@ export const coreStudentColumns: ColumnDef<Student>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="flex items-center cursor-pointer text-white font-medium"
       >
-        NameEn
+        Name
         <ChevronsUpDown className="ml-2 h-4 w-4 text-white" />
       </div>
     ),
-    cell: ({ row }) => {
-      const router = useRouter();
-      return (
-        <div
-          onClick={() => router.push(`/applicant/${row.original.id}`)}
-          className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer hover:underline"
-        >
-          {row.getValue("nameEn")}
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <Link
+        href={`/applicant/${row.original.id}`}
+        className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer hover:underline"
+      >
+        {row.getValue("nameEn")}
+      </Link>
+    ),
   },
   {
     accessorKey: "gender",

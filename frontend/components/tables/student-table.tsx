@@ -226,6 +226,8 @@ export function StudentTable({
         const params = new URLSearchParams({
           page: currentPage.toString(),
           limit: pageSize.toString(),
+          sortBy: "id",
+          order: "asc",
         });
 
         // Add status filter if not "all"

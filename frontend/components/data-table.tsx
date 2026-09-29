@@ -147,9 +147,18 @@ export function DataTable<TData, TValue>({
   const [showImportFileModal, setShowImportFileModal] = React.useState(false);
   const [selectedBatch, setSelectedBatch] = React.useState<string>("all");
   const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
+    pageIndex: serverSidePagination ? Math.max(0, (currentPage ?? 1) - 1) : 0,
     pageSize: initialPageSize,
   });
+
+  React.useEffect(() => {
+    if (serverSidePagination) {
+      setPagination({
+        pageIndex: Math.max(0, (currentPage ?? 1) - 1),
+        pageSize: initialPageSize ?? 10,
+      });
+    }
+  }, [serverSidePagination, currentPage, initialPageSize]);
 
   // Extract unique batches from data as { id, label } entries.
   // Prefer `batchId` and `batchName` fields when available, otherwise fall back to `batch`.
@@ -234,6 +243,8 @@ export function DataTable<TData, TValue>({
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     manualFiltering: Boolean(onSearchChange || serverSidePagination),
+    manualPagination: Boolean(serverSidePagination),
+    pageCount: serverSidePagination ? (totalPages || 1) : undefined,
     globalFilterFn: "includesString",
     state: {
       sorting,
@@ -483,9 +494,14 @@ export function DataTable<TData, TValue>({
                 Rows per page
               </p>
               <Select
-                value={`${serverSidePagination ? initialPageSize : table.getState().pagination.pageSize}`}
+                value={`${serverSidePagination ? (initialPageSize || 10) : table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
                   const newSize = Number(value);
+                  setPagination((prev) => ({
+                    ...prev,
+                    pageSize: newSize,
+                    pageIndex: 0,
+                  }));
                   if (serverSidePagination) {
                     onPageSizeChange?.(newSize);
                   } else {

@@ -77,11 +77,47 @@ export default async function prepareBulkEmail(
   const bulkEntries = recipients
     .filter((r): r is typeof r & { email: string } => !!r.email)
     .map((r) => {
-      const templateData: Record<string, any> = {};
-      for (const v of template?.variable ?? []) {
-        templateData[v] = r[v as keyof typeof r];
+      const templateData: Record<string, any> = {
+        applicantName: r.applicantName || r.email || "",
+        gender: r.gender || "",
+        email: r.email || "",
+        status: r.status || "",
+        scholarshipPercentage:
+          r.scholarshipPercentage != null ? String(r.scholarshipPercentage) : "",
+        major: r.major || "",
+        tuitionFee: r.tuitionFee != null ? String(r.tuitionFee) : "",
+        mathExamDate: r.mathExamDate || "",
+        mathStartTime: r.mathStartTime || "",
+        mathEndTime: r.mathEndTime || "",
+        mathRoom: r.mathRoom || "",
+        englishExamDate: r.englishExamDate || "",
+        englishStartTime: r.englishStartTime || "",
+        englishEndTime: r.englishEndTime || "",
+        englishRoom: r.englishRoom || "",
+        interviewExamDate: r.interviewExamDate || "",
+        interviewStartTime: r.interviewStartTime || "",
+        interviewEndTime: r.interviewEndTime || "",
+        interviewRoom: r.interviewRoom || "",
+        interviewSlotStart: r.interviewSlotStart || "",
+        interviewSlotEnd: r.interviewSlotEnd || "",
+      };
+
+      for (const [key, value] of Object.entries(r)) {
+        if (value !== null && value !== undefined) {
+          templateData[key] = value;
+        }
       }
-      templateData.applicantName = r.applicantName || r.email;
+
+      for (const v of template?.variable ?? []) {
+        if (
+          r[v as keyof typeof r] !== undefined &&
+          r[v as keyof typeof r] !== null
+        ) {
+          templateData[v] = r[v as keyof typeof r];
+        }
+      }
+
+      templateData.applicantName = r.applicantName || r.email || "";
       templateData.email = r.email;
       return {
         Destination: { ToAddresses: [r.email] },

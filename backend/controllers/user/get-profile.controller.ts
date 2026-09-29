@@ -61,7 +61,7 @@ export default async (req: Request, res: Response) => {
         name,
         email: user.email,
         role: user.role,
-        profileUrl: `${baseUrl}${user.profileUrl}`,
+        profileUrl: user.profileUrl ? `${baseUrl}${user.profileUrl}` : null,
         phoneNumber: user.phoneNumber
       },
     });

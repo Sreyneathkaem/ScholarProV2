@@ -84,7 +84,7 @@ export default async (userId: string, performedBy?: { id: string; role: string }
     id: user.id,
     name,
     email: user.email,
-    profileUrl: `${baseUrl}${user.profileUrl}`,
+    profileUrl: user.profileUrl ? `${baseUrl}${user.profileUrl}` : null,
     phoneNumber: user.phoneNumber,
     role: user.role,
   };
