@@ -57,8 +57,8 @@ export class ListApplicantService {
   static async getApplicants(
     page = 1,
     limit?: number,
-    sortBy: "name" | "dateApplied" | "id" = "dateApplied",
-    order: "asc" | "desc" = "desc",
+    sortBy: "name" | "dateApplied" | "id" = "id",
+    order: "asc" | "desc" = "asc",
     search?: string,
     applicationId?: number,
     batchIds?: number[],
