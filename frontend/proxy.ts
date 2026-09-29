@@ -12,6 +12,7 @@ export default function proxy(req: NextRequest) {
     "/login",
     "/forgot-password",
     "/set-forgot-password",
+    "/reset-password",
     "/committee-login",
     "/students",
   ];
@@ -33,8 +34,8 @@ export default function proxy(req: NextRequest) {
     script-src 'self' 'nonce-${nonce}' ${isDev ? "'unsafe-eval'" : ""};
     worker-src 'self' blob:;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://app.projectesting.site;
-    connect-src 'self' https://projectesting.site https://app.projectesting.site;
+    img-src 'self' blob: data: https://*.scholarpro.work https://*.scholarpro.site https://app.projectesting.site;
+    connect-src 'self' https://*.scholarpro.work https://*.scholarpro.site https://projectesting.site https://app.projectesting.site;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
