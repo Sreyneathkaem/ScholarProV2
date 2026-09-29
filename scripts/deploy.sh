@@ -83,6 +83,18 @@ pull_with_retry() {
   return 1
 }
 
+echo "=== Disk space before cleanup ==="
+df -h /
+
+echo "Cleaning up old Docker containers, unused images, and cache..."
+docker container prune -f >/dev/null 2>&1 || true
+docker image prune -a -f >/dev/null 2>&1 || true
+docker builder prune -af >/dev/null 2>&1 || true
+journalctl --vacuum-size=200M >/dev/null 2>&1 || true
+
+echo "=== Disk space after cleanup ==="
+df -h /
+
 pull_with_retry "$BACKEND_IMAGE"
 pull_with_retry "$MIGRATION_IMAGE"
 pull_with_retry "$FRONTEND_IMAGE"
@@ -157,7 +169,7 @@ for container in scholarpro-backend scholarpro-frontend scholarpro-caddy; do
   done
 done
 
-docker image prune -f >/dev/null 2>&1 || true
+docker image prune -a -f >/dev/null 2>&1 || true
 
 printf '\nDeployment completed successfully.\n'
 printf 'Frontend: https://%s (healthy)\n' "$APP_DOMAIN"
