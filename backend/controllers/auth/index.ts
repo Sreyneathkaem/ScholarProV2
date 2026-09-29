@@ -7,7 +7,9 @@ import resetPasswordController from "@controllers/auth/reset-password.controller
 import sendForgotPasswordLinkController from "@controllers/auth/send-forgot-password-link.controller";
 import forgotPasswordController from "@controllers/auth/forgot-password.controller";
 import validateForgetPasswordLinkController from "@controllers/auth/validate-forget-password-link.controller";
-import googleLoginController from "@controllers/auth/google-login.controller";
+import googleLoginController, {
+  googleAuthUrlController,
+} from "@controllers/auth/google-login.controller";
 import googleCallbackController from "@controllers/auth/google-callback.controller";
 import telegramCallbackController from "@controllers/auth/telegram-callback.controller";
 
@@ -22,6 +24,7 @@ export const authController = {
   forgotPasswordController,
   validateForgetPasswordLinkController,
   googleLoginController,
+  googleAuthUrlController,
   googleCallbackController,
   telegramCallbackController,
 };
