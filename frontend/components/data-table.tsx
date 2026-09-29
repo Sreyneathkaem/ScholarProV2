@@ -258,6 +258,21 @@ export function DataTable<TData, TValue>({
   const selectedRowCount = table.getFilteredSelectedRowModel().rows.length;
   const totalRowCount = table.getFilteredRowModel().rows.length;
 
+  // Height the table needs to render one full page of rows (~52px/row + thead),
+  // capped at the viewport so huge page sizes still scroll instead of driving
+  // the page off-screen. Previously hardcoded to 430px, which clipped every page
+  // to ~7 visible rows no matter what page size was selected.
+  const visibleRowCount = serverSidePagination
+    ? initialPageSize
+    : table.getState().pagination.pageSize;
+  const tableHeight = Math.max(
+    320,
+    Math.min(
+      48 + visibleRowCount * 52,
+      typeof window !== "undefined" ? window.innerHeight - 320 : 900,
+    ),
+  );
+
   return (
     <div
       className={cn("flex flex-col h-full w-full min-w-0 space-y-4", className)}
@@ -321,7 +336,7 @@ export function DataTable<TData, TValue>({
           {/* Status Filter */}
           {showStatusFilter && (
             <Select value={currentStatus} onValueChange={onStatusFilterChange}>
-              <SelectTrigger className="w-full sm:w-[180px] h-10 border-gray-300">
+              <SelectTrigger className="w-full sm:w-[180px] h-10 border-border">
                 <div className="flex items-center gap-2">
                   <ListFilter className="h-4 w-4" />
                   <SelectValue placeholder="All Status" />
@@ -362,7 +377,7 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="default"
               onClick={onEnterScores}
-              className="h-10 border-gray-300"
+              className="h-10 border-border"
             >
               <FileText className="mr-2 h-4 w-4" />
               Enter Scores
@@ -373,8 +388,8 @@ export function DataTable<TData, TValue>({
 
       {/* Table */}
       <div
-        className="rounded-md border overflow-hidden relative w-full min-w-0"
-        style={{ height: "430px" }}
+        className="rounded-md border bg-card overflow-hidden relative w-full min-w-0"
+        style={{ height: `${tableHeight}px` }}
       >
         <div className="overflow-x-auto overflow-y-auto w-full h-full">
           <table className="w-full min-w-max caption-bottom text-sm relative">
@@ -406,7 +421,7 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td colSpan={columns.length} className="h-24 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-primary" />
                       <span>Loading...</span>
                     </div>
                   </td>
@@ -416,7 +431,7 @@ export function DataTable<TData, TValue>({
                   <tr
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="border-b hover:bg-gray-50 transition-colors"
+                    className="border-b text-foreground transition-colors hover:bg-row-hover data-[state=selected]:bg-row-hover"
                   >
                     {row.getVisibleCells().map((cell, index) => {
                       const isFirst = index === 0;

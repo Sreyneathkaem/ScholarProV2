@@ -204,7 +204,7 @@ export function ApplicantsTable({
             <DialogTitle className="text-lg font-semibold">
               Exclude Student from Exam
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogDescription className="text-muted-foreground">
               Are you sure you want to exclude <b>{studentToExclude?.name}</b>{" "}
               with ID of <b>{studentToExclude?.id}</b> from the exam schedule?
             </DialogDescription>
@@ -213,7 +213,7 @@ export function ApplicantsTable({
           {studentToExclude && (
             <div className="space-y-3 py-1">
               <div>
-                <label className="text-xs text-gray-500 mb-1.5 block">
+                <label className="text-xs text-muted-foreground mb-1.5 block">
                   Reason for Exclusion
                 </label>
                 <Select

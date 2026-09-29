@@ -11,7 +11,7 @@ export function InterviewCommitteeMembers({
 }: InterviewCommitteeMembersProps) {
   return (
     <div>
-      <h3 className="text-md font-semibold text-gray-900 mb-3">
+      <h3 className="text-md font-semibold text-foreground mb-3">
         Committee Members
       </h3>
       <div className="flex flex-wrap gap-2">

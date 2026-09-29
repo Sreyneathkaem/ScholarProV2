@@ -100,7 +100,7 @@ export function ScheduleCard({
     <>
       <Card className="p-6">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-md font-semibold text-gray-900">
+          <h3 className="text-md font-semibold text-foreground">
             Exams Schedule
           </h3>
           <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -111,8 +111,8 @@ export function ScheduleCard({
         <div className="space-y-3 grid grid-cols-2 gap-4 mt-4 justify-center">
           {schedules.length === 0 ? (
             <div className="text-center py-8">
-              <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3 text-center" />
-              <p className="text-gray-500 text-sm text-center">
+              <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-3 text-center" />
+              <p className="text-muted-foreground text-sm text-center">
                 No exams scheduled
               </p>
             </div>
@@ -120,7 +120,7 @@ export function ScheduleCard({
             schedules.map((schedule) => (
               <div
                 key={schedule.id}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border border-border rounded-lg p-4 hover:bg-muted transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div
@@ -134,7 +134,7 @@ export function ScheduleCard({
                     }}
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      <h4 className=" font-medium text-gray-900">
+                      <h4 className=" font-medium text-foreground">
                         {schedule.sessionName}
                       </h4>
                       <Badge
@@ -142,14 +142,14 @@ export function ScheduleCard({
                         className={
                           schedule.status === "upcoming"
                             ? "bg-green-50 text-green-700 border-green-200"
-                            : "bg-gray-50 text-gray-700"
+                            : "bg-muted text-foreground"
                         }
                       >
                         {schedule.status}
                       </Badge>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
                         <span>{schedule.location}</span>
@@ -231,7 +231,7 @@ export function ScheduleCard({
       <AlertDialog open={deleteDialog.isOpen} onOpenChange={handleCancelDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-gray-700">
+            <AlertDialogTitle className="text-foreground">
               Delete Exam Schedule
             </AlertDialogTitle>
             <AlertDialogDescription>

@@ -202,12 +202,12 @@ export function ExamSchedule() {
             onDelete={() => handleDelete(String(showExamDetails))}
           />
         ) : (
-          <div className="space-y-4 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+          <div className="space-y-4 p-6 bg-card border border-border rounded-xl shadow-sm">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+              <h2 className="text-2xl font-semibold text-foreground mb-2">
                 Create Exam Schedule
               </h2>
-              <p className="text-gray-600 text-sm">
+              <p className="text-muted-foreground text-sm">
                 Use our guided wizard to create comprehensive exam schedules
               </p>
             </div>
@@ -231,28 +231,28 @@ export function ExamSchedule() {
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-blue-600 font-semibold">1</span>
                 </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">
+                <h4 className="text-sm font-medium text-foreground mb-1">
                   Batch & Date
                 </h4>
-                <p className="text-xs text-gray-500">Select Batch & Date</p>
+                <p className="text-xs text-muted-foreground">Select Batch & Date</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-blue-600 font-semibold">2</span>
                 </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">
+                <h4 className="text-sm font-medium text-foreground mb-1">
                   Create Rooms
                 </h4>
-                <p className="text-xs text-gray-500">Create Exam Schedule</p>
+                <p className="text-xs text-muted-foreground">Create Exam Schedule</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-blue-600 font-semibold">3</span>
                 </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">
+                <h4 className="text-sm font-medium text-foreground mb-1">
                   Confirm
                 </h4>
-                <p className="text-xs text-gray-500">Confirm & Create</p>
+                <p className="text-xs text-muted-foreground">Confirm & Create</p>
               </div>
             </div>
           </div>

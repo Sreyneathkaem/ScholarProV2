@@ -97,7 +97,7 @@ export function UpcomingSchedules({
     <>
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-md font-semibold text-gray-900">
+          <h3 className="text-md font-semibold text-foreground">
             Upcoming Exams
           </h3>
           <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -121,7 +121,7 @@ export function UpcomingSchedules({
           {isLoading ? (
             <>
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4">
+                <div key={i} className="border border-border rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <Skeleton className="h-5 w-3/4 mb-2" />
@@ -138,8 +138,8 @@ export function UpcomingSchedules({
             </>
           ) : schedules.length === 0 ? (
             <div className="text-center py-8">
-              <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">
+              <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground text-sm">
                 No upcoming exams scheduled
               </p>
             </div>
@@ -166,13 +166,13 @@ export function UpcomingSchedules({
               return (
                 <div
                   key={schedule.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  className="border border-border rounded-lg p-4 hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       {/* Name & Status */}
                       <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-medium text-gray-900">
+                        <h4 className="font-medium text-foreground">
                           {displayName}
                         </h4>
                         <Badge
@@ -181,7 +181,7 @@ export function UpcomingSchedules({
                             schedule.status === "scheduled" ||
                             schedule.status === "upcoming"
                               ? "bg-green-50 text-green-700 border-green-200"
-                              : "bg-gray-50 text-gray-700"
+                              : "bg-muted text-foreground"
                           }
                         >
                           {schedule.status}
@@ -189,7 +189,7 @@ export function UpcomingSchedules({
                       </div>
 
                       {/* Details */}
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           <span

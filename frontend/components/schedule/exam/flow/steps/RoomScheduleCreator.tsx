@@ -335,7 +335,7 @@ const RoomScheduleCreator = forwardRef<
       <Card className="p-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-foreground">
               Create Room Schedule
             </h3>
           </div>
@@ -343,7 +343,7 @@ const RoomScheduleCreator = forwardRef<
           {/* Room Details */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-2 block">
                 Room Name
               </label>
               <Input
@@ -359,7 +359,7 @@ const RoomScheduleCreator = forwardRef<
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-2 block">
                 Capacity
               </label>
               <Input
@@ -375,7 +375,7 @@ const RoomScheduleCreator = forwardRef<
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-2 block">
                 Location
               </label>
               <Input
@@ -394,7 +394,7 @@ const RoomScheduleCreator = forwardRef<
           {/* Exam Configuration */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-2 block">
                 Exam Type
               </label>
               <Select
@@ -413,7 +413,7 @@ const RoomScheduleCreator = forwardRef<
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-2 block">
                 Start Time
               </label>
               <Select
@@ -435,7 +435,7 @@ const RoomScheduleCreator = forwardRef<
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-2 block">
                 End Time
               </label>
               <Select
@@ -460,7 +460,7 @@ const RoomScheduleCreator = forwardRef<
 
           {/* Committee Selection */}
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
+            <label className="text-sm font-medium text-foreground mb-2 block">
               Committee Assignment
             </label>
             <Popover
@@ -488,7 +488,7 @@ const RoomScheduleCreator = forwardRef<
               </PopoverTrigger>
               <PopoverContent className="w-[400px] p-0" align="start">
                 <div className="flex flex-col">
-                  <div className="p-3 border-b border-gray-200">
+                  <div className="p-3 border-b border-border">
                     <Input
                       placeholder="Search committee members..."
                       value={roomForm.committeeSearchQuery}
@@ -507,14 +507,14 @@ const RoomScheduleCreator = forwardRef<
                         {getFilteredCommitteeMembers().map((member) => (
                           <div
                             key={member.id}
-                            className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-gray-100 cursor-pointer transition-colors"
+                            className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-muted cursor-pointer transition-colors"
                             onClick={() => handleCommitteeToggle(member.name)}
                           >
                             <input
                               type="checkbox"
                               checked={roomForm.committee.includes(member.name)}
                               onChange={() => {}}
-                              className="w-4 h-4 text-[#0F386C] border-gray-300 rounded focus:ring-[#0F386C] cursor-pointer"
+                              className="w-4 h-4 text-[#0F386C] border-border rounded focus:ring-[#0F386C] cursor-pointer"
                             />
                             <label className="text-sm font-medium leading-none cursor-pointer flex-1">
                               {member.name}
@@ -523,14 +523,14 @@ const RoomScheduleCreator = forwardRef<
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-6 text-sm text-gray-500">
+                      <div className="text-center py-6 text-sm text-muted-foreground">
                         No committee members found
                       </div>
                     )}
                   </div>
                   {roomForm.committee.length > 0 && (
-                    <div className="p-3 border-t border-gray-200 bg-gray-50">
-                      <p className="text-xs text-gray-600">
+                    <div className="p-3 border-t border-border bg-muted">
+                      <p className="text-xs text-muted-foreground">
                         {roomForm.committee.length} member
                         {roomForm.committee.length > 1 ? "s" : ""} selected
                       </p>
@@ -541,18 +541,18 @@ const RoomScheduleCreator = forwardRef<
             </Popover>
 
             {roomForm.committee.length > 0 && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="mt-3 p-3 bg-muted rounded-lg border border-border">
                 <div className="flex flex-wrap gap-2">
                   {roomForm.committee.map((member) => (
                     <Badge
                       key={member}
                       variant="outline"
-                      className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100 pl-2.5 pr-1.5 py-1"
+                      className="bg-card text-foreground border-border hover:bg-muted pl-2.5 pr-1.5 py-1"
                     >
                       <span className="text-xs">{member}</span>
                       <button
                         onClick={() => handleRemoveCommitteeMember(member)}
-                        className="ml-1.5 hover:bg-gray-200 rounded-full p-0.5 transition-colors"
+                        className="ml-1.5 hover:bg-accent rounded-full p-0.5 transition-colors"
                         type="button"
                       >
                         <X className="h-3 w-3" />
@@ -569,20 +569,20 @@ const RoomScheduleCreator = forwardRef<
       {/* Created Room Schedules */}
       {roomSchedules.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-foreground">
             Created Room Schedules
           </h3>
 
           <div className="space-y-4">
             {roomSchedules.map((room) => (
-              <Card key={room.id} className="p-4 border border-gray-200">
+              <Card key={room.id} className="p-4 border border-border">
                 {editingRoomId === room.id ? (
                   // Edit Mode - Full Form
                   <div className="space-y-4">
                     {/* Room Basic Info */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <label className="text-sm font-medium text-foreground mb-2 block">
                           Room Name
                         </label>
                         <Input
@@ -597,7 +597,7 @@ const RoomScheduleCreator = forwardRef<
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <label className="text-sm font-medium text-foreground mb-2 block">
                           Capacity
                         </label>
                         <Input
@@ -613,7 +613,7 @@ const RoomScheduleCreator = forwardRef<
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <label className="text-sm font-medium text-foreground mb-2 block">
                           Location
                         </label>
                         <Input
@@ -632,7 +632,7 @@ const RoomScheduleCreator = forwardRef<
                     {/* Exam Configuration */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <label className="text-sm font-medium text-foreground mb-2 block">
                           Exam Type
                         </label>
                         <Select
@@ -654,7 +654,7 @@ const RoomScheduleCreator = forwardRef<
                         </Select>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <label className="text-sm font-medium text-foreground mb-2 block">
                           Start Time
                         </label>
                         <Select
@@ -679,7 +679,7 @@ const RoomScheduleCreator = forwardRef<
                         </Select>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <label className="text-sm font-medium text-foreground mb-2 block">
                           End Time
                         </label>
                         <Select
@@ -704,7 +704,7 @@ const RoomScheduleCreator = forwardRef<
 
                     {/* Committee Selection in Edit Mode */}
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">
+                      <label className="text-sm font-medium text-foreground mb-2 block">
                         Committee Assignment
                       </label>
                       <Popover
@@ -732,7 +732,7 @@ const RoomScheduleCreator = forwardRef<
                         </PopoverTrigger>
                         <PopoverContent className="w-[400px] p-0" align="start">
                           <div className="flex flex-col">
-                            <div className="p-3 border-b border-gray-200">
+                            <div className="p-3 border-b border-border">
                               <Input
                                 placeholder="Search committee members..."
                                 value={editCommitteeSearchQuery}
@@ -750,7 +750,7 @@ const RoomScheduleCreator = forwardRef<
                                     (member) => (
                                       <div
                                         key={member.id}
-                                        className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-gray-100 cursor-pointer transition-colors"
+                                        className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-muted cursor-pointer transition-colors"
                                         onClick={() => {
                                           const currentCommittee =
                                             editForm.committee || [];
@@ -779,7 +779,7 @@ const RoomScheduleCreator = forwardRef<
                                             ) || false
                                           }
                                           onChange={() => {}}
-                                          className="w-4 h-4 text-[#0F386C] border-gray-300 rounded focus:ring-[#0F386C] cursor-pointer"
+                                          className="w-4 h-4 text-[#0F386C] border-border rounded focus:ring-[#0F386C] cursor-pointer"
                                         />
                                         <label className="text-sm font-medium leading-none cursor-pointer flex-1">
                                           {member.name}
@@ -789,15 +789,15 @@ const RoomScheduleCreator = forwardRef<
                                   )}
                                 </div>
                               ) : (
-                                <div className="text-center py-6 text-sm text-gray-500">
+                                <div className="text-center py-6 text-sm text-muted-foreground">
                                   No committee members found
                                 </div>
                               )}
                             </div>
                             {editForm.committee &&
                               editForm.committee.length > 0 && (
-                                <div className="p-3 border-t border-gray-200 bg-gray-50">
-                                  <p className="text-xs text-gray-600">
+                                <div className="p-3 border-t border-border bg-muted">
+                                  <p className="text-xs text-muted-foreground">
                                     {editForm.committee.length} member
                                     {editForm.committee.length > 1
                                       ? "s"
@@ -812,13 +812,13 @@ const RoomScheduleCreator = forwardRef<
 
                       {/* Selected Committee Members Display in Edit */}
                       {editForm.committee && editForm.committee.length > 0 && (
-                        <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="mt-3 p-3 bg-muted rounded-lg border border-border">
                           <div className="flex flex-wrap gap-2">
                             {editForm.committee.map((member) => (
                               <Badge
                                 key={member}
                                 variant="outline"
-                                className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100 pl-2.5 pr-1.5 py-1"
+                                className="bg-card text-foreground border-border hover:bg-muted pl-2.5 pr-1.5 py-1"
                               >
                                 <span className="text-xs">{member}</span>
                                 <button
@@ -832,7 +832,7 @@ const RoomScheduleCreator = forwardRef<
                                       committee: updatedCommittee,
                                     }));
                                   }}
-                                  className="ml-1.5 hover:bg-gray-200 rounded-full p-0.5 transition-colors"
+                                  className="ml-1.5 hover:bg-accent rounded-full p-0.5 transition-colors"
                                   type="button"
                                 >
                                   <X className="h-3 w-3" />
@@ -877,21 +877,21 @@ const RoomScheduleCreator = forwardRef<
                         >
                           {room.examType === "math" ? "Mathematics" : "English"}
                         </Badge>
-                        <h4 className="font-semibold text-gray-900">
+                        <h4 className="font-semibold text-foreground">
                           {room.roomName}
                         </h4>
                       </div>
                       <div className="flex gap-2">
                         {/* <Button
                           size="sm"
-                          className="bg-white text-gray-500 hover:bg-gray-200"
+                          className="bg-white text-muted-foreground hover:bg-accent"
                           onClick={() => startEditing(room)}
                         >
                           <Edit3 className="h-4 w-4" />
                         </Button>
                         <Button
                           size="sm"
-                          className="bg-white text-red-500 hover:bg-gray-200"
+                          className="bg-white text-red-500 hover:bg-accent"
                           onClick={() => handleDeleteRoomSchedule(room.id)}
                         >
                           <Trash2 className="h-4 w-4 font-semibold" />
@@ -900,19 +900,19 @@ const RoomScheduleCreator = forwardRef<
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <MapPin className="h-4 w-4" />
                         <span>
                           {room.location} • {room.capacity} seats
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
                         <span>
                           {room.startTime} - {room.endTime}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Users className="h-4 w-4" />
                         <span>
                           {room.committee.length} committee member

@@ -67,12 +67,12 @@ export function RichTextEditor({ value, onChange, className }: RichTextEditorPro
   }
 
   return (
-    <div className={cn("border border-gray-300 rounded-lg overflow-hidden bg-white", className)}>
+    <div className={cn("border border-border rounded-lg overflow-hidden bg-card", className)}>
       {/* Toolbar */}
-      <div className="border-b border-gray-200 p-2 bg-gray-50">
+      <div className="border-b border-border p-2 bg-muted">
         <div className="flex items-center gap-1 flex-wrap">
           {/* Text Formatting */}
-          <div className="flex items-center gap-1 border-r border-gray-300 pr-2 mr-2">
+          <div className="flex items-center gap-1 border-r border-border pr-2 mr-2">
             <Button
               type="button"
               variant={activeFormats.has('bold') ? 'default' : 'ghost'}
@@ -103,7 +103,7 @@ export function RichTextEditor({ value, onChange, className }: RichTextEditorPro
           </div>
 
           {/* Lists */}
-          <div className="flex items-center gap-1 border-r border-gray-300 pr-2 mr-2">
+          <div className="flex items-center gap-1 border-r border-border pr-2 mr-2">
             <Button
               type="button"
               variant={activeFormats.has('ul') ? 'default' : 'ghost'}
@@ -125,7 +125,7 @@ export function RichTextEditor({ value, onChange, className }: RichTextEditorPro
           </div>
 
           {/* Alignment */}
-          <div className="flex items-center gap-1 border-r border-gray-300 pr-2 mr-2">
+          <div className="flex items-center gap-1 border-r border-border pr-2 mr-2">
             <Button
               type="button"
               variant={activeFormats.has('left') ? 'default' : 'ghost'}

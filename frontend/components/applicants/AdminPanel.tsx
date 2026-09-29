@@ -167,7 +167,7 @@ export function AdminPanel({
         <EvaluationSummary applicationId={applicantId} compact={false} />
       </div>
 
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-card rounded-lg border p-6">
         <h3 className="font-semibold text-lg mb-4">Update Payment Status</h3>
 
         <Select value={paymentStatus} onValueChange={setPaymentStatus}>
@@ -191,7 +191,7 @@ export function AdminPanel({
 
       {/* Update Status */}
 
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-card rounded-lg border p-6">
         <h3 className="font-semibold text-lg mb-4">Update Status</h3>
 
         <Select value={status} onValueChange={setStatus}>
@@ -221,7 +221,7 @@ export function AdminPanel({
 
       {/* Update Scholarship Percentage (show only when status is graded) */}
       {status === "graded" && (
-        <div className="bg-white rounded-lg border p-6">
+        <div className="bg-card rounded-lg border p-6">
           <h3 className="font-semibold text-lg mb-4">
             Update Scholarship Percentage
           </h3>
@@ -252,7 +252,7 @@ export function AdminPanel({
       )}
 
       {/* Update Exam Status */}
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-card rounded-lg border p-6">
         <h3 className="font-semibold text-lg mb-4">Update Exam Status</h3>
 
         <div className="mb-4">

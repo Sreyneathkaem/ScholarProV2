@@ -61,7 +61,7 @@ export function InterviewParticipantsTable({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-md font-semibold text-gray-900">
+        <h3 className="text-md font-semibold text-foreground">
           Interview Participants ({editedParticipants.length} students)
         </h3>
 
@@ -69,7 +69,7 @@ export function InterviewParticipantsTable({
           <div className="flex items-center gap-3 mr-4">
             <div className="relative flex-1 max-w-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+                <Search className="h-4 w-4 text-muted-foreground" />
               </div>
               <Input
                 type="text"
@@ -117,61 +117,61 @@ export function InterviewParticipantsTable({
         </div>
       </div>
 
-      <div className="overflow-hidden border border-gray-200 rounded-lg">
+      <div className="overflow-hidden border border-border rounded-lg">
         <div className="overflow-x-auto">
           <table className="w-full min-w-full table-fixed">
-            <thead className="bg-gray-50">
+            <thead className="bg-muted">
               <tr>
-                <th className="w-12 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="w-12 px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   #
                 </th>
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Student ID
                 </th>
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Major
                 </th>
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Department
                 </th>
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Time Slot
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-border">
               {filteredParticipants.length > 0 ? (
                 filteredParticipants.map((participant, index) => (
                   <tr
                     key={participant.id}
-                    className="hover:bg-gray-50 transition-all duration-300 ease-in-out"
+                    className="hover:bg-muted transition-all duration-300 ease-in-out"
                   >
-                    <td className="w-12 px-4 py-4 text-sm text-gray-900 font-medium">
+                    <td className="w-12 px-4 py-4 text-sm text-foreground font-medium">
                       {index + 1}
                     </td>
                     <td
-                      className="px-2 py-4 text-sm text-gray-900 truncate"
+                      className="px-2 py-4 text-sm text-foreground truncate"
                       title={participant.id}
                     >
                       {participant.id}
                     </td>
                     <td
-                      className="min-w-0 px-2 py-4 text-sm font-medium text-gray-900"
+                      className="min-w-0 px-2 py-4 text-sm font-medium text-foreground"
                       title={participant.name}
                     >
                       {participant.name}
                     </td>
                     <td
-                      className="px-2 py-4 text-sm text-gray-600 truncate"
+                      className="px-2 py-4 text-sm text-muted-foreground truncate"
                       title={participant.major}
                     >
                       {participant.major}
                     </td>
                     <td
-                      className="px-2 py-4 text-sm text-gray-600 truncate"
+                      className="px-2 py-4 text-sm text-muted-foreground truncate"
                       title={participant.department}
                     >
                       {participant.department}
@@ -188,7 +188,7 @@ export function InterviewParticipantsTable({
                         />
                       ) : (
                         <span
-                          className="text-sm text-gray-600 truncate block"
+                          className="text-sm text-muted-foreground truncate block"
                           title={participant.timeSlot}
                         >
                           {participant.timeSlot}
@@ -201,7 +201,7 @@ export function InterviewParticipantsTable({
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-4 py-8 text-center text-sm text-gray-500"
+                    className="px-4 py-8 text-center text-sm text-muted-foreground"
                   >
                     {searchQuery
                       ? `No participants found matching "${searchQuery}"`

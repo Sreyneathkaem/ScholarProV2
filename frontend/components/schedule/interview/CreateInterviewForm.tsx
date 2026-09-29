@@ -238,10 +238,10 @@ export function CreateInterviewForm({
     <div className="xl:col-span-3 min-w-0">
       <Card className="p-6">
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-foreground">
             Create Interview Schedule
           </h2>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Schedule interviews for qualified students
           </p>
         </div>
@@ -438,7 +438,7 @@ export function CreateInterviewForm({
               <div>
                 <FormLabel>
                   Break Time{" "}
-                  <span className="text-xs text-gray-500">(Optional)</span>
+                  <span className="text-xs text-muted-foreground">(Optional)</span>
                 </FormLabel>
                 <div className="grid grid-cols-2 gap-3">
                   <FormField
@@ -495,7 +495,7 @@ export function CreateInterviewForm({
                   />
                 </div>
                 {breakStartTime && breakEndTime && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Break: {breakStartTime} - {breakEndTime}
                   </p>
                 )}
@@ -543,7 +543,7 @@ export function CreateInterviewForm({
                         {filteredCommittee.map((m) => (
                           <div
                             key={m.id}
-                            className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded cursor-pointer"
+                            className="flex items-center space-x-2 p-2 hover:bg-muted rounded cursor-pointer"
                             onClick={() => {
                               const newValue = field.value.includes(m.id)
                                 ? field.value.filter((i) => i !== m.id)
@@ -607,8 +607,8 @@ export function CreateInterviewForm({
                     <span className="text-xs font-normal block">Duration</span>
                   </div>
                 </div>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded">
-                  <p className="text-sm text-gray-600 text-center">
+                <div className="p-4 bg-muted border border-border rounded">
+                  <p className="text-sm text-muted-foreground text-center">
                     Student assignments will be available after schedule
                     creation
                   </p>

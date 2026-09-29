@@ -17,7 +17,7 @@ export function InterviewScheduleInfo({
 }: InterviewScheduleInfoProps) {
   return (
     <div>
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">
+      <h2 className="text-lg font-semibold text-foreground mb-4">
         Schedule Information
       </h2>
 
@@ -27,10 +27,10 @@ export function InterviewScheduleInfo({
             <CalendarIcon className="h-5 w-5 text-blue-600" />
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Date
             </p>
-            <p className="text-sm font-medium text-gray-900">{date}</p>
+            <p className="text-sm font-medium text-foreground">{date}</p>
           </div>
         </div>
 
@@ -39,10 +39,10 @@ export function InterviewScheduleInfo({
             <Clock className="h-5 w-5 text-green-600" />
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Time
             </p>
-            <p className="text-sm font-medium text-gray-900">{time}</p>
+            <p className="text-sm font-medium text-foreground">{time}</p>
           </div>
         </div>
 
@@ -51,10 +51,10 @@ export function InterviewScheduleInfo({
             <Users className="h-5 w-5 text-purple-600" />
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Batch
             </p>
-            <p className="text-sm font-medium text-gray-900">{batch}</p>
+            <p className="text-sm font-medium text-foreground">{batch}</p>
           </div>
         </div>
 
@@ -63,10 +63,10 @@ export function InterviewScheduleInfo({
             <MapPin className="h-5 w-5 text-orange-600" />
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Room
             </p>
-            <p className="text-sm font-medium text-gray-900">{roomName}</p>
+            <p className="text-sm font-medium text-foreground">{roomName}</p>
           </div>
         </div>
       </div>

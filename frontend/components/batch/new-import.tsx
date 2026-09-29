@@ -126,7 +126,7 @@ export function ImportStudentCSVModal({
         <ScrollArea className="max-h-[80vh] p-6">
           <DialogHeader>
             <DialogTitle>Import Students CSV</DialogTitle>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Choose a batch and upload CSV to import student data.
             </p>
           </DialogHeader>
@@ -152,14 +152,14 @@ export function ImportStudentCSVModal({
               <div className="space-y-2">
                 <Label>CSV File</Label>
 
-                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-gray-400">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-border">
                   {selectedFile ? (
                     <div className="space-y-2">
                       <FileText className="mx-auto h-8 w-8 text-green-600" />
                       <p className="text-sm font-medium text-green-600">
                         {selectedFile.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {csvData.length} rows detected
                       </p>
                       <Button
@@ -173,8 +173,8 @@ export function ImportStudentCSVModal({
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <Upload className="mx-auto h-10 w-10 text-gray-400" />
-                      <p className="text-sm text-gray-600">
+                      <Upload className="mx-auto h-10 w-10 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">
                         Drag & drop or click to upload CSV
                       </p>
                       <Button

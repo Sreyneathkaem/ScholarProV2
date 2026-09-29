@@ -139,9 +139,9 @@ export default function SubjectCriteria() {
                 <h4 className="font-semibold">{c.subjectName}</h4>
               </div>
               <div className="flex items-center gap-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Weight:{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-foreground">
                     {c.weight}%
                   </span>
                 </p>
@@ -187,11 +187,11 @@ export default function SubjectCriteria() {
                 }
                 disabled={editing !== null}
                 className={
-                  editing !== null ? "bg-gray-100 cursor-not-allowed" : ""
+                  editing !== null ? "bg-muted cursor-not-allowed" : ""
                 }
               />
               {editing && (
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Name cannot be changed when editing
                 </p>
               )}

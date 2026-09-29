@@ -2,7 +2,7 @@
 
 export default function FiltersBar() {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border flex items-center gap-3">
+    <div className="bg-card p-4 rounded-xl shadow-sm border flex items-center gap-3">
       {/* Search Input */}
       <div className="flex-1">
         <input
@@ -13,7 +13,7 @@ export default function FiltersBar() {
       </div>
 
       {/* All Majors */}
-      <select className="h-10 px-3 rounded-lg border bg-white text-sm">
+      <select className="h-10 px-3 rounded-lg border bg-card text-sm">
         <option>All Majors</option>
         <option>Software Engineering</option>
         <option>Cybersecurity</option>
@@ -22,7 +22,7 @@ export default function FiltersBar() {
       </select>
 
       {/* All Status */}
-      <select className="h-10 px-3 rounded-lg border bg-white text-sm">
+      <select className="h-10 px-3 rounded-lg border bg-card text-sm">
         <option>All Status</option>
         <option>Under Review</option>
         <option>Shortlisted</option>
@@ -32,7 +32,7 @@ export default function FiltersBar() {
       </select>
 
       {/* All Batches */}
-      <select className="h-10 px-3 rounded-lg border bg-white text-sm">
+      <select className="h-10 px-3 rounded-lg border bg-card text-sm">
         <option>All Batches</option>
         <option>Batch 1</option>
         <option>Batch 2</option>

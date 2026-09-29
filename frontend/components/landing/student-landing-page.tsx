@@ -361,7 +361,7 @@ export default function StudentLandingPage() {
                 onClick={() => setIsLoginOpen(true)} 
                 variant="secondary"
                 size="lg"
-                className="font-medium gap-2 shadow-sm text-foreground bg-white hover:bg-slate-100"
+                className="font-medium gap-2 shadow-sm text-foreground bg-card hover:bg-row-hoverslate-100"
               >
                 Start Your Application <ArrowRight className="h-4 w-4" />
               </Button>

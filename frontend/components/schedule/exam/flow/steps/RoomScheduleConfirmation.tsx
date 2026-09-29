@@ -78,36 +78,36 @@ const RoomScheduleConfirmation = ({
       {/* Main Content Grid - 2 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Batch Information */}
-        <Card className="p-6 border border-gray-200 h-fit">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <Card className="p-6 border border-border h-fit">
+          <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-[#0F386C]" />
             Batch Information
           </h4>
           <div className="space-y-4">
             <div className="flex items-start justify-between">
-              <span className="text-sm text-gray-600">Selected Batch</span>
-              <p className="text-sm font-medium text-gray-900 text-right">
+              <span className="text-sm text-muted-foreground">Selected Batch</span>
+              <p className="text-sm font-medium text-foreground text-right">
                 {batchDisplayName || selectedBatch}
               </p>
             </div>
 
             <div className="flex items-start justify-between">
-              <span className="text-sm text-gray-600">Exam Date</span>
-              <p className="text-sm font-medium text-gray-900 text-right">
+              <span className="text-sm text-muted-foreground">Exam Date</span>
+              <p className="text-sm font-medium text-foreground text-right">
                 {selectedDate ? format(selectedDate, "PPP") : "Not selected"}
               </p>
             </div>
 
             <div className="flex items-start justify-between">
-              <span className="text-sm text-gray-600">Total Capacity</span>
-              <p className="text-sm font-medium text-gray-900 text-right">
+              <span className="text-sm text-muted-foreground">Total Capacity</span>
+              <p className="text-sm font-medium text-foreground text-right">
                 {totalCapacity} seats
               </p>
             </div>
 
-            <div className="pt-3 border-t border-gray-200">
+            <div className="pt-3 border-t border-border">
               <div className="flex items-start justify-between mb-2">
-                <span className="text-sm text-gray-600">Committee Members</span>
+                <span className="text-sm text-muted-foreground">Committee Members</span>
                 <Badge variant="outline" className="text-xs">
                   {allCommitteeMembers.length}
                 </Badge>
@@ -118,14 +118,14 @@ const RoomScheduleConfirmation = ({
                     <Badge 
                       key={member} 
                       variant="outline" 
-                      className="text-xs bg-gray-50"
+                      className="text-xs bg-muted"
                     >
                       {member}
                     </Badge>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   No committee members selected
                 </p>
               )}
@@ -134,8 +134,8 @@ const RoomScheduleConfirmation = ({
         </Card>
 
         {/* Right Column: Room Schedules */}
-        <Card className="p-6 border border-gray-200">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <Card className="p-6 border border-border">
+          <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <MapPin className="h-5 w-5 text-[#0F386C]" />
             Room Schedules
           </h4>
@@ -148,7 +148,7 @@ const RoomScheduleConfirmation = ({
                   <Badge className="bg-blue-100 text-blue-800 border-blue-200">
                     Mathematics
                   </Badge>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {mathRooms.length} room{mathRooms.length === 1 ? "" : "s"}
                   </span>
                 </h5>
@@ -160,15 +160,15 @@ const RoomScheduleConfirmation = ({
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h6 className="font-semibold text-gray-900 text-sm">
+                          <h6 className="font-semibold text-foreground text-sm">
                             {room.roomName}
                           </h6>
-                          <Badge variant="outline" className="text-xs bg-white">
+                          <Badge variant="outline" className="text-xs">
                             {room.capacity} seats
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-2 text-xs text-gray-600">
+                        <div className="grid grid-cols-1 gap-2 text-xs text-muted-foreground">
                           <div className="flex items-center gap-2">
                             <MapPin className="h-3.5 w-3.5" />
                             <span>{room.location}</span>
@@ -197,7 +197,7 @@ const RoomScheduleConfirmation = ({
                   <Badge className="bg-green-100 text-green-800 border-green-200">
                     English
                   </Badge>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {englishRooms.length} room{englishRooms.length === 1 ? "" : "s"}
                   </span>
                 </h5>
@@ -209,15 +209,15 @@ const RoomScheduleConfirmation = ({
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h6 className="font-semibold text-gray-900 text-sm">
+                          <h6 className="font-semibold text-foreground text-sm">
                             {room.roomName}
                           </h6>
-                          <Badge variant="outline" className="text-xs bg-white">
+                          <Badge variant="outline" className="text-xs">
                             {room.capacity} seats
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-2 text-xs text-gray-600">
+                        <div className="grid grid-cols-1 gap-2 text-xs text-muted-foreground">
                           <div className="flex items-center gap-2">
                             <MapPin className="h-3.5 w-3.5" />
                             <span>{room.location}</span>
@@ -241,7 +241,7 @@ const RoomScheduleConfirmation = ({
                           <div className="flex flex-wrap gap-1 pt-2 border-t border-green-200">
                             
                             {room.committee.length > 3 && (
-                              <Badge variant="outline" className="text-xs bg-white">
+                              <Badge variant="outline" className="text-xs">
                                 +{room.committee.length - 3}
                               </Badge>
                             )}
@@ -256,12 +256,12 @@ const RoomScheduleConfirmation = ({
 
             {/* Empty State */}
             {roomSchedules.length === 0 && (
-              <div className="p-8 text-center border-dashed border-2 border-gray-300 rounded-lg">
-                <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <div className="p-8 text-center border-dashed border-2 border-border rounded-lg">
+                <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">
                   No Room Schedules
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Please go back and create room schedules before confirming.
                 </p>
               </div>

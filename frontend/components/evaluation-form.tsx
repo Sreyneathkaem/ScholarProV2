@@ -221,13 +221,13 @@ export function EvaluationForm({
 
   return (
     <div className={className}>
-      <div className="bg-white rounded-lg border">
+      <div className="bg-card rounded-lg border">
         <div className="p-6 border-b">
           <div className="flex items-center gap-2">
             <ClipboardCheck className="h-5 w-5 text-primary" />
             <h3 className="font-semibold text-lg">Interview Evaluation</h3>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Score each criterion from 0 to 20 points
           </p>
         </div>
@@ -275,11 +275,11 @@ export function EvaluationForm({
                       className="w-16 h-9 text-center text-sm"
                       required
                     />
-                    <span className="text-xs text-gray-500 w-8">/ 20</span>
+                    <span className="text-xs text-muted-foreground w-8">/ 20</span>
                   </div>
                 </div>
                 {/* Score bar visualization */}
-                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                <div className="w-full bg-accent rounded-full h-1.5">
                   <div
                     className="bg-primary h-1.5 rounded-full transition-all duration-300"
                     style={{
@@ -294,12 +294,12 @@ export function EvaluationForm({
           {/* Total Score */}
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-gray-900">Total Score</span>
+              <span className="font-semibold text-foreground">Total Score</span>
               <span className="text-2xl font-bold text-primary">
                 {totalScore} / 100
               </span>
             </div>
-            <div className="w-full bg-white rounded-full h-3 mt-2">
+            <div className="w-full bg-card rounded-full h-3 mt-2">
               <div
                 className="bg-primary h-3 rounded-full transition-all duration-300"
                 style={{ width: `${totalScore}%` }}
@@ -326,7 +326,7 @@ export function EvaluationForm({
 
           {/* Previous Evaluation Info */}
           {initialData?.evaluatedAt && (
-            <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">
+            <div className="text-xs text-muted-foreground p-3 bg-muted rounded-lg">
               <p>
                 Last evaluated by{" "}
                 <span className="font-medium">{initialData.evaluatedBy}</span>{" "}

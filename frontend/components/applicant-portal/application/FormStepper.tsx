@@ -77,7 +77,7 @@ export default function FormStepper({
                     isActive
                       ? isCompleted
                         ? "border-white bg-[#52c41a] text-white shadow-sm ring-2 ring-white/30"
-                        : "border-white bg-white text-[#0F386C] shadow-sm ring-2 ring-white/30"
+                        : "border-white bg-card text-[#0F386C] shadow-sm ring-2 ring-white/30"
                       : isCompleted
                         ? "border-[#52c41a] bg-[#52c41a] text-white"
                         : isAccessible

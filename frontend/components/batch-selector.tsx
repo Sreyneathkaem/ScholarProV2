@@ -54,11 +54,11 @@ export function BatchSelector({
   return (
     <div className={className}>
       {label && (
-        <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+        <label className="text-sm font-medium text-foreground mb-1.5 block">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
           {showBatchCount && (
-            <span className="text-gray-500 font-normal ml-2">
+            <span className="text-muted-foreground font-normal ml-2">
               ({batchCount} available)
             </span>
           )}
@@ -66,7 +66,7 @@ export function BatchSelector({
       )}
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger
-          className={`w-full h-11 ${error ? "border-red-300 focus:border-red-300 focus:ring-red-200" : "border-gray-300"} ${value ? "font-medium text-foreground" : "text-muted-foreground"}`}
+          className={`w-full h-11 ${error ? "border-red-300 focus:border-red-300 focus:ring-red-200" : "border-border"} ${value ? "font-medium text-foreground" : "text-muted-foreground"}`}
         >
           <SelectValue placeholder={placeholder}>{displayValue}</SelectValue>
         </SelectTrigger>
@@ -90,7 +90,7 @@ export function BatchSelector({
 
       {/* Helper text */}
       {helperText && !error && (
-        <p className="text-gray-500 text-xs mt-1">{helperText}</p>
+        <p className="text-muted-foreground text-xs mt-1">{helperText}</p>
       )}
     </div>
   );

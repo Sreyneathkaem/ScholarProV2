@@ -159,15 +159,15 @@ export function EvaluationSummary({
 
   if (loading)
     return (
-      <Card className="p-4 text-sm text-gray-500">
+      <Card className="p-4 text-sm text-muted-foreground">
         Loading interview evaluation...
       </Card>
     );
 
   if (!interview) {
     return (
-      <Card className="p-4 bg-gray-50 border-dashed">
-        <div className="flex items-center gap-2 text-gray-500">
+      <Card className="p-4 bg-muted border-dashed">
+        <div className="flex items-center gap-2 text-muted-foreground">
           <ClipboardCheck className="h-4 w-4" />
           <span className="text-sm">No interview available</span>
         </div>
@@ -197,15 +197,15 @@ export function EvaluationSummary({
         <h3 className="text-lg font-semibold">Interview Evaluation</h3>
       </div>
 
-      <Card className="p-4 bg-gray-50">
+      <Card className="p-4 bg-muted">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Average Committee Score</span>
+          <span className="text-sm text-muted-foreground">Average Committee Score</span>
           <Badge className="text-base text-white font-bold">
             {interview.averageCommitteeScore ?? "-"}
           </Badge>
         </div>
         {typeof interview.averageCommitteeScore === "number" && (
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-muted-foreground">
             Total Final Score:{" "}
             <span className="font-medium">
               {interview.averageCommitteeScore}
@@ -227,7 +227,7 @@ export function EvaluationSummary({
                     <div className="text-sm font-medium">
                       {committee.committeeName}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       Committee Evaluation
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export function EvaluationSummary({
                     key={c.criteriaId}
                     className="flex items-center justify-between"
                   >
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground">
                       {c.criteriaName}
                     </span>
                     <span className="text-sm font-medium">
@@ -252,7 +252,7 @@ export function EvaluationSummary({
                   </div>
                 ))}
 
-                <div className="pt-3 border-t text-sm text-gray-600 flex items-center gap-2">
+                <div className="pt-3 border-t text-sm text-muted-foreground flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Evaluated by{" "}
                   <span className="font-medium">{committee.committeeName}</span>

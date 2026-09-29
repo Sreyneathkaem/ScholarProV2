@@ -63,7 +63,7 @@ function ResetPasswordPage() {
               <p className="text-2xl font-bold">Password Reset Successfully!</p>
             </div>
 
-            <p className="text-base text-gray-600 mb-8">
+            <p className="text-base text-muted-foreground mb-8">
               Your password has been reset successfully. You can now login with
               your new password.
             </p>
@@ -98,7 +98,7 @@ function ResetPasswordPage() {
         <div className="w-[400px]">
           <Link
             href="/login"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Login

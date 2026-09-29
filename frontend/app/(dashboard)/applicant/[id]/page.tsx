@@ -101,7 +101,7 @@ export default function StudentDetailsPage() {
       <div className="flex-1 flex items-center justify-center p-10">
         <div className="text-center">
           <div className="text-lg font-semibold">Loading student data...</div>
-          <p className="text-gray-500 mt-2">Please wait</p>
+          <p className="text-muted-foreground mt-2">Please wait</p>
         </div>
       </div>
     );
@@ -350,7 +350,7 @@ export default function StudentDetailsPage() {
                 />
 
                 {/* Footer Info */}
-                <div className="pt-4 border-t flex items-center justify-between text-sm text-gray-500">
+                <div className="pt-4 border-t flex items-center justify-between text-sm text-muted-foreground">
                   <div className="flex items-center gap-6">
                     <span>ID: {student.id}</span>
                     <span>Batch: {student.batch}</span>

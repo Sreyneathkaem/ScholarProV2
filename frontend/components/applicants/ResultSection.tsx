@@ -58,17 +58,17 @@ export function ResultSection({ data }: { data: ResultSectionProps }) {
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-1">
               <div>
-                <div className="text-sm text-gray-600">Interview Score</div>
-                <div className="text-lg text-gray-900">
+                <div className="text-sm text-muted-foreground">Interview Score</div>
+                <div className="text-lg text-foreground">
                   {loadingFinal ? "—" : displayedInterview}/100
                 </div>
                 {/* {displayedInterviewWeight != null && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     Weight: {displayedInterviewWeight}
                   </div>
                 )} */}
                 {evalCount > 0 && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     Based on {evalCount} committee{evalCount > 1 ? "s" : ""}
                   </div>
                 )}
@@ -76,15 +76,15 @@ export function ResultSection({ data }: { data: ResultSectionProps }) {
             </div>
 
             <div className="col-span-1">
-              <p className="text-sm text-gray-600 mb-1">Math Score</p>
-              <p className="text-lg text-gray-900">
+              <p className="text-sm text-muted-foreground mb-1">Math Score</p>
+              <p className="text-lg text-foreground">
                 {loadingFinal ? "—" : `${displayedMath}/100`}
               </p>
             </div>
 
             <div className="col-span-1">
-              <p className="text-sm text-gray-600 mb-1">English Score</p>
-              <p className="text-lg text-gray-900">
+              <p className="text-sm text-muted-foreground mb-1">English Score</p>
+              <p className="text-lg text-foreground">
                 {loadingFinal ? "—" : `${displayedEnglish}/100`}
               </p>
             </div>
@@ -92,7 +92,7 @@ export function ResultSection({ data }: { data: ResultSectionProps }) {
             <div className="col-span-3">
               <div className="pt-4 border-t flex items-center justify-between">
                 <div>
-                  <span className="text-sm text-gray-600">Final Total</span>
+                  <span className="text-sm text-muted-foreground">Final Total</span>
                   <div className="text-3xl font-extrabold">
                     {loadingFinal ? "—" : displayedFinal}
                   </div>
@@ -106,7 +106,7 @@ export function ResultSection({ data }: { data: ResultSectionProps }) {
                           ? `Rank ${displayedRank}`
                           : "Rank —"}
                     </div> */}
-                    <div className="text-xs text-gray-500 mt-2">
+                    <div className="text-xs text-muted-foreground mt-2">
                       {/* of{" "} */}
                       {loadingFinal
                         ? "—"
