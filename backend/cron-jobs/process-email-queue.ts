@@ -38,9 +38,34 @@ async function fetchAndMarkEmails() {
 
 async function sendSingleEmail(email: any): Promise<"sent" | "failed"> {
   try {
-    const templateData = email.emailData
-      ? JSON.stringify(email.emailData as Record<string, any>)
-      : "{}";
+    const defaultTemplateValues: Record<string, any> = {
+      applicantName: "",
+      gender: "",
+      email: email.toEmail || "",
+      status: "",
+      scholarshipPercentage: "",
+      major: "",
+      tuitionFee: "",
+      mathExamDate: "",
+      mathStartTime: "",
+      mathEndTime: "",
+      mathRoom: "",
+      englishExamDate: "",
+      englishStartTime: "",
+      englishEndTime: "",
+      englishRoom: "",
+      interviewExamDate: "",
+      interviewStartTime: "",
+      interviewEndTime: "",
+      interviewRoom: "",
+      interviewSlotStart: "",
+      interviewSlotEnd: "",
+    };
+
+    const templateData = JSON.stringify({
+      ...defaultTemplateValues,
+      ...(email.emailData as Record<string, any> || {}),
+    });
 
     const command = new SendEmailCommand({
       FromEmailAddress: process.env.AWS_SES_FROM_EMAIL,
