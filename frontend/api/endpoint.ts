@@ -5,7 +5,8 @@ export const API_ENDPOINTS = {
   ME: "/users/profile",
   // Student OAuth endpoints
   AUTH_GOOGLE: "/auth/google", // GET → redirect to Google (get auth URL)
-  AUTH_GOOGLE_CALLBACK: "/auth/google/callback", // POST { code } → exchange for accessToken
+  AUTH_GOOGLE_URL: "/auth/google/url", // GET → { url } as JSON (no proxied 302)
+  AUTH_GOOGLE_CALLBACK: "/auth/google/callback", // POST { code, state } → exchange for accessToken
   AUTH_TELEGRAM_CALLBACK: "/auth/telegram/callback",
 
   RESET_PASSWORD: "/auth/reset-password",

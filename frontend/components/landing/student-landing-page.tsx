@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   CalendarDays,
@@ -15,21 +14,13 @@ import {
   Shield,
   Sparkles,
   Trophy,
-  User,
   Users,
   X,
   FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { useAuthStore } from "@/lib/stores/auth-store";
-import {
-  saveStudentPortalSnapshot,
-  loadStudentPortalSnapshot,
-  formatNameFromEmail,
-} from "@/lib/utils/student-portal";
+import { authService } from "@/api/service/auth.service";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const applicationSteps = [
@@ -91,69 +82,46 @@ const benefits = [
 
 export default function StudentLandingPage() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [isStudent, setIsStudent] = useState(true);
-  const router = useRouter();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = isLoginOpen ? "hidden" : "unset";
     return () => { document.body.style.overflow = "unset"; };
   }, [isLoginOpen]);
 
-  const handleAccess = () => {
-    const trimmedEmail = email.trim();
-    let trimmedName = fullName.trim();
-    
-    if (!trimmedEmail) {
-      toast.error("Please enter your email address");
-      return;
-    }
-    if (!trimmedName) {
-      trimmedName = formatNameFromEmail(trimmedEmail);
-    }
-    if (!isStudent) {
-      toast.error("Please confirm that you are a student");
-      return;
-    }
+  /**
+   * Starts the Google OAuth flow.
+   *
+   * The authorisation URL is fetched as JSON rather than reached by following
+   * a redirect: the backend is only reachable through a Next.js rewrite proxy,
+   * and a proxied 302 is not something to depend on. Fetching also lets an
+   * unconfigured backend explain itself in the modal instead of dumping the
+   * visitor on a Google error page.
+   */
+  const handleGoogleSignIn = async () => {
+    if (isGoogleLoading) return;
+    setIsGoogleLoading(true);
 
-    const studentUser = {
-      id: `student-${trimmedEmail}`,
-      name: trimmedName,
-      email: trimmedEmail,
-      role: "student" as const,
-    };
+    try {
+      const { success, url, error } = await authService.getGoogleAuthUrl();
 
-    sessionStorage.setItem("studentAccessToken", `student:${trimmedEmail}`);
-    sessionStorage.setItem("studentUser", JSON.stringify(studentUser));
+      if (!success || !url) {
+        toast.error(error || "Could not start Google sign-in.");
+        setIsGoogleLoading(false);
+        return;
+      }
 
-    // Update in-memory Zustand store first so getActiveStudentEmail finds it
-    useAuthStore.getState().setAccessToken(`student:${trimmedEmail}`);
-    useAuthStore.getState().setUser(studentUser);
-
-    // Check if user already has saved form data; if not, initialize profile
-    const existing = loadStudentPortalSnapshot(trimmedEmail);
-    if (!existing.applicationData) {
-      saveStudentPortalSnapshot(
-        {
-          profile: {
-            name: trimmedName,
-            email: trimmedEmail,
-            phone: "—",
-            studentId: existing.profile.studentId || "APP-001",
-          },
-        },
-        trimmedEmail,
+      // Full navigation, not router.push: this must leave the SPA so Google
+      // can take over and return to the callback route afterwards.
+      window.location.href = url;
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Could not start Google sign-in. Please try again.",
       );
+      setIsGoogleLoading(false);
     }
-
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("student-profile-updated"));
-      window.dispatchEvent(new Event("student-portal-updated"));
-    }
-
-    toast.success("Welcome to the ScholarPro Student Portal");
-    router.push("/students/application");
   };
 
   return (
@@ -444,71 +412,44 @@ export default function StudentLandingPage() {
               </div>
 
               <div className="mt-5 rounded-[6px] bg-[#edf4fc] border border-[#b8d4f6] dark:bg-[#0f2238] dark:border-[#1e3f66] px-3.5 py-2.5 text-center">
-                <p className="text-[11px] font-semibold text-[#0F386C] dark:text-[#5a9be6]">Quick Portal Access</p>
-                <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">Enter your credentials to access your candidate application.</p>
+                <p className="text-[11px] font-semibold text-[#0F386C] dark:text-[#5a9be6]">Sign in with Google</p>
+                <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
+                  Use the same Google account you applied with. No password needed.
+                </p>
               </div>
 
               <div className="mt-5 space-y-3.5">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-foreground">Full Name</label>
-                  <div className="relative">
-                    <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input 
-                      value={fullName} 
-                      onChange={(e) => setFullName(e.target.value)} 
-                      placeholder="Enter your full name" 
-                      className="pl-9 h-9 text-sm" 
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-foreground">Email Address</label>
-                  <div className="relative">
-                    <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input 
-                      type="email" 
-                      value={email} 
-                      onChange={(e) => setEmail(e.target.value)} 
-                      placeholder="you@example.edu" 
-                      className="pl-9 h-9 text-sm" 
-                    />
-                  </div>
-                </div>
-
-                <div className="rounded-[6px] border border-border/80 bg-muted/40 p-3">
-                  <div className="flex items-start gap-2.5">
-                    <Checkbox 
-                      id="student-confirm" 
-                      checked={isStudent} 
-                      onCheckedChange={(c) => setIsStudent(c === true)} 
-                      className="mt-0.5" 
-                    />
-                    <label htmlFor="student-confirm" className="cursor-pointer select-none">
-                      <span className="block text-xs font-medium text-foreground">I am a student</span>
-                      <span className="mt-0.5 block text-[11px] text-muted-foreground leading-relaxed">I confirm I am an active scholarship candidate.</span>
-                    </label>
-                  </div>
-                </div>
-
-                <Button 
-                  type="button" 
-                  onClick={handleAccess} 
+                <Button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleLoading}
                   className="w-full h-9 text-sm"
                 >
-                  Enter Portal
+                  {isGoogleLoading ? (
+                    <>
+                      <span className="mr-2 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                      Redirecting to Google…
+                    </>
+                  ) : (
+                    <>
+                      <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.57c2.08-1.92 3.28-4.74 3.28-8.09Z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.76c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
+                        <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.05l3.66 2.84c.87-2.6 3.3-4.51 6.16-4.51Z" />
+                      </svg>
+                      Continue with Google
+                    </>
+                  )}
                 </Button>
-                
+
                 <p className="text-center text-xs text-muted-foreground pt-1">
-                  Already started?{" "}
-                  <button 
-                    onClick={() => {
-                      setIsLoginOpen(false);
-                      router.push("/students/application");
-                    }} 
+                  Applying for the first time?{" "}
+                  <button
+                    onClick={handleGoogleSignIn}
                     className="font-medium text-primary hover:underline cursor-pointer"
                   >
-                    Continue application
+                    Create your application
                   </button>
                 </p>
               </div>

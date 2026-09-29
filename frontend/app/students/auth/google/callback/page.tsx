@@ -36,38 +36,67 @@ export default function GoogleCallbackPage() {
     const error = params.get("error");
     if (error) {
       setStatus("error");
-      setMessage("Google sign-in was cancelled. You can close this page.");
+      setMessage(error);
       return;
     }
 
-    // params.get() auto-decodes percent-encoded characters (%2F → /)
-    const code = params.get("code");
-    if (!code) {
-      setStatus("error");
-      setMessage("Invalid callback — missing auth code. Please try again.");
-      return;
-    }
-
-    let mounted = true;
-
-    const handleCallback = async () => {
+    /**
+     * `mode` is either:
+     *   "code"   — Google's redirect_uri points at this page, so the single-use
+     *              authorization code is exchanged here.
+     *   "session"— Google's redirect_uri points at the backend. The backend has
+     *              already exchanged the code and set the httpOnly refreshToken
+     *              cookie, so an access token is obtained by refreshing instead.
+     *              Passing a used code back to the backend would fail: Google
+     *              auth codes are single-use.
+     */
+    const handleCallback = async (mode: "code" | "session") => {
       try {
-        const res = await authService.postGoogleCallback(code);
+        let token: string;
+        let userProfile: {
+          id: string | number;
+          name?: string;
+          email: string;
+          role: string;
+          profileUrl?: string | null;
+          avatar?: string;
+        };
 
-        if (!res.success || !res.data) {
-          throw new Error(res.message || "Invalid response from server");
+        if (mode === "code") {
+          const res = await authService.postGoogleCallback(code!, state ?? undefined);
+
+          if (!res.success || !res.data) {
+            throw new Error(res.message || "Invalid response from server");
+          }
+
+          token = res.data.accessToken;
+          userProfile = res.data.userProfile;
+        } else {
+          ({ token } = await authService.refreshToken());
+
+          // The interceptor reads the token from the store, so publish it
+          // before asking for the profile.
+          setAccessToken(token);
+
+          const me = await authService.me();
+          if (!me.success || !me.data) {
+            throw new Error("Could not load your profile");
+          }
+          userProfile = {
+            ...me.data,
+            profileUrl: me.data.avatar ?? null,
+          };
         }
 
-        const { accessToken: token, userProfile } = res.data;
         const resolvedName =
           userProfile.name?.trim() || formatNameFromEmail(userProfile.email);
 
         const studentUser = {
-          id: userProfile.id,
+          id: String(userProfile.id),
           name: resolvedName,
           email: userProfile.email,
-          role: userProfile.role,
-          avatar: userProfile.profileUrl ?? undefined,
+          role: userProfile.role as "student",
+          avatar: userProfile.profileUrl ?? userProfile.avatar ?? undefined,
         };
 
         // Persist to sessionStorage FIRST — survives page refreshes, cleared on tab close.
@@ -94,10 +123,9 @@ export default function GoogleCallbackPage() {
           window.dispatchEvent(new Event("student-profile-updated"));
         }
 
-        toast.success(res.message || "Welcome! You are now signed in.");
+        toast.success("Welcome! You are now signed in.");
         router.replace("/students/application");
       } catch (err) {
-        if (!mounted) return;
         const msg =
           err instanceof Error
             ? err.message
@@ -107,11 +135,41 @@ export default function GoogleCallbackPage() {
       }
     };
 
-    handleCallback();
+    // params.get() auto-decodes percent-encoded characters (%2F → /)
+    const code = params.get("code");
+    const urlState = params.get("state");
 
-    return () => {
-      mounted = false;
-    };
+    // Prefer the state stashed before the redirect. Google's echo of `state`
+    // comes back through the proxy just like the code does, but the copy in
+    // sessionStorage is the one guaranteed to belong to this browser — it is
+    // what makes the CSRF check work when the state cookie cannot be forwarded.
+    let storedState: string | null = null;
+    try {
+      storedState = sessionStorage.getItem("googleOauthState");
+      sessionStorage.removeItem("googleOauthState");
+    } catch {
+      // storage unavailable
+    }
+
+    const state = storedState ?? urlState;
+
+    // If both exist they must agree — that mismatch is a genuine replay attempt.
+    if (storedState && urlState && storedState !== urlState) {
+      setStatus("error");
+      setMessage(
+        "Sign-in could not be verified. Please start again from the sign-in page.",
+      );
+      return;
+    }
+
+    if (params.get("session") === "1") {
+      handleCallback("session");
+    } else if (code) {
+      handleCallback("code");
+    } else {
+      setStatus("error");
+      setMessage("Invalid callback — missing auth code. Please try again.");
+    }
   }, []);
 
   return (

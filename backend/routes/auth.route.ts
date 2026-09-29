@@ -24,6 +24,9 @@ router.put("/logout", asyncHandler(authController.logoutController));
 
 // Google OAuth2
 router.get("/google", asyncHandler(authController.googleLoginController));
+// Must stay above `/:id/:token` below — both paths have two segments, so a
+// later registration would shadow this one and read "url" as a token id.
+router.get("/google/url", asyncHandler(authController.googleAuthUrlController));
 router.get(
   "/google/callback",
   asyncHandler(authController.googleCallbackController),

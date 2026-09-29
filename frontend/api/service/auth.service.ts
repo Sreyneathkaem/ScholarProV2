@@ -8,7 +8,6 @@ import {
   User,
   BackendLoginResponse,
   RefreshTokenResponse,
-  GoogleAuthUrlResponse,
   TelegramAuthPayload,
   OAuthCallbackResponse,
   ValidateInviteResponse,
@@ -289,12 +288,71 @@ export const authService = {
 
   // ─── Student OAuth endpoints ───────────────────────────────────────────────
 
-  /** Returns the Google OAuth authorisation URL from the backend. */
-  async getGoogleAuthUrl(): Promise<{ success: boolean; url?: string }> {
-    const res = await apiClient.get<GoogleAuthUrlResponse>(
-      API_ENDPOINTS.AUTH_GOOGLE,
-    );
-    return { success: true, url: res.data.url };
+  /** Returns the Google OAuth authorisation URL (and CSRF state) from the backend. */
+  async getGoogleAuthUrl(): Promise<{
+    success: boolean;
+    url?: string;
+    state?: string;
+    error?: string;
+  }> {
+    // Plain `fetch`, not apiClient: this is unauthenticated, so the axios
+    // interceptor would first try to refresh a token that does not exist yet,
+    // and the response must be readable even when the backend answers 503
+    // (Google not configured) — axios would turn that into a thrown error with
+    // no message.
+    let res: Response;
+    try {
+      res = await fetch("/api" + API_ENDPOINTS.AUTH_GOOGLE_URL, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        // Required so the httpOnly googleOauthState cookie minted by the backend
+        // is stored and can be sent back for CSRF verification on the callback.
+        credentials: "same-origin",
+      });
+    } catch {
+      // `fetch` rejects outright only when the frontend dev server itself is
+      // unreachable, so this is almost always "the frontend is not running".
+      return {
+        success: false,
+        error:
+          "Could not reach the app server. Make sure the frontend is running on port 3001.",
+      };
+    }
+
+    let body: { url?: string; state?: string; message?: string } | null = null;
+    try {
+      body = await res.json();
+    } catch {
+      // non-JSON body — fall through to the status-based message
+    }
+
+    if (!res.ok || !body?.url) {
+      return {
+        success: false,
+        error:
+          body?.message ||
+          // No JSON body means the request never reached the backend controller.
+          // `ts-node-dev` closes port 3000 for a second or two while respawning,
+          // and Next.js reports that dead upstream as a 500 — a restart in
+          // progress, not a broken configuration. Say so instead of "500".
+          (res.status >= 500
+            ? "The backend is not responding. It may be restarting after a code change — wait a couple of seconds and try again."
+            : `Could not start Google sign-in (${res.status}). Please try again.`),
+      };
+    }
+
+    // Persist the CSRF state for the callback page to hand back. sessionStorage
+    // survives the redirect through Google and is scoped to this tab, which is
+    // what ties the callback to the browser that started the flow.
+    if (body.state) {
+      try {
+        sessionStorage.setItem("googleOauthState", body.state);
+      } catch {
+        // Private-mode storage denial — the callback will report the failure.
+      }
+    }
+
+    return { success: true, url: body.url, state: body.state };
   },
 
   /**
@@ -304,11 +362,16 @@ export const authService = {
    * attempt a refresh before this unauthenticated request.  The Next.js
    * proxy rewrite forwards POST /api/auth/google → backend POST /auth/google.
    */
-  async postGoogleCallback(code: string): Promise<OAuthCallbackResponse> {
+  async postGoogleCallback(
+    code: string,
+    state?: string,
+  ): Promise<OAuthCallbackResponse> {
     const res = await fetch("/api" + API_ENDPOINTS.AUTH_GOOGLE_CALLBACK, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
+      // The backend sets the httpOnly refreshToken cookie on this response.
+      credentials: "same-origin",
+      body: JSON.stringify({ code, state }),
     });
 
     if (!res.ok) {
