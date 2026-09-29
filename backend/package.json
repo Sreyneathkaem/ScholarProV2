@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
-    "@faker-js/faker": "^10.2.0",
+    "@faker-js/faker": "^10.6.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.3",
     "@types/html-to-text": "^9.0.4",
