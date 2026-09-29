@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (required for build steps like tsc and sentry-cli)
-RUN npm ci
+RUN npm ci && npm cache clean --force
 
 # Define build arguments
 ARG NODE_ENV=production
@@ -46,7 +46,7 @@ ENV NODE_ENV=$NODE_ENV
 
 # Copy package files and install ONLY production dependencies
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy only the compiled code from the builder stage
 COPY --from=builder /app/dist ./dist
