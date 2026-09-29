@@ -25,6 +25,11 @@ import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { CAMBODIA_PROVINCES } from "../../utils/cambodia-provinces";
+import {
+  generateCambodianName,
+  generateCambodianEmail,
+  generateCambodianParentName,
+} from "../../utils/cambodia-names";
 
 const CAMBODIAN_HIGH_SCHOOLS = [
   "Preah Sisowath High School",
@@ -206,11 +211,17 @@ async function seed() {
         })
         .returning();
 
+      const committeeNames = [
+        "Dr. Sovann Chea",
+        "Prof. Vannak Heng",
+        "Dr. Bopha Meas",
+      ];
+
       await db
         .insert(committees)
         .values({
           userId: u.id,
-          name: faker.person.fullName(),
+          name: committeeNames[i % committeeNames.length],
           departmentId: insertedDepts[i % insertedDepts.length].id,
         })
         .returning();
@@ -286,8 +297,53 @@ async function seed() {
   // 4. Students Lifecycle & Applications (Stress test: 500 students)
   console.log("Step 4: Generating 500 Students, Profiles, and Applications...");
 
+  const PRIORITY_APPLICANTS = [
+    {
+      nameEn: "Nut Sannara",
+      nameKh: "ណុត សាន់ណារ៉ា",
+      email: "narahcs2004@gmail.com",
+      gender: "male" as const,
+      surnameEn: "Nut",
+    },
+    {
+      nameEn: "Virak Rangsey",
+      nameKh: "វីរៈ រង្សី",
+      email: "rv6024010101@camtech.edu.kh",
+      gender: "male" as const,
+      surnameEn: "Virak",
+    },
+    {
+      nameEn: "Kaem Neath",
+      nameKh: "កែម នាត",
+      email: "sk6024010075@camtech.edu.kh",
+      gender: "female" as const,
+      surnameEn: "Kaem",
+    },
+  ];
+
   for (let i = 0; i < 500; i++) {
-    const email = faker.internet.email().toLocaleLowerCase();
+    const priority = i < PRIORITY_APPLICANTS.length ? PRIORITY_APPLICANTS[i] : null;
+    const gender = priority
+      ? priority.gender
+      : faker.helpers.arrayElement(["male", "female"] as const);
+    const cambodianName = priority
+      ? {
+          nameEn: priority.nameEn,
+          nameKh: priority.nameKh,
+          surnameEn: priority.surnameEn,
+          surnameKh: "",
+          givenNameEn: priority.nameEn.split(" ")[1] || priority.nameEn,
+          givenNameKh: "",
+        }
+      : generateCambodianName(gender, i);
+    const email = priority
+      ? priority.email
+      : generateCambodianEmail(
+          cambodianName.givenNameEn,
+          cambodianName.surnameEn,
+          i + 1
+        );
+
     const [existingUser] = await db
       .select({ id: users.id })
       .from(users)
@@ -312,8 +368,8 @@ async function seed() {
       .insert(students)
       .values({
         userId: u.id,
-        nameEn: faker.person.fullName(),
-        nameKh: "ឈ្មោះ និស្សិត",
+        nameEn: cambodianName.nameEn,
+        nameKh: cambodianName.nameKh,
         email: u.email,
         phoneNumber: faker.helpers.fromRegExp(/0[1-9][0-9]{7,8}/),
         dateOfBirth: faker.date.birthdate(),
@@ -335,17 +391,24 @@ async function seed() {
     await db.insert(personalInfo).values({
       studentId: student.id,
       nationality: "Cambodian",
-      gender: faker.helpers.arrayElement(["male", "female"]),
+      gender,
       dob: student.dateOfBirth!,
       placeOfBirth: studentProvince,
       address: `St. ${faker.number.int({ min: 1, max: 999 })}, ${studentProvince}`,
       attachmentId: attachment.id,
     });
 
+    const parentRelationship = faker.helpers.arrayElement(["Father", "Mother"]);
+    const parentName = generateCambodianParentName(
+      cambodianName.surnameEn,
+      parentRelationship,
+      i
+    );
+
     await db.insert(parentGuardianInfos).values({
       studentId: student.id,
-      name: faker.person.fullName(),
-      relationship: "Father",
+      name: parentName,
+      relationship: parentRelationship,
       nationality: "Cambodian",
       address: `St. ${faker.number.int({ min: 1, max: 999 })}, ${studentProvince}`,
       job: faker.person.jobTitle(),

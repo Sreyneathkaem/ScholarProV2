@@ -8,8 +8,8 @@ export const GetApplicants = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit,
-    sortBy = "dateApplied",
-    order = "desc",
+    sortBy = "id",
+    order = "asc",
     search,
     applicationId,
     batchId,
