@@ -114,7 +114,7 @@ export default function CustomSelectApi<T extends FieldValues>({
             {required && <span className="text-red-500 ml-1">*</span>}
           </FormLabel>
           {isFetching ? (
-            <div className="p-2 text-left text-sm text-gray-500">
+            <div className="p-2 text-left text-sm text-muted-foreground">
               Loading...
             </div>
           ) : (

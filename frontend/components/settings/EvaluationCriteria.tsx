@@ -180,7 +180,7 @@ export default function EvaluationCriteria() {
                 Active Total Weight : {totalWeight}%
               </span>
             </div>
-            <div className="flex justify-between items-center text-sm text-gray-600">
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
               <span>
                 Active Criteria: {activeCriteriaCount} / {totalCriteriaCount}
               </span>
@@ -200,15 +200,15 @@ export default function EvaluationCriteria() {
                     Active
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                  <span className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded-full">
                     Inactive
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Weight:{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-foreground">
                     {c.weight}%
                   </span>
                 </p>
@@ -261,11 +261,11 @@ export default function EvaluationCriteria() {
                 }
                 disabled={editing !== null}
                 className={
-                  editing !== null ? "bg-gray-100 cursor-not-allowed" : ""
+                  editing !== null ? "bg-muted cursor-not-allowed" : ""
                 }
               />
               {editing && (
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Name cannot be changed when editing
                 </p>
               )}

@@ -52,7 +52,7 @@ export function DocumentsSection({ data }: { data: DocumentsProps }) {
       );
     }
 
-    return <span className="text-gray-400">Not Provided</span>;
+    return <span className="text-muted-foreground">Not Provided</span>;
   };
 
   return (

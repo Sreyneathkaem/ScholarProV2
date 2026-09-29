@@ -79,7 +79,7 @@ export function PreviewTemplateDialog({
               <div className="flex-1">
                 <p className="text-sm text-amber-900">
                   Variables like{" "}
-                  <code className="bg-white px-1.5 py-0.5 rounded text-xs">
+                  <code className="bg-card px-1.5 py-0.5 rounded text-xs">
                     {"{{applicantName}}"}
                   </code>{" "}
                   will be replaced with actual recipient data when sending
@@ -93,7 +93,7 @@ export function PreviewTemplateDialog({
 
           {/* Email Preview */}
           <ScrollArea className="h-[500px] rounded-md border">
-            <div className="p-6 bg-white">
+            <div className="p-6 bg-card">
               {/* Email Client Styling */}
               <div className="max-w-2xl mx-auto">
                 {/* Subject Line */}
@@ -103,7 +103,7 @@ export function PreviewTemplateDialog({
                       Subject
                     </span>
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-foreground">
                     {previewSubject}
                   </h2>
                 </div>
@@ -114,7 +114,7 @@ export function PreviewTemplateDialog({
                     <span className="font-medium text-muted-foreground min-w-16">
                       From:
                     </span>
-                    <span className="text-gray-900">
+                    <span className="text-foreground">
                       CamTech Scholarship Committee
                     </span>
                   </div>
@@ -122,7 +122,7 @@ export function PreviewTemplateDialog({
                     <span className="font-medium text-muted-foreground min-w-16">
                       To:
                     </span>
-                    <span className="text-gray-900">{"{{email}}"}</span>
+                    <span className="text-foreground">{"{{email}}"}</span>
                   </div>
                 </div>
 
@@ -131,19 +131,19 @@ export function PreviewTemplateDialog({
                 {/* Email Body */}
                 <div
                   className="prose prose-sm max-w-none
-                    prose-headings:text-gray-900 
-                    prose-p:text-gray-700 
+                    prose-headings:text-foreground 
+                    prose-p:text-foreground 
                     prose-a:text-blue-600 
-                    prose-strong:text-gray-900
-                    prose-ul:text-gray-700
-                    prose-ol:text-gray-700"
+                    prose-strong:text-foreground
+                    prose-ul:text-foreground
+                    prose-ol:text-foreground"
                   dangerouslySetInnerHTML={{
                     __html: sanitizeEmailTemplate(previewContent),
                   }}
                 />
 
                 {/* Email Footer */}
-                <div className="mt-8 pt-6 border-t text-xs text-gray-500">
+                <div className="mt-8 pt-6 border-t text-xs text-muted-foreground">
                   <p>
                     This is a template preview. Variables will be replaced with
                     actual recipient data when emails are sent.

@@ -9,12 +9,12 @@ export function StudentList({ students, className, showEmail = true, showStatus 
   return (
     <div className={`space-y-2 ${className}`}>
       {students.map((student) => (
-        <div key={student.id} className="grid grid-cols-3 gap-4 p-3 bg-gray-50 rounded text-sm">
+        <div key={student.id} className="grid grid-cols-3 gap-4 p-3 bg-muted rounded text-sm">
           <div>
             <div className="font-medium">{student.number}</div>
-            <div className="text-gray-600">{student.nameEn}</div>
+            <div className="text-muted-foreground">{student.nameEn}</div>
           </div>
-          <div className="text-gray-600">
+          <div className="text-muted-foreground">
             {showEmail && student.email}
           </div>
           <div className="text-right">

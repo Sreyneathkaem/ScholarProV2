@@ -85,7 +85,7 @@ export function ExportStudent({ open, onOpenChange }: ExportStudentProps) {
         <ScrollArea className="max-h-[80vh] p-6">
           <DialogHeader>
             <DialogTitle>Export Application Data</DialogTitle>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Select a status to export application data as CSV.
             </p>
           </DialogHeader>

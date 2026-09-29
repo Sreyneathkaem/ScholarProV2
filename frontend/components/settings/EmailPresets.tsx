@@ -269,8 +269,8 @@ export default function EmailPresets() {
     <Card className="flex flex-center p-6">
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Email Templates</h2>
-          <p className="text-gray-600 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">Email Templates</h2>
+          <p className="text-muted-foreground mt-1">
             Create and manage email templates with dynamic variables using{" "}
             {"{{variableName}}"} format
           </p>
@@ -332,7 +332,7 @@ export default function EmailPresets() {
                 size="sm"
                 onClick={handleDelete}
                 disabled={isLoading}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-red-600 hover:text-red-700 hover:bg-row-hoverred-50"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
@@ -431,7 +431,7 @@ export default function EmailPresets() {
           </div>
         ) : (
           <Card className="p-8">
-            <div className="text-center text-gray-500">
+            <div className="text-center text-muted-foreground">
               <Mail className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p>Select or create a template to start editing</p>
             </div>

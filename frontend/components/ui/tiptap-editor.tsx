@@ -112,25 +112,25 @@ const MentionList = ({
   });
 
   return (
-    <div className="mention-popup bg-white z-50 min-w-[18rem] max-w-[22rem] max-h-[320px] overflow-y-auto rounded-xl shadow-xl p-2">
+    <div className="mention-popup bg-card z-50 min-w-[18rem] max-w-[22rem] max-h-[320px] overflow-y-auto rounded-xl shadow-xl p-2">
       {items.length ? (
         items.map((item, index) => (
           <button
             key={item.key}
             onClick={() => selectItem(index)}
             className={cn(
-              "relative flex w-full cursor-pointer flex-col items-start gap-1 rounded-md px-3 py-2.5 text-sm outline-none select-none transition-all hover:bg-blue-50",
+              "relative flex w-full cursor-pointer flex-col items-start gap-1 rounded-md px-3 py-2.5 text-sm outline-none select-none transition-all hover:bg-row-hoverblue-50",
               index === selectedIndex && "bg-blue-50",
             )}
           >
-            <div className="font-medium text-gray-900">{item.display}</div>
-            <div className="text-xs text-gray-500 leading-relaxed">
+            <div className="font-medium text-foreground">{item.display}</div>
+            <div className="text-xs text-muted-foreground leading-relaxed">
               {item.description}
             </div>
           </button>
         ))
       ) : (
-        <div className="px-3 py-2.5 text-sm text-gray-500">
+        <div className="px-3 py-2.5 text-sm text-muted-foreground">
           No variables found
         </div>
       )}
@@ -424,14 +424,14 @@ export function TipTapEditor({
   return (
     <div
       className={cn(
-        "border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm",
+        "border border-border rounded-xl overflow-hidden bg-card shadow-sm",
         className,
       )}
     >
       {/* Toolbar */}
-      <div className="border-b border-gray-100 p-2 bg-white flex items-center gap-1 flex-wrap">
+      <div className="border-b border-border p-2 bg-card flex items-center gap-1 flex-wrap">
         {/* Text Formatting */}
-        <div className="flex items-center gap-1 border-r border-gray-200 pr-2 mr-2">
+        <div className="flex items-center gap-1 border-r border-border pr-2 mr-2">
           <Button
             type="button"
             variant="ghost"
@@ -440,7 +440,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive("bold") &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <Bold className="h-4 w-4" />
@@ -453,7 +453,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive("italic") &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <Italic className="h-4 w-4" />
@@ -466,7 +466,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive("underline") &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <UnderlineIcon className="h-4 w-4" />
@@ -474,7 +474,7 @@ export function TipTapEditor({
         </div>
 
         {/* Lists */}
-        <div className="flex items-center gap-1 border-r border-gray-200 pr-2 mr-2">
+        <div className="flex items-center gap-1 border-r border-border pr-2 mr-2">
           <Button
             type="button"
             variant="ghost"
@@ -483,7 +483,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive("bulletList") &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <List className="h-4 w-4" />
@@ -496,7 +496,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive("orderedList") &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <ListOrdered className="h-4 w-4" />
@@ -504,7 +504,7 @@ export function TipTapEditor({
         </div>
 
         {/* Alignment */}
-        <div className="flex items-center gap-1 border-r border-gray-200 pr-2 mr-2">
+        <div className="flex items-center gap-1 border-r border-border pr-2 mr-2">
           <Button
             type="button"
             variant="ghost"
@@ -513,7 +513,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive({ textAlign: "left" }) &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <AlignLeft className="h-4 w-4" />
@@ -526,7 +526,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive({ textAlign: "center" }) &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <AlignCenter className="h-4 w-4" />
@@ -539,7 +539,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive({ textAlign: "right" }) &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <AlignRight className="h-4 w-4" />
@@ -556,7 +556,7 @@ export function TipTapEditor({
             className={cn(
               "h-8 w-8 p-0",
               editor.isActive("link") &&
-                "bg-blue-100 text-blue-700 hover:bg-blue-200",
+                "bg-blue-100 text-blue-700 hover:bg-row-hoverblue-200",
             )}
           >
             <LinkIcon className="h-4 w-4" />
@@ -565,7 +565,7 @@ export function TipTapEditor({
 
         {/* Variables Dropdown */}
         {variables.length > 0 && (
-          <div className="flex items-center gap-1 border-l border-gray-200 pl-2 ml-2">
+          <div className="flex items-center gap-1 border-l border-border pl-2 ml-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -581,19 +581,19 @@ export function TipTapEditor({
               <DropdownMenuContent align="start" className="w-64">
                 {recipientVars.length > 0 && (
                   <>
-                    <DropdownMenuLabel className="text-xs font-semibold text-gray-500">
+                    <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
                       Recipient
                     </DropdownMenuLabel>
                     {recipientVars.map((variable) => (
                       <DropdownMenuItem
                         key={variable.key}
                         onClick={() => handleInsertVariable(variable)}
-                        className="flex flex-col items-start gap-1 py-2.5 px-3 cursor-pointer hover:bg-blue-50 focus:bg-blue-50"
+                        className="flex flex-col items-start gap-1 py-2.5 px-3 cursor-pointer hover:bg-row-hoverblue-50 focus:bg-row-hoverblue-50"
                       >
-                        <div className="font-medium text-gray-900 text-sm">
+                        <div className="font-medium text-foreground text-sm">
                           {variable.display}
                         </div>
-                        <div className="text-xs text-gray-500 leading-relaxed">
+                        <div className="text-xs text-muted-foreground leading-relaxed">
                           {variable.description}
                         </div>
                       </DropdownMenuItem>
@@ -604,19 +604,19 @@ export function TipTapEditor({
 
                 {systemVars.length > 0 && (
                   <>
-                    <DropdownMenuLabel className="text-xs font-semibold text-gray-500">
+                    <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
                       System
                     </DropdownMenuLabel>
                     {systemVars.map((variable) => (
                       <DropdownMenuItem
                         key={variable.key}
                         onClick={() => handleInsertVariable(variable)}
-                        className="flex flex-col items-start gap-1 py-2.5 px-3 cursor-pointer hover:bg-blue-50 focus:bg-blue-50"
+                        className="flex flex-col items-start gap-1 py-2.5 px-3 cursor-pointer hover:bg-row-hoverblue-50 focus:bg-row-hoverblue-50"
                       >
-                        <div className="font-medium text-gray-900 text-sm">
+                        <div className="font-medium text-foreground text-sm">
                           {variable.display}
                         </div>
-                        <div className="text-xs text-gray-500 leading-relaxed">
+                        <div className="text-xs text-muted-foreground leading-relaxed">
                           {variable.description}
                         </div>
                       </DropdownMenuItem>
@@ -627,19 +627,19 @@ export function TipTapEditor({
 
                 {contextVars.length > 0 && (
                   <>
-                    <DropdownMenuLabel className="text-xs font-semibold text-gray-500">
+                    <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
                       Context
                     </DropdownMenuLabel>
                     {contextVars.map((variable) => (
                       <DropdownMenuItem
                         key={variable.key}
                         onClick={() => handleInsertVariable(variable)}
-                        className="flex flex-col items-start gap-1 py-2.5 px-3 cursor-pointer hover:bg-blue-50 focus:bg-blue-50"
+                        className="flex flex-col items-start gap-1 py-2.5 px-3 cursor-pointer hover:bg-row-hoverblue-50 focus:bg-row-hoverblue-50"
                       >
-                        <div className="font-medium text-gray-900 text-sm">
+                        <div className="font-medium text-foreground text-sm">
                           {variable.display}
                         </div>
-                        <div className="text-xs text-gray-500 leading-relaxed">
+                        <div className="text-xs text-muted-foreground leading-relaxed">
                           {variable.description}
                         </div>
                       </DropdownMenuItem>

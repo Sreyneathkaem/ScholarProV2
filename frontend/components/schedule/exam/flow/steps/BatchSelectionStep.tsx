@@ -71,7 +71,7 @@ const BatchSelectionStep = () => {
         />
 
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+          <label className="text-sm font-medium text-foreground mb-1.5 block">
             Select Exam Date
           </label>
           <Popover>

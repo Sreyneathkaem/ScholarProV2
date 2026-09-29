@@ -28,7 +28,7 @@ interface FormDataState {
 // Password Strength Helper
 const checkStrength = (pass: string) => {
   let score = 0;
-  if (!pass) return { score: 0, text: "", color: "bg-gray-200" };
+  if (!pass) return { score: 0, text: "", color: "bg-accent" };
   if (pass.length >= 8) score++;
   if (/[A-Z]/.test(pass)) score++;
   if (/[0-9]/.test(pass)) score++;
@@ -44,12 +44,12 @@ const checkStrength = (pass: string) => {
 function RequirementItem({ met, text }: { met: boolean; text: string }) {
   return (
     <div
-      className={`flex items-center text-xs transition-colors duration-200 ${met ? "text-green-600" : "text-gray-400"}`}
+      className={`flex items-center text-xs transition-colors duration-200 ${met ? "text-green-600" : "text-muted-foreground"}`}
     >
       {met ? (
         <Check size={12} className="mr-1.5" />
       ) : (
-        <div className="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2" />
+        <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground mr-2" />
       )}
       {text}
     </div>
@@ -99,7 +99,7 @@ function PasswordInput({
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
         >
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
@@ -108,7 +108,7 @@ function PasswordInput({
       {showStrength && value && (
         <div className="mt-3 space-y-3">
           <div className="flex items-center gap-3">
-            <div className="h-1.5 flex-1 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-1.5 flex-1 bg-muted rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-300 ${strength.color}`}
                 style={{ width: `${strength.score}%` }}
@@ -316,8 +316,8 @@ export default function ProfileSettings() {
     <div className="space-y-6">
       {/* PROFILE MODAL */}
       {showProfileModal && (
-        <div className="fixed inset-0 bg-white/70 backdrop-blur">
-          <div className="max-w-sm mx-auto mt-20 bg-white p-6 rounded-lg shadow-lg relative">
+        <div className="fixed inset-0 bg-background/70 backdrop-blur">
+          <div className="max-w-sm mx-auto mt-20 bg-card p-6 rounded-lg shadow-lg relative">
             <button
               onClick={handleCloseProfileModal}
               className="absolute right-4 top-4"
@@ -331,7 +331,7 @@ export default function ProfileSettings() {
 
             <div className="flex flex-col items-center">
               <div
-                className="w-40 h-40 rounded-full overflow-hidden bg-gray-100 border cursor-pointer"
+                className="w-40 h-40 rounded-full overflow-hidden bg-muted border cursor-pointer"
                 onClick={handleProfileImageClick}
               >
                 {tempProfileImage && !imageError ? (
@@ -343,7 +343,7 @@ export default function ProfileSettings() {
                     alt={"Profile image"}
                   />
                 ) : (
-                  <Camera className="w-full h-full text-gray-400" />
+                  <Camera className="w-full h-full text-muted-foreground" />
                 )}
               </div>
 
@@ -382,7 +382,7 @@ export default function ProfileSettings() {
         <CardContent className="p-8">
           <div className="flex items-center gap-4">
             <div
-              className="w-16 h-16 rounded-full overflow-hidden cursor-pointer border-2 border-gray-200"
+              className="w-16 h-16 rounded-full overflow-hidden cursor-pointer border-2 border-border"
               onClick={handleOpenProfileModal}
             >
               {formData.profileImage ? (
@@ -394,7 +394,7 @@ export default function ProfileSettings() {
                   alt={"Profile image"}
                 />
               ) : (
-                <Camera className="w-full h-full text-gray-300 p-4" />
+                <Camera className="w-full h-full text-muted-foreground p-4" />
               )}
             </div>
 
@@ -428,7 +428,7 @@ export default function ProfileSettings() {
               <Input
                 value={formData.email ?? ""}
                 disabled
-                className="mt-2 bg-gray-50"
+                className="mt-2 bg-muted"
               />
             </div>
 

@@ -52,10 +52,10 @@ export function InterviewDetailsHeader({
             Back
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-foreground">
               {interviewName}
             </h1>
-            <p className="text-sm text-gray-600">Interview Schedule Details</p>
+            <p className="text-sm text-muted-foreground">Interview Schedule Details</p>
           </div>
         </div>
 

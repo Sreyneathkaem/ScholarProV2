@@ -26,7 +26,7 @@ export function Section({
           aria-label={`Toggle ${title}`}
           className="flex items-center justify-between mb-4 cursor-pointer"
         >
-          <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+          <h2 className="text-base font-semibold text-foreground">{title}</h2>
           <ChevronRight
             className={`h-4 w-4 transform transition-transform ${open ? "rotate-90" : ""}`}
           />
@@ -53,7 +53,7 @@ export function Field({
 }) {
   return (
     <div className={span2 ? "col-span-2" : ""}>
-      <p className="text-gray-500 text-xs mb-1">{label}</p>
+      <p className="text-muted-foreground text-xs mb-1">{label}</p>
       <p className={`${bold ? "font-semibold" : ""}`}>{value || "-"}</p>
     </div>
   );

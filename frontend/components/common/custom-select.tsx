@@ -31,7 +31,7 @@ export default function CustomSelect({
       <SelectTrigger
         className={clsx(
           "w-full !h-10 border", // default border
-          // error ? 'border-red-500' : 'border-gray-300',
+          // error ? 'border-red-500' : 'border-border',
           // 'border-red-500',
           className,
         )}

@@ -173,7 +173,7 @@ export default function GoogleCallbackPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <div className="w-14 h-14 mb-6">
         <Image
           src="/login.png"
@@ -187,12 +187,12 @@ export default function GoogleCallbackPage() {
       {status === "loading" ? (
         <>
           <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
-          <p className="text-gray-600 text-sm">{message}</p>
+          <p className="text-muted-foreground text-sm">{message}</p>
         </>
       ) : (
         <>
           <p className="text-red-600 font-medium mb-2">Authentication failed</p>
-          <p className="text-gray-500 text-sm mb-5 text-center max-w-xs">
+          <p className="text-muted-foreground text-sm mb-5 text-center max-w-xs">
             {message}
           </p>
           <button

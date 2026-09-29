@@ -338,15 +338,15 @@ const ExamFlowWizard = ({
   };
 
   return (
-    <Card className="w-full bg-white">
+    <Card className="w-full bg-card">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 py-3 px-6">
+      <div className="bg-card border-b border-border py-3 px-6">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-foreground">
               Create Exam Schedule
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Step {currentStep} of {steps.length}
             </p>
           </div>
@@ -354,7 +354,7 @@ const ExamFlowWizard = ({
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4 mr-1" />
             Cancel
@@ -372,7 +372,7 @@ const ExamFlowWizard = ({
                       ? "bg-[#0F386C] text-white"
                       : currentStep === step.number
                         ? "bg-[#0F386C] text-white"
-                        : "bg-gray-200 text-gray-600"
+                        : "bg-accent text-muted-foreground"
                   }`}
                 >
                   {step.completed ? (
@@ -381,14 +381,14 @@ const ExamFlowWizard = ({
                     step.number
                   )}
                 </div>
-                <span className="text-xs mt-2 text-gray-600 text-center whitespace-nowrap">
+                <span className="text-xs mt-2 text-muted-foreground text-center whitespace-nowrap">
                   {step.label}
                 </span>
               </div>
               {index < steps.length - 1 && (
                 <div
                   className={`h-0.5 w-24 mx-4 transition-colors ${
-                    step.completed ? "bg-[#0F386C]" : "bg-gray-200"
+                    step.completed ? "bg-[#0F386C]" : "bg-accent"
                   }`}
                 />
               )}
@@ -416,7 +416,7 @@ const ExamFlowWizard = ({
       </div>
 
       {/* Footer */}
-      <div className="bg-white border-t border-gray-200 px-6 py-2.5 flex items-center justify-between">
+      <div className="bg-card border-t border-border px-6 py-2.5 flex items-center justify-between">
         <Button
           variant="ghost"
           onClick={handleBack}

@@ -77,7 +77,7 @@ const RECIPIENT_GROUPS = [
     label: "Committee Members",
     description: "Internal committee and staff",
     icon: UserCog,
-    color: "text-gray-600",
+    color: "text-muted-foreground",
   },
 ];
 

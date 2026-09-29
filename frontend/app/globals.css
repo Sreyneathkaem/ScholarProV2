@@ -30,6 +30,7 @@
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
+  --color-row-hover: var(--row-hover);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
@@ -64,6 +65,7 @@
   --destructive: #ff4d4f;
   --destructive-foreground: #ffffff;
   --border: #d9d9d9;
+  --row-hover: #dbe7f5;
   --input: #d9d9d9;
   --ring: #0F386C;
   --chart-1: #0F386C;
@@ -103,6 +105,7 @@
   --destructive: #dc4446;
   --destructive-foreground: #ffffff;
   --border: #303030;
+  --row-hover: #2a3441;
   --input: #424242;
   --ring: #3b77ba;
   --chart-1: #3b77ba;

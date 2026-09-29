@@ -109,12 +109,12 @@ export function ApplicantsList({
 
   if (students.length === 0) {
     return (
-      <div className="border border-gray-200 rounded-lg p-6 text-center">
-        <Users className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-        <h4 className="text-sm font-medium text-gray-900 mb-1">
+      <div className="border border-border rounded-lg p-6 text-center">
+        <Users className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+        <h4 className="text-sm font-medium text-foreground mb-1">
           No matching students
         </h4>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           No qualified{" "}
           <strong>
             {selectedDepartment !== "Mixed" ? selectedDepartment : ""}
@@ -126,18 +126,18 @@ export function ApplicantsList({
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
-      <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+    <div className="border border-border rounded-lg overflow-hidden">
+      <div className="px-4 py-2.5 bg-muted border-b border-border">
         <div className="flex items-center gap-2">
-          <Users className="h-4 w-4 text-gray-600" />
-          <h4 className="font-medium text-gray-900 text-sm">
+          <Users className="h-4 w-4 text-muted-foreground" />
+          <h4 className="font-medium text-foreground text-sm">
             Interview Candidates
           </h4>
           <Badge variant="outline" className="ml-auto">
             {students.length} students
           </Badge>
         </div>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           15 minutes/candidate •
           {breakTimeInfo && (
             <span className="ml-1 text-orange-600 font-medium">
@@ -149,21 +149,21 @@ export function ApplicantsList({
 
       <div className="max-h-96 overflow-y-auto">
         <table className="w-full min-w-full table-fixed">
-          <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
+          <thead className="bg-muted border-b border-border sticky top-0 z-10">
             <tr>
-              <th className="w-12 px-2 py-2 text-left text-xs font-medium text-gray-500">
+              <th className="w-12 px-2 py-2 text-left text-xs font-medium text-muted-foreground">
                 #
               </th>
-              <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">
+              <th className="px-2 py-2 text-left text-xs font-medium text-muted-foreground">
                 ID
               </th>
-              <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">
+              <th className="px-2 py-2 text-left text-xs font-medium text-muted-foreground">
                 Name
               </th>
-              <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">
+              <th className="px-2 py-2 text-left text-xs font-medium text-muted-foreground">
                 Department
               </th>
-              <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">
+              <th className="px-2 py-2 text-left text-xs font-medium text-muted-foreground">
                 Time Slot
               </th>
             </tr>
@@ -190,17 +190,17 @@ export function ApplicantsList({
                   )}
                   <tr
                     className={cn(
-                      "hover:bg-gray-50",
+                      "hover:bg-muted",
                       isMismatch && "bg-yellow-50/50",
                     )}
                   >
-                    <td className="px-2 py-2 text-sm text-gray-900">
+                    <td className="px-2 py-2 text-sm text-foreground">
                       {index + 1}
                     </td>
-                    <td className="px-2 py-2 text-sm text-gray-900">
+                    <td className="px-2 py-2 text-sm text-foreground">
                       {student.id}
                     </td>
-                    <td className="px-2 py-2 text-sm font-medium text-gray-900">
+                    <td className="px-2 py-2 text-sm font-medium text-foreground">
                       {student.name}
                     </td>
                     <td className="px-2 py-2 text-sm">
@@ -224,7 +224,7 @@ export function ApplicantsList({
                         )}
                       </div>
                     </td>
-                    <td className="px-2 py-2 text-sm text-gray-600 truncate">
+                    <td className="px-2 py-2 text-sm text-muted-foreground truncate">
                       {timeSlot}
                     </td>
                   </tr>

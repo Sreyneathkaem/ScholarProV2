@@ -176,8 +176,8 @@ export default function SessionEntrySessionPage() {
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="py-10 text-center text-gray-500">
-                    <FileSpreadsheet className="mx-auto h-12 w-12 text-gray-300" />
+                  <td colSpan={3} className="py-10 text-center text-muted-foreground">
+                    <FileSpreadsheet className="mx-auto h-12 w-12 text-muted-foreground" />
                     No students found
                   </td>
                 </tr>

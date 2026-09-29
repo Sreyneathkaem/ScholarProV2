@@ -302,7 +302,7 @@ export const evaluationColumn: ColumnDef<Student> = {
   //   if (!evaluation || !evaluation.totalScore) {
   //     return (
   //       <div className="flex items-center gap-2">
-  //         <Badge variant="outline" className="text-gray-400">
+  //         <Badge variant="outline" className="text-muted-foreground">
   //           Not Evaluated
   //         </Badge>
   //       </div>

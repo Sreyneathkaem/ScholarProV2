@@ -43,11 +43,11 @@ export function ConfirmationDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md p-6">
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             {title}
           </h3>
           
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             {description}
           </p>
 
@@ -55,7 +55,7 @@ export function ConfirmationDialog({
             <Button
               variant="outline"
               onClick={handleCancel}
-              className="flex-1 border-gray-300 hover:bg-gray-50"
+              className="flex-1 border-border hover:bg-muted"
             >
               {cancelText}
             </Button>

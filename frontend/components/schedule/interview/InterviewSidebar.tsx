@@ -63,7 +63,7 @@ export function InterviewSidebar({
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-md font-semibold text-gray-900">
+        <h3 className="text-md font-semibold text-foreground">
           Scheduled Interviews
         </h3>
         <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -94,7 +94,7 @@ export function InterviewSidebar({
             {new Array(3).fill(null).map((_, i) => (
               <div
                 key={`skeleton-${i}`}
-                className="border border-gray-200 rounded-lg p-4"
+                className="border border-border rounded-lg p-4"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -112,9 +112,9 @@ export function InterviewSidebar({
           </>
         ) : interviews.length === 0 ? (
           <div className="text-center py-8">
-            <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500 text-sm">No interviews scheduled</p>
-            <p className="text-gray-400 text-xs mt-1">
+            <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">No interviews scheduled</p>
+            <p className="text-muted-foreground text-xs mt-1">
               {selectedBatchId
                 ? "Select a different batch or create a new interview"
                 : "Select a batch to view scheduled interviews"}
@@ -130,13 +130,13 @@ export function InterviewSidebar({
             return (
               <div
                 key={interview.examSessionsId}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border border-border rounded-lg p-4 hover:bg-muted transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     {/* Name & Subject Badge */}
                     <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-medium text-gray-900">
+                      <h4 className="font-medium text-foreground">
                         {interview.examSessionName}
                       </h4>
                       <Badge
@@ -148,7 +148,7 @@ export function InterviewSidebar({
                     </div>
 
                     {/* Details */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
                         <span

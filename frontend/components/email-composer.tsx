@@ -147,9 +147,9 @@ export function EmailComposer({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* LEFT: Recipients Section */}
-      <div className="bg-white rounded-lg border p-6 h-fit">
+      <div className="bg-card rounded-lg border p-6 h-fit">
         <div className="flex items-center gap-2 mb-4">
-          <Users className="h-5 w-5 text-gray-600" />
+          <Users className="h-5 w-5 text-muted-foreground" />
           <h2 className="text-lg font-semibold">Recipients</h2>
         </div>
 
@@ -196,28 +196,28 @@ export function EmailComposer({
               {recipients.map((student) => (
                 <div
                   key={student.id}
-                  className="grid grid-cols-12 gap-2 p-3 text-sm hover:bg-gray-50"
+                  className="grid grid-cols-12 gap-2 p-3 text-sm hover:bg-muted"
                 >
-                  <div className="col-span-3 font-medium text-gray-900 truncate">
+                  <div className="col-span-3 font-medium text-foreground truncate">
                     {student.number}
                   </div>
-                  <div className="col-span-5 text-gray-900 truncate">
+                  <div className="col-span-5 text-foreground truncate">
                     {student.name}
                   </div>
-                  <div className="col-span-4 text-gray-600 truncate">
+                  <div className="col-span-4 text-muted-foreground truncate">
                     {student.email}
                   </div>
                 </div>
               ))}
             </div>
             {recipients.length === 0 && (
-              <div className="p-6 text-center text-gray-500">
+              <div className="p-6 text-center text-muted-foreground">
                 No students found for this category
               </div>
             )}
           </div>
           <div className="mt-3 flex items-center justify-between">
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-muted-foreground">
               Check the recipient list carefully before sending.
             </div>
           </div>
@@ -225,9 +225,9 @@ export function EmailComposer({
       </div>
 
       {/* RIGHT: Compose Email Section */}
-      <div className="bg-white rounded-lg border p-6 h-fit">
+      <div className="bg-card rounded-lg border p-6 h-fit">
         <div className="flex items-center gap-2 mb-4">
-          <Mail className="h-5 w-5 text-gray-600" />
+          <Mail className="h-5 w-5 text-muted-foreground" />
           <h2 className="text-lg font-semibold">Compose Email</h2>
         </div>
 
@@ -273,7 +273,7 @@ export function EmailComposer({
               className="resize-none"
               placeholder="Enter your email message here..."
             />
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-muted-foreground">
               Tip: Use [Student Name] placeholder for personalization
             </div>
           </div>

@@ -80,7 +80,7 @@ function SimulatedWidget({
               ? "bg-[#00b140] border-[#00b140]"
               : checking
                 ? "border-[#f5a623] border-dashed animate-spin"
-                : "border-[#aaa] bg-white"
+                : "border-[#aaa] bg-card"
           }`}
         >
           {verified && (
@@ -95,7 +95,7 @@ function SimulatedWidget({
             </svg>
           )}
         </div>
-        <span className="text-sm text-gray-700 font-medium">
+        <span className="text-sm text-foreground font-medium">
           {verified ? "Success!" : checking ? "Verifying…" : "I am human"}
         </span>
       </div>
@@ -117,7 +117,7 @@ function SimulatedWidget({
             fill="#FBAD41"
           />
         </svg>
-        <span className="text-[10px] text-gray-400 leading-none">
+        <span className="text-[10px] text-muted-foreground leading-none">
           Privacy · Help
         </span>
       </div>

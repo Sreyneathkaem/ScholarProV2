@@ -13,10 +13,10 @@ export default function StudentDetailsModal({ student, open, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-      <div className="bg-white w-[450px] p-6 rounded-xl shadow-xl">
+      <div className="bg-card w-[450px] p-6 rounded-xl shadow-xl">
         <div className="flex justify-between">
           <p className="text-lg font-semibold">{student.nameEn}</p>
-          <button onClick={onClose} className="text-gray-400">
+          <button onClick={onClose} className="text-muted-foreground">
             ✕
           </button>
         </div>

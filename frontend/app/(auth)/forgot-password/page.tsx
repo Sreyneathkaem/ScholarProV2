@@ -78,7 +78,7 @@ function ForgotPasswordPage() {
               <p className="text-2xl font-bold">Check Your Email</p>
             </div>
 
-            <p className="text-base text-gray-600 mb-8">
+            <p className="text-base text-muted-foreground mb-8">
               We have sent a password reset link to your email address. Please
               check your inbox and follow the instructions.
             </p>
@@ -90,7 +90,7 @@ function ForgotPasswordPage() {
               Back to Login
             </Button>
 
-            <p className="text-sm text-gray-600 mt-4">
+            <p className="text-sm text-muted-foreground mt-4">
               Did not receive the email?{" "}
               <button
                 onClick={() => setIsSubmitted(false)}
@@ -123,7 +123,7 @@ function ForgotPasswordPage() {
         <div className="w-full max-w-[400px] mx-auto">
           <div className="mb-6">
             <p className="text-2xl font-bold">Forgot Password?</p>
-            <p className="text-base font-light text-gray-600 mt-2">
+            <p className="text-base font-light text-muted-foreground mt-2">
               No worries! Enter your email address and we will send you a link
               to reset your password.
             </p>
@@ -156,7 +156,7 @@ function ForgotPasswordPage() {
           </Form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Remember your password?{" "}
               <Link
                 href="/login"

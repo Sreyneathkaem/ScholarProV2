@@ -286,7 +286,7 @@ export function EditInterviewDialog({
           {/* Room Name and Date Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Room Name
               </label>
               <Input
@@ -298,7 +298,7 @@ export function EditInterviewDialog({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Interview Date
               </label>
               <Popover>
@@ -329,7 +329,7 @@ export function EditInterviewDialog({
           {/* Select Batch */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Select Batch
               </label>
               <Select value={editedBatch} onValueChange={setEditedBatch}>
@@ -346,7 +346,7 @@ export function EditInterviewDialog({
               </Select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Select Faculty
               </label>
               <Select
@@ -370,7 +370,7 @@ export function EditInterviewDialog({
           {/* Time Selection */}
           <div className="grid grid-cols-4 gap-3">
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Start Time
               </label>
               <Select
@@ -390,7 +390,7 @@ export function EditInterviewDialog({
               </Select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 End Time
               </label>
               <Select value={editedEndTime} onValueChange={setEditedEndTime}>
@@ -407,7 +407,7 @@ export function EditInterviewDialog({
               </Select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Start Break
               </label>
               <Select
@@ -427,7 +427,7 @@ export function EditInterviewDialog({
               </Select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 End Break
               </label>
               <Select value={editedBreakEnd} onValueChange={setEditedBreakEnd}>
@@ -447,7 +447,7 @@ export function EditInterviewDialog({
 
           {/* Committee Members */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Committee Members
             </label>
             <Popover
@@ -473,7 +473,7 @@ export function EditInterviewDialog({
               </PopoverTrigger>
               <PopoverContent className="w-[400px] p-0" align="start">
                 <div className="flex flex-col">
-                  <div className="p-3 border-b border-gray-200">
+                  <div className="p-3 border-b border-border">
                     <Input
                       placeholder="Search committee members..."
                       value={editedCommitteeSearchQuery}
@@ -490,14 +490,14 @@ export function EditInterviewDialog({
                         {filteredCommitteeMembers.map((member) => (
                           <div
                             key={member.id}
-                            className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-gray-100 cursor-pointer transition-colors"
+                            className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-muted cursor-pointer transition-colors"
                             onClick={() => handleCommitteeToggle(member.name)}
                           >
                             <input
                               type="checkbox"
                               checked={editedMembers.includes(member.name)}
                               onChange={() => {}}
-                              className="w-4 h-4 text-[#0F386C] border-gray-300 rounded focus:ring-[#0F386C] cursor-pointer"
+                              className="w-4 h-4 text-[#0F386C] border-border rounded focus:ring-[#0F386C] cursor-pointer"
                             />
                             <label className="text-sm font-medium leading-none cursor-pointer flex-1">
                               {member.name}
@@ -506,15 +506,15 @@ export function EditInterviewDialog({
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-6 text-sm text-gray-500">
+                      <div className="text-center py-6 text-sm text-muted-foreground">
                         No committee members found
                       </div>
                     )}
                   </div>
 
                   {editedMembers.length > 0 && (
-                    <div className="p-3 border-t border-gray-200 bg-gray-50">
-                      <p className="text-xs text-gray-600">
+                    <div className="p-3 border-t border-border bg-muted">
+                      <p className="text-xs text-muted-foreground">
                         {editedMembers.length} member
                         {editedMembers.length > 1 ? "s" : ""} selected
                       </p>
@@ -525,18 +525,18 @@ export function EditInterviewDialog({
             </Popover>
 
             {editedMembers.length > 0 && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="mt-3 p-3 bg-muted rounded-lg border border-border">
                 <div className="flex flex-wrap gap-2">
                   {editedMembers.map((member) => (
                     <Badge
                       key={member}
                       variant="outline"
-                      className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100 pl-2.5 pr-1.5 py-1"
+                      className="bg-card text-foreground border-border hover:bg-muted pl-2.5 pr-1.5 py-1"
                     >
                       <span className="text-xs">{member}</span>
                       <button
                         onClick={() => handleRemoveCommitteeMember(member)}
-                        className="ml-1.5 hover:bg-gray-200 rounded-full p-0.5 transition-colors"
+                        className="ml-1.5 hover:bg-accent rounded-full p-0.5 transition-colors"
                       >
                         <svg
                           className="h-3 w-3"
