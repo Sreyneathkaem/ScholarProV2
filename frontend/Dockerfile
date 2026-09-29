@@ -42,6 +42,9 @@ COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
+HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=6 \
+	CMD node -e "fetch('http://127.0.0.1:3000/').then((response) => process.exit(response.status < 500 ? 0 : 1)).catch(() => process.exit(1))"
+
 # Run as non-root user
 USER node
 

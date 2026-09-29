@@ -26,3 +26,52 @@ variable "notification_channels" {
   type        = list(string)
   default     = []
 }
+
+variable "enable_managed_database" {
+  description = "Create an opt-in Cloud SQL PostgreSQL database for the deployment host."
+  type        = bool
+  default     = false
+}
+
+variable "database_instance_name" {
+  description = "Cloud SQL instance name."
+  type        = string
+  default     = "scholarpro-postgres"
+}
+
+variable "database_name" {
+  description = "Application database name."
+  type        = string
+  default     = "scholarpro"
+}
+
+variable "database_user" {
+  description = "Application database user name."
+  type        = string
+  default     = "scholarpro"
+}
+
+variable "database_password" {
+  description = "Password for the application database user. Supply through a secure Terraform variable source."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "database_authorized_network_cidr" {
+  description = "Deployment host public egress CIDR allowed to connect to PostgreSQL; use a single-host /32 where possible."
+  type        = string
+  default     = ""
+}
+
+variable "database_tier" {
+  description = "Cloud SQL machine tier, billed while the managed database is enabled."
+  type        = string
+  default     = "db-custom-1-3840"
+}
+
+variable "database_high_availability" {
+  description = "Use regional high availability for Cloud SQL, at additional cost."
+  type        = bool
+  default     = false
+}

@@ -64,7 +64,6 @@
     "@types/morgan": "^1.9.10",
     "@types/pg": "^8.15.5",
     "@types/uuid": "^10.0.0",
-    "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.1",
     "globals": "^16.4.0",
     "jest": "^30.2.0",
@@ -73,6 +72,7 @@
     "tsc-alias": "^1.9.4",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.6",
-    "typescript-eslint": "^8.46.2"
+    "typescript-eslint": "^8.46.2",
+    "drizzle-kit": "^0.31.8"
   }
 }

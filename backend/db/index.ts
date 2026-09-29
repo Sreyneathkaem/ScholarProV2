@@ -5,6 +5,9 @@ if (!process.env.DB_HOST) {
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
+import { getDatabaseSslConfig } from "./ssl";
+
+const ssl = getDatabaseSslConfig();
 
 const poolConnection = postgres({
   host: process.env.DB_HOST,
@@ -12,7 +15,7 @@ const poolConnection = postgres({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
-  ssl: false,
+  ssl,
   // ssl: { rejectUnauthorized: false },
 });
 export const db = drizzle(poolConnection, { schema });
@@ -25,7 +28,7 @@ async function main() {
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       port: Number(process.env.DB_PORT),
-      ssl: false,
+      ssl,
     });
     await connection`SELECT NOW()`;
     console.log(
