@@ -114,6 +114,13 @@ docker run --rm \
   -v "$JWT_KEYS_DIR:/run/secrets:ro" \
   "$MIGRATION_IMAGE"
 
+docker run --rm \
+  --network scholarpro \
+  --env-file "$BACKEND_ENV_FILE" \
+  -e NODE_ENV=production \
+  -v "$JWT_KEYS_DIR:/run/secrets:ro" \
+  "$MIGRATION_IMAGE" npm run db:update-cambodian-names
+
 docker rm -f scholarpro-backend scholarpro-frontend scholarpro-caddy >/dev/null 2>&1 || true
 
 docker run -d \
