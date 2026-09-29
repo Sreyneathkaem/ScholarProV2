@@ -64,10 +64,29 @@ cleanup() {
 }
 trap cleanup EXIT
 
-docker pull "$BACKEND_IMAGE"
-docker pull "$MIGRATION_IMAGE"
-docker pull "$FRONTEND_IMAGE"
-docker pull "$CADDY_IMAGE"
+pull_with_retry() {
+  local image="$1"
+  local max_attempts=5
+  local delay=5
+  for attempt in {1..5}; do
+    echo "Pulling $image (attempt $attempt/$max_attempts)..."
+    if docker pull "$image"; then
+      return 0
+    fi
+    if [ "$attempt" -lt "$max_attempts" ]; then
+      echo "Failed to pull $image. Retrying in ${delay}s..."
+      sleep "$delay"
+      delay=$((delay * 2))
+    fi
+  done
+  echo "Failed to pull $image after $max_attempts attempts."
+  return 1
+}
+
+pull_with_retry "$BACKEND_IMAGE"
+pull_with_retry "$MIGRATION_IMAGE"
+pull_with_retry "$FRONTEND_IMAGE"
+pull_with_retry "$CADDY_IMAGE"
 
 docker run --rm \
   --env-file "$PROXY_ENV_FILE" \
@@ -137,6 +156,8 @@ for container in scholarpro-backend scholarpro-frontend scholarpro-caddy; do
     sleep 2
   done
 done
+
+docker image prune -f >/dev/null 2>&1 || true
 
 printf '\nDeployment completed successfully.\n'
 printf 'Frontend: https://%s (healthy)\n' "$APP_DOMAIN"
