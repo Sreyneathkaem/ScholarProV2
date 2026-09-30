@@ -183,45 +183,61 @@ Before running the application, complete these AWS setup steps:
     npm install
     ```
 
-### Environment Variables
+### Environment Variables & RSA Keys
 
-Create a `.env` file in the root of the project. You will need to add the following environment variables. Contact a senior team member for the correct values.
+1. **Generate RS256 RSA Keypair** (if not already created):
+   ```bash
+   mkdir -p keys
+   openssl genrsa -out keys/private.key 2048
+   openssl rsa -in keys/private.key -pubout -out keys/public.key
+   ```
 
-```env
-# Application
-NODE_ENV=dev
-PORT=3000
+2. **Create `.env` file** in `backend/`:
+   ```env
+   NODE_ENV=dev
+   PORT=3000
+   BASE_URL=http://localhost:3000
+   CLIENT_URL=http://localhost:3001
 
-# Database
-DATABASE_URL="postgresql://user:password@host:port/database"
+   # Database (Note: Individual credentials are used, NOT DATABASE_URL)
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=postgres
+   DB_NAME=scholarpro
+   DB_SSL=false
 
-# JWT
-JWT_ACCESS_TOKEN_SECRET="your-access-token-secret"
-JWT_REFRESH_TOKEN_SECRET="your-refresh-token-secret"
+   # Asymmetric RS256 JWT Keys
+   JWT_PRIVATE_KEY_PATH=keys/private.key
+   JWT_PUBLIC_KEY_PATH=keys/public.key
 
-# Sentry
-SENTRY_DSN="your-sentry-dsn"
+   # Uploads
+   UPLOAD_DIR=public/image
 
-# AWS SES (Simple Email Service)
-AWS_REGION="your-aws-region"  # e.g., "ap-southeast-2", "us-east-1"
-AWS_ACCESS_KEY_ID="your-aws-access-key"  # Optional: omit to use EC2 instance profile
-AWS_SECRET_ACCESS_KEY="your-aws-secret-key"  # Optional: omit to use EC2 instance profile
-# Note: Make sure you have verified your domain/email in SES console
-# Note: Create a configuration set named "email-tracking" in SES console
+   # Sentry (Optional)
+   SENTRY_DSN=your-sentry-dsn
 
-# Google OAuth
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GOOGLE_CALLBACK_URL="http://localhost:3000/api/v1/auth/google/callback"
+   # AWS SES (Simple Email Service)
+   AWS_REGION=ap-southeast-2
+   AWS_ACCESS_KEY_ID=your-aws-access-key      # Omit to use EC2 instance profile
+   AWS_SECRET_ACCESS_KEY=your-aws-secret-key  # Omit to use EC2 instance profile
+   AWS_SES_FROM_EMAIL=noreply@example.com
 
-# Telegram Bot
-TELEGRAM_BOT_TOKEN="your-telegram-bot-token"
+   # Google OAuth & Telegram (Optional)
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   GOOGLE_REDIRECT_URI=http://localhost:3000/api/v1/auth/google/callback
+   TELEGRAM_BOT_TOKEN=your-telegram-bot-token
 
-```
+   # Bakong KHQR (Optional)
+   BAKONG_API_URL=https://api-bakong.nbc.org.kh
+   BAKONG_API_TOKEN=your-token
+   BAKONG_MERCHANT_ID=your-merchant-id
+   ```
 
 ### Running the Application
 
-- **Development:** Runs the server with hot-reloading.
+- **Development:** Runs the server with hot-reloading (`ts-node-dev`).
   ```bash
   npm run dev
   ```
@@ -229,10 +245,10 @@ TELEGRAM_BOT_TOKEN="your-telegram-bot-token"
   ```bash
   npm run stg
   ```
-- **Production:** Builds the project and runs the compiled JavaScript.
+- **Production:** Compile TypeScript and start the production distribution.
   ```bash
   npm run build
-  npm run pro
+  node dist/index.js
   ```
 
 ### Running Tests
