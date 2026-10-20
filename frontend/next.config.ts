@@ -3,10 +3,9 @@ import type { NextConfig } from "next";
 
 const backendUrl =
   process.env.INTERNAL_BACKEND_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
   (process.env.NODE_ENV === "production"
     ? "http://scholarpro-backend:3000/api/v1"
-    : "http://127.0.0.1:3000/api/v1");
+    : process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:3000/api/v1");
 const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
 

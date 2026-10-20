@@ -13,8 +13,10 @@ WORKDIR /app
 # Accept runtime env variables for build-time configuration
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_JWT_PUBLIC_KEY
+ARG INTERNAL_BACKEND_URL="http://scholarpro-backend:3000/api/v1"
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 ENV NEXT_PUBLIC_JWT_PUBLIC_KEY=${NEXT_PUBLIC_JWT_PUBLIC_KEY}
+ENV INTERNAL_BACKEND_URL=${INTERNAL_BACKEND_URL}
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules

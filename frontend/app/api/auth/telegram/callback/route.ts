@@ -3,10 +3,9 @@ import type { OAuthCallbackResponse } from "@/lib/types/auth";
 
 const BACKEND_URL =
   process.env.INTERNAL_BACKEND_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
   (process.env.NODE_ENV === "production"
     ? "http://scholarpro-backend:3000/api/v1"
-    : "http://127.0.0.1:3000/api/v1");
+    : process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:3000/api/v1");
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
