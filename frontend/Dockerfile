@@ -33,6 +33,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV INTERNAL_BACKEND_URL=http://scholarpro-backend:3000/api/v1
 
 # Copy build artifacts and dependencies
 COPY --from=builder /app/.next ./.next
