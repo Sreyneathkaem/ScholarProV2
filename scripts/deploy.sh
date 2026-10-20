@@ -141,6 +141,7 @@ docker run -d \
   -p 127.0.0.1:3001:3000 \
   --restart unless-stopped \
   -e NODE_ENV=production \
+  -e INTERNAL_BACKEND_URL=http://scholarpro-backend:3000/api/v1 \
   "$FRONTEND_IMAGE"
 
 docker run -d \
